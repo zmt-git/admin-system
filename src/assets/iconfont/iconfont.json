@@ -1,0 +1,37 @@
+{
+  "id": "1517923",
+  "name": "admin-system",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2124369",
+      "name": "睁眼",
+      "font_class": "zhengyan",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "4152382",
+      "name": "密码 (2)",
+      "font_class": "mima",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "6372252",
+      "name": "闭眼",
+      "font_class": "biyan",
+      "unicode": "e83f",
+      "unicode_decimal": 59455
+    },
+    {
+      "icon_id": "9961608",
+      "name": "see user",
+      "font_class": "seeuser",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}
