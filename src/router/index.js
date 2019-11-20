@@ -91,7 +91,7 @@ router.beforeEach(async (to, from, next) => {
     // await store.dispatch('Logout')
     // 看是否为白名单
     if (whiteList.includes(to.path)) {
-      next({ path: `/login` })
+      next()
     } else {
       next(`/login?redirect=${to.path}`)
       NProgress.done()
