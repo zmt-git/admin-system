@@ -61,20 +61,7 @@ module.exports = {
     name: name,
     resolve: {
       alias: {
-        'src': resolve('src'),
-        'api': resolve('src/api'),
-        'assets': resolve('src/assets'),
-        'components': resolve('src/components'),
-        'directives': resolve('src/directives'),
-        'filters': resolve('src/filters'),
-        'icons': resolve('src/icons'),
-        'lang': resolve('src/lang'),
-        'mixins': resolve('src/mixins'),
-        'router': resolve('src/router'),
-        'store': resolve('src/store'),
-        'styles': resolve('src/styles'),
-        'utils': resolve('src/utils'),
-        'views': resolve('src/views')
+        '@': resolve('src')
       }
     },
     plugins: [

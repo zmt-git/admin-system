@@ -79,8 +79,8 @@ export default {
     }
     return {
       loginForm: {
-        username: null,
-        password: null
+        username: 'administrator',
+        password: 'naxing'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -149,16 +149,17 @@ export default {
     },
     // 登录
     handleLogin () {
+      let that = this
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/Login', this.loginForm)
+          this.$store.dispatch('Login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
+              that.$router.push({ path: '/' })
+              that.loading = false
             })
             .catch(() => {
-              this.loading = false
+              that.loading = false
             })
         } else {
           console.log('error submit!!')
