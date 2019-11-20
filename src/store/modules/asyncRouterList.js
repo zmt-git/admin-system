@@ -1,14 +1,14 @@
-import { routes } from 'router'
+import { fixedRouter } from '@/router'
 const Layout = () => import('@/layout/index')
 const permission = {
   state: {
-    routers: routes,
+    routers: fixedRouter,
     addRouters: []
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
-      state.routers = routes.concat(routers)
+      state.routers = fixedRouter.concat(routers)
     }
   },
   actions: {

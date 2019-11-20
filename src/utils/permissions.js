@@ -1,18 +1,17 @@
-import router from 'router'
-import store from 'store'
+import router from '@/router'
+import store from '@/store'
 import NProgress from 'nprogress'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
 import { filterAsyncRouter } from 'store/modules/asyncRouterList'
-import { loadMenus } from 'api/login/login'
+import { loadMenus } from '@/api/login/login'
 import 'nprogress/nprogress.css'
 NProgress.configure({ showSpinner: false })
 
 const whiteList = ['/login']
-
 router.beforeEach(async (to, from, next) => {
   // 进度条 开始
-  debugger
+  console.log('router.beforeEach')
   NProgress.start()
   // 从cookie中获取token
   const hasToken = getToken()

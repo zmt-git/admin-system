@@ -8,6 +8,8 @@ import '@/styles/index.scss' // 全局样式
 
 import '@/assets/iconfont/iconfont.css' // iconfont样式
 
+import '@/utils/global'// 全局变量
+
 import App from './App.vue'
 
 import './registerServiceWorker'

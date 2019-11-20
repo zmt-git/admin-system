@@ -1,4 +1,3 @@
-/* eslint-disable */
 <template>
   <div class="">
     <!-- 遍历路由表，生成左侧菜单 -->
