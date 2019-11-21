@@ -73,6 +73,7 @@ router.beforeEach(async (to, from, next) => {
       const hasAsyncRouter = store.getters.loadMenus
       if (hasAsyncRouter) {
         next()
+        NProgress.done()
       } else {
         try {
           // 获取权限列表
@@ -86,7 +87,10 @@ router.beforeEach(async (to, from, next) => {
           const asyncRouters = filterAsyncRouter(store.getters.addRouters)
           // 添加至路由
           router.addRoutes(asyncRouters)
+
           next({ ...to, replace: true })
+
+          NProgress.done()
         } catch (error) {
           // 删除token
           await store.dispatch('Logout')
@@ -108,8 +112,8 @@ router.beforeEach(async (to, from, next) => {
       next()
     } else {
       next(`/login?redirect=${to.path}`)
-      NProgress.done()
     }
+    NProgress.done()
   }
 })
 

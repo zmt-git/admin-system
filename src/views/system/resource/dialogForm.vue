@@ -16,8 +16,8 @@
       <el-form-item label="组件路径" prop="component" :rules="{required: true, message: '组件路径不能为空', trigger: 'blur'}">
         <el-input type="text" v-model="dataForm.component" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="访问地址(path)" v-show="!btnshow" prop="url" :rules="{required:!btnshow, message: '访问地址不能为空', trigger: 'blur'}">
-        <el-input type="text" v-model="dataForm.url" autocomplete="off"></el-input>
+      <el-form-item label="访问地址(path)" v-show="!btnshow" prop="uri" :rules="{required:!btnshow, message: '访问地址不能为空', trigger: 'blur'}">
+        <el-input type="text" v-model="dataForm.uri" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -78,7 +78,7 @@ export default {
     resetForm () {
       this.visible = false
       this.$refs['form'].resetFields()
-      this.dataForm = { id: '', name: '', parentid: '', resourceName: '', type: '0', code: '', sortOrder: '', icon: '', component: '', content: '', iframe: '0', leaf: false }
+      this.dataForm = { id: '', name: '', parentId: '', type: '0', uri: '', sortOrder: '', icon: '', component: '' }
     },
     doSubmit () {
       this.$refs['form'].validate((valid) => {

@@ -19,7 +19,7 @@ import diaForm from './dialogForm'
 import 'jquery'
 import 'ztree'
 import 'ztree/css/metroStyle/metroStyle.css'
-import { getTreeResource, saveOrUpdateResource } from '@/api/system/system'
+import { getTreeResource, saveOrUpdateResource, deleteResourceById } from '@/api/system/system'
 export default {
   components: {
     diaForm
@@ -93,6 +93,8 @@ export default {
     innerTree: function (treeId, treeNodes, targetNode) {
       return targetNode != null && targetNode.pId !== '00'
     },
+
+    // 新增模块
     showAddDialog () {
       if (this.clickId.length === 0) {
         this.$message.error('请选择父模块')
@@ -103,10 +105,13 @@ export default {
       this.$refs.form.isAdd = true
       this.$refs.form.compdisabled = true
       this.$refs.form.dataForm.component = 'Layout'
-      this.$refs.form.dataForm.parentid = this.clickId
-      this.$refs.form.dataForm.resourceName = this.treeNode.name
+      this.$refs.form.dataForm.parentId = this.clickId
+      this.$refs.form.dataForm.name = this.treeNode.name
+      this.$refs.form.dataForm.type = 0
       this.showAdd = true
     },
+
+    // 新增功能菜单
     showAddMenu () {
       if (this.clickId.length === 0) {
         this.$message.error('请选择父节点模块')
@@ -117,17 +122,18 @@ export default {
       this.$refs.form.title = '添加功能菜单'
       this.$refs.form.compdisabled = false
       // this.$refs.form.dataForm.component = ""
-      this.$refs.form.dataForm.parentid = this.clickId
-      this.$refs.form.dataForm.leaf = true
-      this.$refs.form.dataForm.resourceName = this.treeNode.name
+      this.$refs.form.dataForm.parentId = this.clickId
+      this.$refs.form.dataForm.type = 2
+      this.$refs.form.dataForm.name = this.treeNode.name
       this.showAdd = true
     },
+
     // 快速添加按钮
     doAddBtns () {
       if (this.clickId.length === 0) {
         this.$message.error('请选择父菜单')
       } else {
-        saveOrUpdateResource(this.clickId).then(res => {
+        saveOrUpdateResource({ type: 1 }).then(res => {
           this.$notify({
             title: '添加成功',
             type: 'success',
@@ -140,6 +146,8 @@ export default {
         })
       }
     },
+
+    // 编辑内容
     showEdit () {
       if (this.clickId.length === 0) {
         this.$message.error('请选择父菜单')
@@ -158,17 +166,14 @@ export default {
         this.$refs.form.dataForm = {
           id: this.clickId,
           name: this.treeNode.name,
-          parentid: this.treeNode.parentid,
-          resourceName: '',
+          parentId: this.treeNode.parentId,
           type: this.treeNode.type,
-          code: this.treeNode.code,
+          uri: this.treeNode.uri,
           sortOrder: this.treeNode.sortOrder,
           icon: this.treeNode.icon,
-          content: this.treeNode.content,
-          component: this.treeNode.component,
-          iframe: this.treeNode.iframe,
-          leaf: this.treeNode.leaf
+          component: this.treeNode.component
         }
+        console.log(this.treeNode)
       }
     },
     removeNode () {
@@ -181,16 +186,16 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // del(this.clickId).then(res => {
-        //   this.$message({
-        //     message: '删除成功',
-        //     type: 'success'
-        //   })
-        //   this.init()
-        // }).catch(err => {
-        //   console.log('error:' + err)
-        //   console.log(err)
-        // })
+        deleteResourceById({ 'id': [this.clickId] }).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.init()
+        }).catch(err => {
+          console.log('error:' + err)
+          console.log(err)
+        })
       }).catch(() => {
         this.$message({
           type: 'info',
