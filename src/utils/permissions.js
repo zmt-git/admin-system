@@ -1,4 +1,4 @@
-import router from '@/router'
+import router from '../router'
 import store from '@/store'
 import NProgress from 'nprogress'
 import { Message } from 'element-ui'
@@ -22,28 +22,28 @@ router.beforeEach(async (to, from, next) => {
       // 进度条 结束
       NProgress.done()
     } else {
-      // 获取获取路由表
-      const hasAsyncRouterList = store.getters.addRouters && store.getters.addRouters.lenght > 0
+      // 获取路由表
+      const hasAsyncRouterList = true
       if (hasAsyncRouterList) {
         next()
       } else {
         try {
           // 获取权限列表
-          const list = await loadMenus()
+          const { result } = await loadMenus()
 
           // vuex储存生成路由列表
-          const { addRouters } = await store.dispatch('GenerateRoutes', list)
+          await store.dispatch('GenerateRoutes', result)
 
           // 路由表转化
-          const asyncRouters = filterAsyncRouter(addRouters)
-          console.log(asyncRouters)
+          const asyncRouters = filterAsyncRouter(store.getters.addRouters)
+
           // 添加至路由
           router.addRouters(asyncRouters)
 
           next({ ...to, replace: true })
         } catch (error) {
           // 删除token
-          await store.dispatch('resetToken')
+          await store.dispatch('Logout')
 
           // 清空路由表
           await store.commit('SET_ROUTERS', [])
@@ -57,7 +57,7 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     // 没有token
-    await store.commit('resetToken')
+    // await store.dispatch('Logout')
     // 看是否为白名单
     if (whiteList.includes(to.path)) {
       next()

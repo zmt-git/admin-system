@@ -22,7 +22,7 @@ const permission = {
 export const filterAsyncRouter = (routers) => {
   const accessedRouters = routers.filter(router => {
     if (router.component) {
-      if (router.component === 'Layout') { // Layout组件特殊处理
+      if (router.component === 'layout') { // Layout组件特殊处理
         router.component = Layout
       } else {
         const component = router.component

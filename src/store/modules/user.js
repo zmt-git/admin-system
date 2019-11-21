@@ -33,8 +33,6 @@ const user = {
           if (res.result) {
             setToken(res.result, rememberMe)
             commit('SET_TOKEN', res.result)
-            // 第一次加载菜单时用到
-            commit('SET_LOAD_MENUS', true)
             // 将用户信息传递到登录页面
             resolve(that.state.user)
           }

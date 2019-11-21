@@ -2,9 +2,9 @@ import Vue from 'vue'
 
 import ElementUI from 'element-ui'
 
-import 'element-ui/lib/theme-chalk/index.css'
-
 import '@/styles/index.scss' // 全局样式
+
+import '../theme/index.css' // 全局样式
 
 import '@/assets/iconfont/iconfont.css' // iconfont样式
 

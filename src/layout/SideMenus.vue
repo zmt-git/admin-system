@@ -7,17 +7,17 @@
       <template v-if="item.children&&item.children.length===1">
         <el-submenu :key="index" :index="item.path">
           <template slot="title">
-            <i v-if="item.meta.icon" :class="item.meta.icon"></i>
-            <span>{{item.meta.title}}</span>
+            <i v-if="item.meta.icon" class="iconfont" :class='item.meta.icon'></i>
+            <span class="title">{{item.meta.title}}</span>
           </template>
             <router-link :to="item.path+'/'+item.children[0].path">
               <!--index跟浏览器地址对应，这样菜单才能显示选中状态  -->
               <el-menu-item :index="item.path+'/'+item.children[0].path">
                 <template slot="title">
                   <!-- 设置icon -->
-                  <i v-if="item.children[0].meta.icon" :class="item.children[0].meta.icon"></i>
+                  <i v-if="item.children[0].meta.icon" class="iconfont" :class='item.children[0].meta.icon'></i>
                   <!-- 菜单名称 -->
-                  {{item.children[0].meta.title}}
+                  <span class="title">{{item.children[0].meta.title}}</span>
                 </template>
               </el-menu-item>
             </router-link>
@@ -28,8 +28,8 @@
       <template v-else-if="item.meta.title!='地图展示'">
         <el-submenu  :key="index" :index="item.path">
           <template slot="title">
-            <i :class="item.meta.icon"></i>
-            {{item.meta.title}}
+            <i v-if="item.meta.icon" class="iconfont" :class='item.meta.icon'></i>
+            <span class="title">{{item.meta.title}}</span>
           </template>
           <!-- 遍历子菜单 -->
           <template  v-for="(itemChild, index) in item.children">
@@ -42,8 +42,8 @@
             <template v-else>
               <router-link  :key="index" :to="item.path+'/'+itemChild.path">
                 <el-menu-item :index="item.path+'/'+itemChild.path">
-                  <i v-if="itemChild.meta.icon" :class="itemChild.meta.icon"></i>
-                  {{itemChild.meta.title}}
+                  <i v-if="itemChild.meta.icon" class="iconfont" :class='itemChild.meta.icon'></i>
+                  <span class="title">{{itemChild.meta.title}}</span>
                 </el-menu-item>
               </router-link>
             </template>
@@ -78,4 +78,24 @@ export default {
 }
 
 </script>
+<style lang="scss" scoped>
+.title{
+  padding-left: 5px;
+}
+</style>
+<style lang="scss">
+.el-submenu__title{
+  text-align: left!important;
+}
+.aside{
+  padding: 0!important;
+}
+.el-submenu .el-menu-item {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 45px;
+    min-width: 200px;
+    text-align: left;
+}
+</style>
 /* eslint-disable no-new */

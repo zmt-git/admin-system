@@ -3,10 +3,18 @@
     <el-container>
       <!-- 侧边栏 开始 -->
       <el-aside>
-        <el-menu mode="vertical" style="border-right:none;" :collapse="isCollapse" unique-opened :default-active="$route.path" background-color="#2d3a4b" text-color="#fff" active-text-color="#409EFF;">
+        <el-menu
+          mode="vertical"
+          style="border-right:none;"
+          :collapse="isCollapse"
+          unique-opened
+          :default-active="$route.path"
+          background-color="#2d3a4b"
+          text-color="#fff"
+          active-text-color="#409EFF;">
           <!-- 菜单组件 -->
-          <div style="line-height: 50px;height: 50px;color:#fff;font-size:18px;text-align:left;background-color: #2d3a4b;border: 1px solid #2d3a4b"><i class="fa fa-road fa-2x" aria-hidden="true"></i>设备</div>
-          <side-menus :routes="permission_routes"></side-menus>
+          <div class="devName"><i class="iconfont">&#xe602;</i><span class="title">设备控制</span></div>
+          <side-menus :routes="routers"></side-menus>
         </el-menu>
       </el-aside>
       <!-- 侧边栏 结束 -->
@@ -58,10 +66,7 @@ import Hamburger from '@/components/Hamburger'
 
 export default {
   computed: {
-    getRoutes () {
-      return global.antRouter
-    },
-    ...mapGetters(['sidebar', 'permission_routes'])
+    ...mapGetters(['sidebar', 'routers', 'token'])
   },
   components: {
     sideMenus,
@@ -84,22 +89,29 @@ export default {
       this.$router.push(`/?redirect=${this.$route.fullPath}`)
       location.reload()
     }
-    // map(){
-    //   this.$router.push("/map")
-    // }
   },
   created () {
-    this.$store.dispatch('GetRoadInfos')
   },
   mounted () {
-    // console.log("菜单的展开跟路由有关系，查看elementui--el-menu  的default-active 属性")
-    // console.log(this.$route.path)
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   $sideBarWidth: 220px;
+  .title{
+    padding-left: 5px;
+  }
+  .devName{
+    line-height: 50px;
+    height: 50px;
+    color:#fff;
+    font-size:18px;
+    text-align:left;
+    background-color: #2d3a4b;
+    border: 1px solid #2d3a4b;
+    padding-left: 20px;
+  }
   /*wapper*/
   .app_wapper {
     position: relative;
@@ -122,6 +134,7 @@ export default {
 
   .app_wapper .el-aside,
   .slider_container .el-menu {
+    padding: 0px;
     color: #333;
     transition: width .28s;
     width: $sideBarWidth !important;
@@ -131,10 +144,10 @@ export default {
     bottom: 0;
     left: 0;
     z-index: 1001;
-    background-color: rgb(48, 65, 86);
+    background-color: #2d3a4b;
   }
 
-  .el-main {
+  .app_wapper .el-main {
     display: block;
     -webkit-box-flex: 1;
     -ms-flex: 1;
@@ -152,18 +165,19 @@ export default {
     margin-left: $sideBarWidth;
     height:calc(100vh - 100px);
   }
-  .el-menu-item-group__title {
+  .app_wapper .el-menu-item-group__title {
     padding: 0 0 1px 20px;
     line-height: normal;
     font-size: 12px;
     color: #909399;
   }
 
-  .el-submenu .el-menu-item {
+  .app_wapper .el-submenu .el-menu-item {
     height: 40px;
     line-height: 40px;
     padding: 0 35px;
     min-width: 200px;
+    text-align: left;
   }
   .page-footer {
     margin: auto 10px;

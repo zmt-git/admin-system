@@ -13,6 +13,20 @@
       "unicode_decimal": 58887
     },
     {
+      "icon_id": "3564903",
+      "name": "02-新模块添加",
+      "font_class": "-xinmokuaitianjia",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "3965918",
+      "name": "系统",
+      "font_class": "cogs",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
       "icon_id": "4152382",
       "name": "密码 (2)",
       "font_class": "mima",
@@ -20,11 +34,18 @@
       "unicode_decimal": 58896
     },
     {
-      "icon_id": "6372252",
+      "icon_id": "5045424",
       "name": "闭眼",
-      "font_class": "biyan",
-      "unicode": "e83f",
-      "unicode_decimal": 59455
+      "font_class": "biyan1",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "5305448",
+      "name": "权限资源树",
+      "font_class": "icon-35",
+      "unicode": "e659",
+      "unicode_decimal": 58969
     },
     {
       "icon_id": "9961608",

@@ -4,7 +4,7 @@ import api from './modules/api'
 import user from './modules/user'
 import app from './modules/app'
 import tagsView from './modules/tagsView'
-import permission from './modules/asyncRouterList'
+import asyncRouterList from './modules/asyncRouterList'
 import getters from './getters'
 Vue.use(Vuex)
 
@@ -14,7 +14,7 @@ export default new Vuex.Store({
     user,
     app,
     tagsView,
-    permission
+    asyncRouterList
   },
   getters
 })
