@@ -3,8 +3,7 @@
     <el-button-group>
       <el-button type="primary" icon="el-icon-share" size="mini" @click="showAddDialog()">添加模块</el-button>
       <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddMenu()">添加功能菜单</el-button>
-      <el-button type="info" icon="el-icon-plus" size="mini" @click="doAddBtns()">添加增删改按钮</el-button>
-      <el-button type="warning" icon="el-icon-plus" size="mini">添加按钮</el-button>
+      <el-button type="warning" icon="el-icon-plus" size="mini" @click="doAddBtns()">添加按钮</el-button>
       <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEdit()">修改</el-button>
       <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeNode()">删除</el-button>
     </el-button-group>
@@ -19,7 +18,7 @@ import diaForm from './dialogForm'
 import 'jquery'
 import 'ztree'
 import 'ztree/css/metroStyle/metroStyle.css'
-import { getTreeResource, saveOrUpdateResource, deleteResourceById } from '@/api/system/system'
+import { getTreeResource, deleteResourceById } from '@/api/system/system'
 export default {
   components: {
     diaForm
@@ -103,11 +102,15 @@ export default {
       this.$refs.form.visible = true
       this.$refs.form.title = '添加模块'
       this.$refs.form.isAdd = true
-      this.$refs.form.compdisabled = true
-      this.$refs.form.dataForm.component = 'Layout'
-      this.$refs.form.dataForm.parentId = 0
+      this.$refs.form.dataForm.component = 'layout'
+      this.$refs.form.dataForm.parentId = this.treeNode.id
+      this.$refs.form.dataForm.parentName = this.treeNode.name
       this.$refs.form.dataForm.name = this.treeNode.name
       this.$refs.form.dataForm.type = 0
+      this.$refs.form.types = 'model'
+      this.$refs.form.dataForm.iconClass = this.treeNode.iconClass
+      this.$refs.form.btnshow = false
+      this.$refs.form.showparent = true
       this.showAdd = true
     },
 
@@ -120,11 +123,13 @@ export default {
       this.$refs.form.isAdd = true
       this.$refs.form.visible = true
       this.$refs.form.title = '添加功能菜单'
-      this.$refs.form.compdisabled = false
-      // this.$refs.form.dataForm.component = ""
+      this.$refs.form.types = 'menu'
+      this.$refs.form.dataForm.parentName = this.treeNode.name
       this.$refs.form.dataForm.parentId = this.clickId
       this.$refs.form.dataForm.type = 2
       this.$refs.form.dataForm.name = this.treeNode.name
+      this.$refs.form.btnshow = false
+      this.$refs.form.showparent = true
       this.showAdd = true
     },
 
@@ -133,17 +138,17 @@ export default {
       if (this.clickId.length === 0) {
         this.$message.error('请选择父菜单')
       } else {
-        saveOrUpdateResource({ type: 1 }).then(res => {
-          this.$notify({
-            title: '添加成功',
-            type: 'success',
-            duration: 2500
-          })
-          this.init(this.clickId)
-        }).catch(err => {
-          console.log('error:' + err)
-          console.log(err)
-        })
+        this.$refs.form.isAdd = true
+        this.$refs.form.visible = true
+        this.$refs.form.title = '添加按钮'
+        this.$refs.form.types = 'btn'
+        this.$refs.form.btnshow = true
+        this.$refs.form.dataForm.parentName = this.treeNode.name
+        this.$refs.form.dataForm.parentId = this.clickId
+        this.$refs.form.dataForm.type = 2
+        this.$refs.form.dataForm.name = this.treeNode.name
+        this.$refs.form.showparent = true
+        this.showAdd = true
       }
     },
 
@@ -156,9 +161,10 @@ export default {
         this.$refs.form.visible = true
         this.$refs.form.isAdd = false
         this.$refs.form.showparent = false
-
+        this.$refs.form.showparent = false
+        this.$refs.form.types = null
         // 如果是按钮，则隐藏排序和访问路径字段
-        if (this.treeNode.type === '1') {
+        if (this.treeNode.type === 1) {
           this.$refs.form.btnshow = true
         } else {
           this.$refs.form.btnshow = false
@@ -170,10 +176,9 @@ export default {
           type: this.treeNode.type,
           uri: this.treeNode.uri,
           sortOrder: this.treeNode.sortOrder,
-          icon: this.treeNode.icon,
+          iconClass: this.treeNode.iconClass,
           component: this.treeNode.component
         }
-        console.log(this.treeNode)
       }
     },
     removeNode () {
@@ -209,7 +214,7 @@ export default {
 
   },
   mounted () {
-    this.init(1)
+    this.init(0)
   }
 }
 </script>

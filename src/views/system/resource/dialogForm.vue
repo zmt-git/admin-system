@@ -2,18 +2,18 @@
   <el-dialog :title="title" :closeOnClickModal="false" :visible.sync="visible" width="550px">
     <el-form ref="form" :model="dataForm" :rules="rules" size="small" label-position="right" label-width="130px" style="padding: 0;margin: 0">
       <el-form-item label="父节点名称" v-show="showparent">
-        <el-input v-model="dataForm.name" required="true" disabled="disabled" autocomplete="off" ></el-input>
+        <el-input v-model="dataForm.parentName" required="true" disabled="disabled" autocomplete="off" ></el-input>
       </el-form-item>
-      <el-form-item label="名称" prop="name">
+      <el-form-item :label="names" prop="name">
         <el-input v-model="dataForm.name" autocomplete="off" minlength="2" maxlength="20"></el-input>
       </el-form-item>
       <el-form-item label="图标" prop="icon">
-        <el-input v-model="dataForm.icon"  autocomplete="off" ></el-input>
+        <el-input v-model="dataForm.icon" autocomplete="off" ></el-input>
       </el-form-item>
       <el-form-item label="排序" prop="sortOrder" v-show="!btnshow">
         <el-input type="number" v-model.number="dataForm.sortOrder" :rules="{ required: !btnshow, message: '请输入排序', trigger: 'blur' }"></el-input>
       </el-form-item>
-      <el-form-item label="组件路径" prop="component" :rules="{required: true, message: '组件路径不能为空', trigger: 'blur'}">
+      <el-form-item label="组件路径" v-show="!btnshow" prop="component" :rules="{required: !btnshow, message: '组件路径不能为空', trigger: 'blur'}">
         <el-input type="text" v-model="dataForm.component" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="访问地址(path)" v-show="!btnshow" prop="uri" :rules="{required:!btnshow, message: '访问地址不能为空', trigger: 'blur'}">
@@ -29,13 +29,28 @@
 <script>
 import { saveOrUpdateResource } from '@/api/system/system'
 export default {
+  computed: {
+    names () {
+      if (this.types === 'model') {
+        return '模块名称'
+      } else if (this.types === 'menu') {
+        return '菜单名称'
+      } else if (this.types === 'btn') {
+        return '按钮名称'
+      } else {
+        return '名称'
+      }
+    }
+  },
   data () {
     return {
+      types: null,
       loading: false,
       visible: false,
       isAdd: false,
       title: '添加模块',
-      dataForm: { id: '', name: '', parentId: '', sortOrder: '', icon: '', component: '', url: '' },
+      modules: false,
+      dataForm: { id: '', name: '', parentId: '', parentName: '', sortOrder: '', icon: '', component: '', url: '' },
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' },
@@ -78,48 +93,29 @@ export default {
     resetForm () {
       this.visible = false
       this.$refs['form'].resetFields()
-      this.dataForm = { id: '', name: '', parentId: '', type: '0', uri: '', sortOrder: '', icon: '', component: '' }
+      this.dataForm = { id: '', name: '', parentId: '', parentName: '', type: '0', uri: '', sortOrder: '', icon: '', component: '' }
     },
     doSubmit () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.loading = true
           if (this.isAdd) {
-            // 添加模块
-            if (this.compdisabled) {
-              console.log(this.dataForm)
-              saveOrUpdateResource(this.dataForm).then(res => {
-                this.resetForm()
-                this.$notify({
-                  title: '添加成功',
-                  type: 'success',
-                  duration: 2500
-                })
-                this.loading = false
-                this.$parent.page = 0
-                this.$parent.dialogFormVisible = false
-                this.$parent.init()
-              }).catch(err => {
-                console.log('error:' + err)
-                console.log(err)
+            // 添加模块 添加功能菜单 添加按钮
+            saveOrUpdateResource(this.dataForm).then(res => {
+              this.resetForm()
+              this.$notify({
+                title: '添加成功',
+                type: 'success',
+                duration: 2500
               })
-            } else {
-              saveOrUpdateResource(this.dataForm).then(res => {
-                this.resetForm()
-                this.$notify({
-                  title: '添加成功',
-                  type: 'success',
-                  duration: 2500
-                })
-                this.loading = false
-                this.$parent.page = 0
-                this.$parent.dialogFormVisible = false
-                this.$parent.init()
-              }).catch(err => {
-                console.log('error:' + err)
-                console.log(err)
-              })
-            }
+              this.loading = false
+              this.$parent.page = 0
+              this.$parent.dialogFormVisible = false
+              this.$parent.init()
+            }).catch(err => {
+              console.log('error:' + err)
+              console.log(err)
+            })
           } else {
             this.doEdit()
           }

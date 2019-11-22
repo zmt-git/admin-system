@@ -41,7 +41,7 @@ service.interceptors.response.use(
         router.push('/404')
       }
       if (code === 1013) {
-        router.push('/login')
+        console.log(router)
       }
       // eslint-disable-next-line prefer-promise-reject-errors
       return Promise.reject('error')
