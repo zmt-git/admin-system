@@ -7,3 +7,11 @@ export function findAllRole () {
     method: 'GET'
   })
 }
+// /userRole/pageRole 分页查询角色 5659
+export function pageRole (params) {
+  return http({
+    url: 'userRole/pageRole',
+    method: 'POST',
+    params
+  })
+}

@@ -113,6 +113,8 @@ export function timestampToTime (timestamp, type) {
     return h + m
   } else if (type === 'hh:mm:ss') {
     return h + m + s
+  } else {
+    return Y + M + D + h + m + s
   }
 }
 /**

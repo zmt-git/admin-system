@@ -12,16 +12,17 @@
 </template>
 <script>
 import EleTable from '@/components/EleTable/table'
-import { findAllRole } from '@/api/system/role'
+import { pageRole } from '@/api/system/role'
+import { timestampToTime } from '@/utils/format'
 export default {
   components: {
     EleTable
   },
   created () {
     // 获取角色
-    findAllRole()
+    pageRole()
       .then(res => {
-        this.list = res.result
+        this.list = res.result.records
       })
   },
   data () {
@@ -32,13 +33,16 @@ export default {
       // 表格数据展示数据key
       columns: [
         { prop: 'id', label: 'id' },
-        { prop: 'name', label: '角色' }
+        { prop: 'name', label: '角色' },
+        { prop: 'createUser', label: '创建人' },
+        { prop: 'createTime', label: '创建时间', formatter: this.timestampToTimes },
+        { prop: 'description', label: '备注' }
       ],
 
       // 表格操作按钮
       operates: {
         fixed: 'right',
-        width: '200px',
+        width: '120px',
         list: [
           { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelItem },
           { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabelItem }
@@ -48,8 +52,13 @@ export default {
   },
   methods: {
     // 表格数据选中行数据
-    tabelItem (val) {
+    tabelItem (key, val) {
       console.log(val)
+    },
+
+    // 时间转化
+    timestampToTimes (val, key) {
+      return timestampToTime(val[key.prop])
     }
   }
 }
