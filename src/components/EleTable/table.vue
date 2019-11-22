@@ -1,12 +1,14 @@
 <template>
-  <div class="table">
+  <div class="tableBox">
     <el-table
+      ref="mutipleTable"
       v-loading.iTable="options.loading"
       :data="list"
       :stripe="options.stripe"
-      ref="mutipleTable"
-      :header-row-style="{height: options.height}"
-      :row-style="{height: '20px'}"
+      :header-row-style="{height: options.height, padding: options.padding}"
+      :row-style="{height: options.height}"
+      :cell-style='{padding: options.padding}'
+      :border='options.border'
       @selection-change="handleSelectionChange"
     >
       <!--选择框-->
@@ -40,26 +42,28 @@
       <el-table-column
         ref="fixedColumn"
         label="操作"
-        align="center"
+        align="left"
         :width="operates.width"
         :fixed="operates.fixed"
         v-if="operates.list.filter(_x=>_x.show === true).length > 0"
       >
         <template slot-scope="scope">
-          <div class="operate-group">
-            <template v-for="(btn, key) in operates.list">
-              <div class="item" v-if="btn.show" :key="btn.id">
+          <el-button-group>
+            <template v-for="(btn, key, index) in operates.list">
                 <el-button
+                  v-if="btn.show"
+                  :key="index"
                   :type="btn.type"
                   size="mini"
                   :icon="btn.icon"
                   :disabled="btn.disabled"
                   :plain="btn.plain"
+                  style="padding: 7px 10px"
+                  class="tableBtn"
                   @click.native.prevent="btn.method(key,scope.row)"
                 >{{ btn.label }}</el-button>
-              </div>
             </template>
-          </div>
+          </el-button-group>
         </template>
       </el-table-column>
       <!--endregion-->
@@ -96,7 +100,9 @@ export default {
           highlightCurrentRow: false, // 是否要高亮当前行
           loading: false, // 是否添加表格loading加载动画
           mutiSelect: true, // 是否支持列表项选中功能
-          height: '20px'
+          height: '20px',
+          border: true,
+          padding: '5px 0'
         }
       }
     } // table 表格的控制参数
@@ -144,3 +150,16 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.tableBox{
+  margin-top: 5px;
+}
+.operate-group{
+  display: inline-block;
+}
+.item{
+    display: inline-block;
+    padding-right: 3px;
+    text-align: center;
+  }
+</style>

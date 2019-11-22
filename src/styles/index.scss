@@ -80,7 +80,12 @@ html {
 *:after {
   box-sizing: inherit;
 }
-
+.tableBtn span{
+  margin:0!important;
+}
+.textAlginLeft{
+  text-align: left;
+}
 .no-padding {
   padding: 0px !important;
 }

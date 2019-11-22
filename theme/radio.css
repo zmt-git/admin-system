@@ -435,16 +435,16 @@
     position: relative;
     vertical-align: middle; }
     .el-radio__input.is-disabled .el-radio__inner {
-      background-color: #cfcfcf;
+      background-color: rgba(3, 3, 3, 0.05);
       border-color: #E4E7ED;
       cursor: not-allowed; }
       .el-radio__input.is-disabled .el-radio__inner::after {
         cursor: not-allowed;
-        background-color: #cfcfcf; }
+        background-color: rgba(3, 3, 3, 0.05); }
       .el-radio__input.is-disabled .el-radio__inner + .el-radio__label {
         cursor: not-allowed; }
     .el-radio__input.is-disabled.is-checked .el-radio__inner {
-      background-color: #cfcfcf;
+      background-color: rgba(3, 3, 3, 0.05);
       border-color: #E4E7ED; }
       .el-radio__input.is-disabled.is-checked .el-radio__inner::after {
         background-color: #C0C4CC; }

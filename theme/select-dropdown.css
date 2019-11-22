@@ -592,7 +592,7 @@
     color: #409EFF;
     background-color: #fff; }
     .el-select-dropdown.is-multiple .el-select-dropdown__item.selected.hover {
-      background-color: #cfcfcf; }
+      background-color: rgba(3, 3, 3, 0.05); }
     .el-select-dropdown.is-multiple .el-select-dropdown__item.selected::after {
       position: absolute;
       right: 20px;

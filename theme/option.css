@@ -267,7 +267,7 @@
     .el-select-dropdown__item.is-disabled:hover {
       background-color: #fff; }
   .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
-    background-color: #cfcfcf; }
+    background-color: rgba(3, 3, 3, 0.05); }
   .el-select-dropdown__item.selected {
     color: #409EFF;
     font-weight: bold; }

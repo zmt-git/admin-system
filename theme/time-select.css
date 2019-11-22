@@ -727,14 +727,14 @@
   line-height: 20px; }
 
 .el-range-editor.is-disabled {
-  background-color: #cfcfcf;
+  background-color: rgba(3, 3, 3, 0.05);
   border-color: #E4E7ED;
   color: #C0C4CC;
   cursor: not-allowed; }
   .el-range-editor.is-disabled:hover, .el-range-editor.is-disabled:focus {
     border-color: #E4E7ED; }
   .el-range-editor.is-disabled input {
-    background-color: #cfcfcf;
+    background-color: rgba(3, 3, 3, 0.05);
     color: #C0C4CC;
     cursor: not-allowed; }
     .el-range-editor.is-disabled input::-webkit-input-placeholder {
@@ -1911,6 +1911,6 @@
   cursor: not-allowed; }
 
 .time-select-item:hover {
-  background-color: #cfcfcf;
+  background-color: rgba(3, 3, 3, 0.05);
   font-weight: bold;
   cursor: pointer; }

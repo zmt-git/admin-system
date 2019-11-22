@@ -327,7 +327,7 @@
       border-top-right-radius: 15px;
       border-bottom-right-radius: 15px; }
     .el-date-table td.disabled div {
-      background-color: #cfcfcf;
+      background-color: rgba(3, 3, 3, 0.05);
       opacity: 1;
       cursor: not-allowed;
       color: #C0C4CC; }
@@ -491,7 +491,7 @@
     .el-month-table td.today.end-date .cell {
       color: #fff; }
     .el-month-table td.disabled .cell {
-      background-color: #cfcfcf;
+      background-color: rgba(3, 3, 3, 0.05);
       cursor: not-allowed;
       color: #C0C4CC; }
       .el-month-table td.disabled .cell:hover {
@@ -660,7 +660,7 @@
       color: #409EFF;
       font-weight: bold; }
     .el-year-table td.disabled .cell {
-      background-color: #cfcfcf;
+      background-color: rgba(3, 3, 3, 0.05);
       cursor: not-allowed;
       color: #C0C4CC; }
       .el-year-table td.disabled .cell:hover {
@@ -862,7 +862,7 @@
   font-size: 12px;
   color: #606266; }
   .el-time-spinner__item:hover:not(.disabled):not(.active) {
-    background: #cfcfcf;
+    background: rgba(3, 3, 3, 0.05);
     cursor: pointer; }
   .el-time-spinner__item.active:not(.disabled) {
     color: #303133;
@@ -1480,14 +1480,14 @@
   line-height: 20px; }
 
 .el-range-editor.is-disabled {
-  background-color: #cfcfcf;
+  background-color: rgba(3, 3, 3, 0.05);
   border-color: #E4E7ED;
   color: #C0C4CC;
   cursor: not-allowed; }
   .el-range-editor.is-disabled:hover, .el-range-editor.is-disabled:focus {
     border-color: #E4E7ED; }
   .el-range-editor.is-disabled input {
-    background-color: #cfcfcf;
+    background-color: rgba(3, 3, 3, 0.05);
     color: #C0C4CC;
     cursor: not-allowed; }
     .el-range-editor.is-disabled input::-webkit-input-placeholder {
@@ -2829,7 +2829,7 @@
     bottom: 5px;
     right: 10px; }
   .el-textarea.is-disabled .el-textarea__inner {
-    background-color: #cfcfcf;
+    background-color: rgba(3, 3, 3, 0.05);
     border-color: #E4E7ED;
     color: #C0C4CC;
     cursor: not-allowed; }
@@ -2961,7 +2961,7 @@
     outline: none;
     border-color: #409EFF; }
   .el-input.is-disabled .el-input__inner {
-    background-color: #cfcfcf;
+    background-color: rgba(3, 3, 3, 0.05);
     border-color: #E4E7ED;
     color: #C0C4CC;
     cursor: not-allowed; }
@@ -3015,7 +3015,7 @@
     vertical-align: middle;
     display: table-cell; }
   .el-input-group__append, .el-input-group__prepend {
-    background-color: #cfcfcf;
+    background-color: rgba(3, 3, 3, 0.05);
     color: #909399;
     vertical-align: middle;
     display: table-cell;

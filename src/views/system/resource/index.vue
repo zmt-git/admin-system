@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="textAlginLeft">
     <el-button-group>
       <el-button type="primary" icon="el-icon-share" size="mini" @click="showAddDialog()">添加模块</el-button>
       <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddMenu()">添加功能菜单</el-button>
