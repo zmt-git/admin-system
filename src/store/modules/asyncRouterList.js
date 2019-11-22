@@ -39,7 +39,7 @@ export const filterAsyncRouter = (routers) => {
 
 // 路由懒加载
 export const loadView = (view) => {
-  return () => import(`@/views/${view}`)
+  return () => import(/* webpackChunkName: "group-foo" */ `@/views/${view}`)
 }
 
 export default permission

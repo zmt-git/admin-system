@@ -155,7 +155,7 @@ export default {
           this.loading = true
           this.$store.dispatch('Login', this.loginForm)
             .then(() => {
-              that.$router.push({ path: '/' })
+              that.$router.push({ path: '/index' })
               that.loading = false
             })
             .catch(() => {

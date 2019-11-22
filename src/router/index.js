@@ -7,44 +7,55 @@ import { getToken } from '@/utils/auth'
 import { filterAsyncRouter } from '@/store/modules/asyncRouterList'
 import { loadMenus } from '@/api/login/login'
 import 'nprogress/nprogress.css'
-const layout = () => import('@/layout/index')
+const Layout = () => import(/* webpackChunkName: "group-foo" */ '@/layout/index')
 
 Vue.use(Router)
 // 固定的路由表
 export const fixedRouter = [
   {
     path: '/login',
-    component: () => import('@/views/login/login'),
+    component: () => import(/* webpackChunkName: "group-foo" */ '@/views/login/login'),
     hidden: true
   },
   {
     path: '/redirect',
-    component: layout,
+    component: Layout,
     hidden: true,
     children: [
       {
         path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
+        component: () => import(/* webpackChunkName: "group-foo" */ '@/views/redirect/index')
       }
     ]
   },
   {
     path: '/',
-    component: layout,
+    component: Layout,
     hidden: true,
     meta: {
-      title: '系统管理',
+      title: '首页',
       icon: '&#xe608;'
-    }
+    },
+    children: [
+      {
+        path: '/index',
+        component: () => import(/* webpackChunkName: "group-foo" */ '@/views/index'),
+        hidden: true,
+        meta: {
+          title: '首页',
+          icon: '&#xe608;'
+        }
+      }
+    ]
   },
   {
     path: '/404',
-    component: () => import('@/views/errorPage/404'),
+    component: () => import(/* webpackChunkName: "group-foo" */ '@/views/errorPage/404'),
     hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/errorPage/401'),
+    component: () => import(/* webpackChunkName: "group-foo" */ '@/views/errorPage/401'),
     hidden: true
   }
 ]
@@ -65,7 +76,7 @@ router.beforeEach(async (to, from, next) => {
   if (hasToken) {
     // 用户登录过， 路径为login，重定向主页 /
     if (to.path === '/login') {
-      next({ path: '/' })
+      next({ path: '/index' })
       // 进度条 结束
       NProgress.done()
     } else {
@@ -85,7 +96,11 @@ router.beforeEach(async (to, from, next) => {
           await store.commit('SET_LOAD_MENUS', true)
           // 路由表转化
           const asyncRouters = filterAsyncRouter(store.getters.addRouters)
-          // 添加至路由
+
+          // 添加404页面
+          asyncRouters.push({ path: '*', redirect: '/404', hidden: true })
+
+          // 添加至路由表
           router.addRoutes(asyncRouters)
 
           next({ ...to, replace: true })

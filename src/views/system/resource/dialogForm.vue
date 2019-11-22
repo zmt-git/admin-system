@@ -2,10 +2,10 @@
   <el-dialog :title="title" :closeOnClickModal="false" :visible.sync="visible" width="550px">
     <el-form ref="form" :model="dataForm" :rules="rules" size="small" label-position="right" label-width="130px" style="padding: 0;margin: 0">
       <el-form-item label="父节点名称" v-show="showparent">
-        <el-input v-model="dataForm.parentId" required="true" disabled="disabled" autocomplete="off" ></el-input>
+        <el-input v-model="dataForm.name" required="true" disabled="disabled" autocomplete="off" ></el-input>
       </el-form-item>
       <el-form-item label="名称" prop="name">
-        <el-input v-model="dataForm.name"  autocomplete="off" minlength="2" maxlength="20"></el-input>
+        <el-input v-model="dataForm.name" autocomplete="off" minlength="2" maxlength="20"></el-input>
       </el-form-item>
       <el-form-item label="图标" prop="icon">
         <el-input v-model="dataForm.icon"  autocomplete="off" ></el-input>
@@ -89,24 +89,16 @@ export default {
             if (this.compdisabled) {
               console.log(this.dataForm)
               saveOrUpdateResource(this.dataForm).then(res => {
-                if (res.result === 'ok') {
-                  this.resetForm()
-                  this.$notify({
-                    title: '添加成功',
-                    type: 'success',
-                    duration: 2500
-                  })
-                  this.loading = false
-                  this.$parent.page = 0
-                  this.$parent.dialogFormVisible = false
-                  this.$parent.init()
-                } else {
-                  this.$notify({
-                    title: '添加失败',
-                    type: 'error',
-                    duration: 2500
-                  })
-                }
+                this.resetForm()
+                this.$notify({
+                  title: '添加成功',
+                  type: 'success',
+                  duration: 2500
+                })
+                this.loading = false
+                this.$parent.page = 0
+                this.$parent.dialogFormVisible = false
+                this.$parent.init()
               }).catch(err => {
                 console.log('error:' + err)
                 console.log(err)

@@ -105,7 +105,7 @@ export default {
       this.$refs.form.isAdd = true
       this.$refs.form.compdisabled = true
       this.$refs.form.dataForm.component = 'Layout'
-      this.$refs.form.dataForm.parentId = this.clickId
+      this.$refs.form.dataForm.parentId = 0
       this.$refs.form.dataForm.name = this.treeNode.name
       this.$refs.form.dataForm.type = 0
       this.showAdd = true
@@ -186,7 +186,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteResourceById({ 'id': [this.clickId] }).then(res => {
+        deleteResourceById({ ids: this.clickId }).then(res => {
           this.$message({
             message: '删除成功',
             type: 'success'
