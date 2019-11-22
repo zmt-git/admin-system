@@ -68,6 +68,17 @@
       </el-table-column>
       <!--endregion-->
     </el-table>
+    <template v-if="options.hasPagination">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="pageSizes"
+        :page-size="100"
+        :layout="layout"
+        :total="total">
+      </el-pagination>
+    </template>
   </div>
 </template>
 <!--endregion-->
@@ -102,10 +113,33 @@ export default {
           mutiSelect: true, // 是否支持列表项选中功能
           height: '20px',
           border: true,
-          padding: '5px 0'
+          padding: '5px 0',
+          hasPagination: true
         }
       }
-    } // table 表格的控制参数
+    },
+    layout: {
+      type: String,
+      default: () => {
+        return 'total, sizes, prev, pager, next, jumper'
+      }
+    },
+    total: {
+      type: Number,
+      default: 0,
+      required: true
+    },
+    currentPage: {
+      type: Number,
+      default: 0,
+      required: true
+    },
+    'pageSizes': {
+      type: Array,
+      default: () => {
+        return [15, 20, 30, 50]
+      }
+    }
   },
   // 组件
   components: {
@@ -142,10 +176,15 @@ export default {
       this.multipleSelection = val
       this.$emit('handleSelectionChange', val)
     },
-    // 显示 表格操作弹窗
-    showActionTableDialog () {
-      console.log(4444)
-      this.$emit('handelAction')
+
+    // 当前条数
+    handleSizeChange (e) {
+      this.$emit('handleSizeChange', e)
+    },
+
+    // 当前页
+    handleCurrentChange (e) {
+      this.$emit('handleCurrentChange', e)
     }
   }
 }
