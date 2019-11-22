@@ -7,8 +7,8 @@
       <el-form-item :label="names" prop="name">
         <el-input v-model="dataForm.name" autocomplete="off" minlength="2" maxlength="20"></el-input>
       </el-form-item>
-      <el-form-item label="图标" prop="icon">
-        <el-input v-model="dataForm.icon" autocomplete="off" ></el-input>
+      <el-form-item label="图标" prop="iconClass">
+        <el-input v-model="dataForm.iconClass" autocomplete="off" ></el-input>
       </el-form-item>
       <el-form-item label="排序" prop="sortOrder" v-show="!btnshow">
         <el-input type="number" v-model.number="dataForm.sortOrder" :rules="{ required: !btnshow, message: '请输入排序', trigger: 'blur' }"></el-input>
@@ -50,7 +50,7 @@ export default {
       isAdd: false,
       title: '添加模块',
       modules: false,
-      dataForm: { id: '', name: '', parentId: '', parentName: '', sortOrder: '', icon: '', component: '', url: '' },
+      dataForm: { id: '', name: '', parentId: '', parentName: '', sortOrder: '', iconClass: '', component: '', url: '' },
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' },
@@ -93,7 +93,7 @@ export default {
     resetForm () {
       this.visible = false
       this.$refs['form'].resetFields()
-      this.dataForm = { id: '', name: '', parentId: '', parentName: '', type: '0', uri: '', sortOrder: '', icon: '', component: '' }
+      this.dataForm = { id: '', name: '', parentId: '', parentName: '', type: '0', uri: '', sortOrder: '', iconClass: '', component: '' }
     },
     doSubmit () {
       this.$refs['form'].validate((valid) => {

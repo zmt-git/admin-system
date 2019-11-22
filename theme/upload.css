@@ -728,7 +728,7 @@
       opacity: 1;
       color: #409EFF; }
     .el-upload-list__item:hover {
-      background-color: #000; }
+      background-color: #cfcfcf; }
       .el-upload-list__item:hover .el-icon-close {
         display: inline-block; }
       .el-upload-list__item:hover .el-progress__text {
