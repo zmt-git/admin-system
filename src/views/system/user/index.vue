@@ -1,8 +1,17 @@
 <template>
+<!-- root element -->
   <div class="textAlginLeft">
+    <!-- 表格数据搜索 开始 -->
+      <Search></Search>
+    <!-- 表格数据搜索 结束 -->
+
+    <!-- 操作数据按钮 开始 -->
     <el-button-group>
-      <el-button type="primary" icon="el-icon-share" size="mini" @click="showAddDialog()">添加</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog()">添加</el-button>
     </el-button-group>
+    <!-- 操作数据按钮 结束 -->
+
+    <!-- 表格+分页 开始 -->
     <EleTable
       :list='list'
       :columns='columns'
@@ -10,11 +19,14 @@
       :total='total'
       :currentPage='currentPage'
       :page-sizes='pageSizes'
+      :pageSize='pageSize'
       @handleSelectionChange='handleSelectionChange'
       @handleSizeChange='handleSizeChange'
       @handleCurrentChange='handleCurrentChange'
     ></EleTable>
+    <!-- 表格+分页 结束 -->
   </div>
+<!-- root element -->
 </template>
 <script>
 // 混入
@@ -22,6 +34,7 @@ import tabelData from '@/mixins/tabelData'
 
 // 组件
 import EleTable from '@/components/EleTable/table'
+import Search from '@/components/Search/search'
 
 // 方法
 import { timestampToTime } from '@/utils/format'
@@ -31,15 +44,18 @@ import { pageUser } from '@/api/system/user'
 
 export default {
   components: {
-    EleTable
+    EleTable,
+    Search
   },
   mixins: [tabelData],
   created () {
     // 获取用户
-    this.getTabelData(pageUser)
+    this.getTabelData(this.initData)
   },
   data () {
     return {
+      // 获取数据函数
+      initData: pageUser,
       // 角色列表数据
       list: [],
 
