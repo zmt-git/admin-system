@@ -92,7 +92,7 @@ export default {
       this.options.type.forEach((item, index, arr) => {
         this.$set(this.query, item.queryname, this.options.type[index].query)
       })
-      this.$emit('toQuery', this.query)
+      this.$emit('toQuery', this.query, this.options)
     },
     setDefaultQuery () {
       let that = this

@@ -40,11 +40,11 @@ export default {
     },
 
     // 获取搜索数据
-    getSearchTabelData (fn, query) {
+    getSearchTabelData (fn, obj) {
       fn({
         pageNum: this.currentPage,
         numPerPage: this.pageSize,
-        condition: { [this.searchOptions.queryname]: query }
+        condition: obj
       })
         .then(res => {
           this.upDatepagination(res.result)
@@ -53,13 +53,17 @@ export default {
     },
 
     // 搜索 输入/改变 回调函数
-    callback (that, val) {
+    change (that, val) {
       return val
     },
 
     // 获取搜索数据
-    toQuery (query) {
-      let str = query[this.searchOptions.queryname]
+    toQuery (query, options) {
+      let obj = {}
+      options.type.forEach((item, index, arr) => {
+        obj[item.queryname] = query[item.queryname]
+      })
+      this.getSearchTabelData(this.initData, obj)
     }
   }
 }

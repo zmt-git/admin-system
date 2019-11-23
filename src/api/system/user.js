@@ -10,11 +10,11 @@ export function findAllUser (params) {
 }
 
 // POST /userRole/pageUser 分页查询用户信息
-export function pageUser (params) {
+export function pageUser (data) {
   return http({
     url: 'userRole/pageUser',
     method: 'POST',
-    params
+    data
   })
 }
 
