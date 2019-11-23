@@ -27,7 +27,7 @@ export default {
       this.pageSize = data.size
     },
 
-    // 获取表格数据
+    // 获取表格分页数据
     getTabelData (fn) {
       fn({
         pageNum: this.currentPage,
@@ -37,6 +37,29 @@ export default {
           this.upDatepagination(res.result)
           this.list = res.result.records
         })
+    },
+
+    // 获取搜索数据
+    getSearchTabelData (fn, query) {
+      fn({
+        pageNum: this.currentPage,
+        numPerPage: this.pageSize,
+        condition: { [this.searchOptions.queryname]: query }
+      })
+        .then(res => {
+          this.upDatepagination(res.result)
+          this.list = res.result.records
+        })
+    },
+
+    // 搜索 输入/改变 回调函数
+    callback (that, val) {
+      return val
+    },
+
+    // 获取搜索数据
+    toQuery (query) {
+      let str = query[this.searchOptions.queryname]
     }
   }
 }

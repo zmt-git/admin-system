@@ -18,7 +18,7 @@
           <el-input
             :clearable="item.clearable"
             v-model="item.query"
-            @change="item.callback(that, item.query)"
+            @input="item.callback(that, item.query)"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
             :style="{width:item.width}">
@@ -62,12 +62,17 @@ export default {
             width: null, // 宽度（内联样式）
             options: [], // select类型使用,
             optionskey: { label: 'label', value: 'value' }, // 用于label，value使用
+            queryname: 'query',
+            query: null,
+            callback: this.callback,
             size: 'mini', // element medium / small / mini
             format: 'yyyy-MM-dd', // 时间插件
             valueFormat: 'yyyy-MM-dd', // 时间插件
             pickerOptions: null
           }],
           btnName: '查询',
+          hasdefault: false,
+          labelClass: null,
           intervalText: { index: -1, text: null }
         }
       }
@@ -80,10 +85,12 @@ export default {
     }
   },
   methods: {
+    callback (that, val) {
+      this.$emit('change', that, val)
+    },
     toQuery () {
       this.options.type.forEach((item, index, arr) => {
         this.$set(this.query, item.queryname, this.options.type[index].query)
-        // this.query[item.queryname] = this.options.type[index].query
       })
       this.$emit('toQuery', this.query)
     },

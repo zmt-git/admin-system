@@ -2,7 +2,12 @@
 <!-- root element -->
   <div class="textAlginLeft">
     <!-- 表格数据搜索 开始 -->
-      <Search></Search>
+      <Search
+        :options='searchOptions'
+       @toQuery='toQuery'
+       @change='callback'
+       >
+      </Search>
     <!-- 表格数据搜索 结束 -->
 
     <!-- 操作数据按钮 开始 -->
@@ -79,6 +84,20 @@ export default {
           { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelItem },
           { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabelItem }
         ]
+      },
+
+      // 搜索配置
+      searchOptions: { // 最低能见度统计
+        type: [
+          {
+            type: 'input', // input, select, data
+            name: '搜索',
+            queryname: 'username',
+            query: null,
+            placeholder: '请输入用户名xxxx',
+            callback: this.callback
+          }
+        ]
       }
     }
   },
@@ -95,6 +114,11 @@ export default {
     // 表格多行选中
     handleSelectionChange (val) {
       console.log(val)
+    },
+
+    // 搜索按钮
+    toQuery (query) {
+      console.log(query)
     }
   }
 }
