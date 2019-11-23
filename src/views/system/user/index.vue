@@ -5,7 +5,6 @@
       <Search
         :options='searchOptions'
        @toQuery='toQuery'
-       @change='callback'
        >
       </Search>
     <!-- 表格数据搜索 结束 -->
@@ -59,9 +58,9 @@ export default {
   },
   data () {
     return {
-      // 获取数据函数
+      // 获取数据函数 字段必须为initData
       initData: pageUser,
-      // 角色列表数据
+      // 角色列表数据 字段必须为list
       list: [],
 
       // 表格数据展示数据key
@@ -90,12 +89,12 @@ export default {
       searchOptions: { // 最低能见度统计
         type: [
           {
-            type: 'input', // input, select, data
+            type: 'input', //
             name: '搜索',
             queryname: 'username',
             query: null,
             placeholder: '请输入用户名xxxx',
-            callback: this.callback
+            callback: this.change
           }
         ]
       }
@@ -114,11 +113,6 @@ export default {
     // 表格多行选中
     handleSelectionChange (val) {
       console.log(val)
-    },
-
-    // 搜索按钮
-    toQuery (query) {
-      console.log(query)
     }
   }
 }
