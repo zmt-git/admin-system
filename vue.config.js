@@ -30,30 +30,21 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     open: true,
-    host: '0.0.0.0',
-    port: port,
     overlay: {
       warnings: false,
       errors: true
+    },
+    proxy: {
+      // change xxx-api/login => mock/login
+      // detail: https://cli.vuejs.org/config/#devserver-proxy
+      '/api': {
+        target: 'http://192.168.2.172/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
     }
-    // proxy: {
-    //   // change xxx-api/login => mock/login
-    //   // detail: https://cli.vuejs.org/config/#devserver-proxy
-    //   '/api': {
-    //     target: URL.env.VUE_APP_BASE_API,
-    //     ws: true,
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       ['^' + URL.env.VUE_APP_BASE_API]: [URL.env.VUE_APP_BASE_API]
-    //     }
-    //   },
-    //   '/apis': {
-    //     target: URL.env.VUE_APP_LAMP_API,
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       ['^' + URL.env.VUE_APP_LAMP_API]: [URL.env.VUE_APP_BASE_API]
-    //     }
-    //   }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

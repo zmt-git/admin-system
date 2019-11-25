@@ -9,11 +9,11 @@ export function findAllRole () {
 }
 
 // /userRole/pageRole 分页查询角色 5659
-export function pageRole (params) {
+export function pageRole (data) {
   return http({
     url: 'userRole/pageRole',
     method: 'POST',
-    params
+    data
   })
 }
 

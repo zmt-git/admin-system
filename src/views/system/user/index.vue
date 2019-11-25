@@ -13,10 +13,16 @@
     <el-button-group>
       <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog()">添加</el-button>
     </el-button-group>
+
+    <!-- 角色分配复选框 开始 -->
+      <div></div>
+    <!-- 角色分配复选框 结束 -->
+
     <!-- 操作数据按钮 结束 -->
 
     <!-- 表格+分页 开始 -->
     <EleTable
+      :Radio='true'
       :list='list'
       :columns='columns'
       :operates='operates'
@@ -30,7 +36,7 @@
     ></EleTable>
     <!-- 表格+分页 结束 -->
 
-    <!-- 弹出层 开始 -->
+    <!-- 表格数据编辑， 添加用户弹出层 开始 -->
     <DialogForm
       :options='Dialogoptions'
       :formLists='formLists'
@@ -42,7 +48,7 @@
       @blur='blur'
       ref="DialogForm"
     ></DialogForm>
-    <!-- 弹出层 结束 -->
+    <!-- 表格数据编辑， 添加用户弹出层 结束 -->
   </div>
 <!-- root element -->
 </template>
@@ -57,9 +63,10 @@ import DialogForm from '@/components/DialogForm/DialogForm'
 
 // 方法
 import { timestampToTime } from '@/utils/format'
+import { mapGetters } from 'vuex'
 
 // API
-import { pageUser, saveOrUpdateUser, deleteUserById, isUser } from '@/api/system/user'
+import { pageUser, saveOrUpdateUser, deleteUserById, isUser, assignRoles } from '@/api/system/user'
 
 export default {
   components: {
@@ -68,6 +75,9 @@ export default {
     DialogForm
   },
   mixins: [tabelData],
+  computed: {
+    ...mapGetters(['allRoles', 'allUsers'])
+  },
   created () {
     // 获取用户
     this.getTabelData(this.initDataFn)
@@ -92,8 +102,8 @@ export default {
         { prop: 'username', label: '登录名' },
         { prop: 'creatTime', label: '创建时间', formatter: this.timestampToTimes },
         { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
-        { prop: 'creatUserId', label: '创建人' },
-        { prop: 'updateUserId', label: '更新人' },
+        { prop: 'creatUserId', label: '创建人', formatter: this.formatUsers },
+        { prop: 'updateUserId', label: '更新人', formatter: this.formatUsers },
         { prop: 'synopsis', label: '备注' }
       ],
 
@@ -163,7 +173,10 @@ export default {
         'password': null,
         'username': null,
         'synopsis': null
-      }
+      },
+
+      // 批量给用户分配角色
+      roleIds: ''
     }
   },
   methods: {
@@ -172,9 +185,24 @@ export default {
       return timestampToTime(val[key.prop])
     },
 
-    // 表格多行选中
+    // 表格多行选中 分配角色
     handleSelectionChange (val) {
-      console.log(val)
+      if (val.length > 0) {
+        let ids = []
+        val.forEach(item => {
+          ids.push(item.id)
+        })
+        ids = ids.join(',')
+        this.roleIds = ids
+      }
+      assignRoles({ roleIds: this.roleIds })
+        .then(res => {
+          this.tip('角色分配成功', 'success')
+        })
+        .then(error => {
+          console.error(error)
+          this.tip('角色分配失败', 'error')
+        })
     },
 
     // 判断登录桩号是否唯一
@@ -192,6 +220,14 @@ export default {
         .catch(error => {
           console.error(error)
         })
+    },
+
+    // 表格转换创建人， 更新人数据
+    formatUsers (val) {
+      let index = this.allUsers.findIndex(item => {
+        return item.id === val.id
+      })
+      return this.allUsers[index].name
     }
   }
 }

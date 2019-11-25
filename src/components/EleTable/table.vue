@@ -1,7 +1,7 @@
 <template>
   <div class="tableBox">
     <el-table
-      ref="mutipleTable"
+      ref="multipleTable"
       v-loading.iTable="options.loading"
       :data="list"
       :stripe="options.stripe"
@@ -118,6 +118,10 @@ export default {
         }
       }
     },
+    Radio: {
+      type: Boolean,
+      default: false
+    },
     layout: {
       type: String,
       default: () => {
@@ -178,7 +182,15 @@ export default {
     // 多行选中
     handleSelectionChange (val) {
       this.multipleSelection = val
-      this.$emit('handleSelectionChange', val)
+      if (this.Radio) {
+        let popArr = this.multipleSelection.pop()
+        this.$refs.multipleTable.clearSelection()
+        // this.$refs.multipleTable.toggleRowSelection(popArr)
+        this.multipleSelection.push(popArr)
+        this.$emit('handleSelectionChange', popArr)
+      } else {
+        this.$emit('handleSelectionChange', val)
+      }
     },
 
     // 当前条数
