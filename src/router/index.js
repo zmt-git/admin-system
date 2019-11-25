@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 import NProgress from 'nprogress'
-import { Message } from 'element-ui'
+import Message from 'element-ui'
 import { getToken } from '@/utils/auth'
 import { filterAsyncRouter } from '@/store/modules/asyncRouterList'
 import { loadMenus } from '@/api/login/login'
@@ -89,16 +89,18 @@ router.beforeEach(async (to, from, next) => {
         try {
           // 获取权限列表
           const { result } = await loadMenus()
+
           // vuex储存生成路由列表
           await store.dispatch('GenerateRoutes', result)
 
-          // 获取路由状态改为 以获取
-          await store.commit('SET_LOAD_MENUS', true)
           // 路由表转化
           const asyncRouters = filterAsyncRouter(store.getters.addRouters)
 
           // 添加404页面
           asyncRouters.push({ path: '*', redirect: '/404', hidden: true })
+
+          // 获取路由状态改为 以获取
+          await store.commit('SET_LOAD_MENUS', true)
 
           // 添加至路由表
           router.addRoutes(asyncRouters)
@@ -116,7 +118,10 @@ router.beforeEach(async (to, from, next) => {
           await store.dispatch('updateLoadMenus')
 
           // 提示出错
-          Message.error(error || '异常错误')
+          Message.error({
+            type: 'info',
+            message: error || '未知错误'
+          })
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
