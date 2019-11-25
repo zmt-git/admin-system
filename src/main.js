@@ -2,9 +2,11 @@ import Vue from 'vue'
 
 import ElementUI from 'element-ui'
 
+import '../theme/index.css' // 全局样式
+
 import '@/styles/index.scss' // 全局样式
 
-import '../theme/index.css' // 全局样式
+import '@/styles/resetElement.scss' // 全局样式
 
 import '@/assets/iconfont/iconfont.css' // iconfont样式
 

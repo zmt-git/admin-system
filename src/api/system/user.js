@@ -40,7 +40,7 @@ export function findUserById (params) {
 export function deleteUserById (params) {
   return http({
     url: 'userRole/deleteUserById',
-    method: 'GET',
+    method: 'POST',
     params
   })
 }

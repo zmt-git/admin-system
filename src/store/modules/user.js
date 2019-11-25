@@ -27,14 +27,13 @@ const user = {
       const username = userInfo.username
       const password = userInfo.password
       const rememberMe = userInfo.rememberMe
-      let that = this
       return new Promise((resolve, reject) => {
         login({ username: username, password: password }).then(res => {
           if (res.result) {
             setToken(res.result, rememberMe)
             commit('SET_TOKEN', res.result)
             // 将用户信息传递到登录页面
-            resolve(that.state.user)
+            resolve()
           }
         }).catch(error => {
           reject(error)

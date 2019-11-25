@@ -9,7 +9,7 @@
             v-model="item.query"
             @change="item.callback(that, item.query)"
             :placeholder="item.placeholder"
-            :style="{width:item.width}"
+            :style="{width:item.width, height: item.height}"
           >
             <el-option v-for="(ele,index) in item.options" :label="ele[item.optionskey.label]" :value="ele[item.optionskey.value]" :key="index"></el-option>
           </el-select>
@@ -21,7 +21,7 @@
             @input="item.callback(that, item.query)"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
-            :style="{width:item.width}">
+            :style="{width:item.width, height: item.height}">
           </el-input>
         </el-form-item>
         <el-form-item style="margin-top:2px;" v-if="item.type === 'data'" :key="index" :label="item.name" :class="options.labelClass">
@@ -31,7 +31,7 @@
             @change="item.callback(that, item.query)"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
-            :style="{width:item.width}"
+            :style="{width:item.width, height: item.height}"
             :picker-options="item.pickerOptions"
             type="date"
             :format="item.format"
@@ -40,8 +40,10 @@
           </el-date-picker>
         </el-form-item>
       </template>
-      <el-form-item style="margin-top:3px;">
-        <el-button type="primary" icon="el-icon-search" @click="toQuery">查询</el-button>
+      <el-form-item>
+        <el-button-group>
+          <el-button type="primary" size="mini" icon="el-icon-search" @click="toQuery">查询</el-button>
+        </el-button-group>
       </el-form-item>
     </el-form>
   </div>
@@ -127,5 +129,6 @@ export default {
 <style scoped>
 .head-container{
   padding: 5px 10px 0;
+  height: 55px;
 }
 </style>

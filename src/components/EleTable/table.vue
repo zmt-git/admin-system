@@ -50,18 +50,18 @@
         <template slot-scope="scope">
           <el-button-group>
             <template v-for="(btn, key, index) in operates.list">
-                <el-button
-                  v-if="btn.show"
-                  :key="index"
-                  :type="btn.type"
-                  size="mini"
-                  :icon="btn.icon"
-                  :disabled="btn.disabled"
-                  :plain="btn.plain"
-                  style="padding: 7px 10px"
-                  class="tableBtn"
-                  @click.native.prevent="btn.method(key,scope.row)"
-                >{{ btn.label }}</el-button>
+              <el-button
+                v-if="btn.show"
+                :key="index"
+                :type="btn.type"
+                size="mini"
+                :icon="btn.icon"
+                :disabled="btn.disabled"
+                :plain="btn.plain"
+                style="padding: 7px 10px"
+                class="tableBtn"
+                @click.native.prevent="btn.method(key,scope.row)"
+              >{{ btn.label }}</el-button>
             </template>
           </el-button-group>
         </template>
