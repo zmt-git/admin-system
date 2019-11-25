@@ -44,6 +44,8 @@ export default {
   mixins: [tabelData],
   data () {
     return {
+      // 获取数据函数 字段必须为initData
+      initData: getStatus,
       // 表格列表数据
       list: [],
       // 表格数据展示数据key
@@ -76,11 +78,7 @@ export default {
   },
   created () {
     // 获取用户
-    getStatus()
-      .then(res => {
-        console.log(res.result.records)
-        this.list = res.result.records
-      })
+    this.getTabelData(this.initData)
   }
 }
 </script>

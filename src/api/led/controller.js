@@ -1,9 +1,10 @@
 import http from '@/utils/http'
 
 // POST /laser/pageMainControl 查询激光灯状态
-export function getStatus () {
+export function getStatus (data) {
   return http({
     url: 'laser/pageMainControl',
-    method: 'POST'
+    method: 'POST',
+    data
   })
 }
