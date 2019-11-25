@@ -91,6 +91,8 @@ export default {
     }
   },
   created () {
+    this.$store.dispatch('getAllRoles')
+    this.$store.dispatch('getAllUsers')
   },
   mounted () {
   }

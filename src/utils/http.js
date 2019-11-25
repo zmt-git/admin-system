@@ -6,7 +6,7 @@ import store from '../store'
 import { getToken } from '@/utils/auth'
 import Config from '@/config'
 const service = axios.create({
-  baseURL: 'http://192.168.2.172/', // api 的 base_url
+  baseURL: '/api/', // api 的 base_url
   timeout: Config.timeout // 请求超时时间
 })
 
@@ -87,11 +87,17 @@ service.interceptors.response.use(
         errorMsg.forEach(item => {
           setTimeout(() => {
             Notification.error({
-              title: item.defaultMessage || error.response.error,
+              title: item.defaultMessage,
               duration: 2500,
               offset: 50
             })
           }, 500)
+        })
+      } else {
+        Notification.error({
+          title: error.response.data.error,
+          duration: 2500,
+          offset: 50
         })
       }
     }
