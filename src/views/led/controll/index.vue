@@ -1,7 +1,10 @@
 <template>
 <div class="textAlginLeft">
   <!-- 表格数据搜索 开始 -->
-    <!-- <Search></Search> -->
+    <Search
+    :options='searchOptions'
+    @toQuery='toQuery'
+    ></Search>
   <!-- 表格数据搜索 结束 -->
   <!-- 添加按钮开始 -->
   <el-button-group>
@@ -31,21 +34,21 @@
 import tabelData from '@/mixins/tabelData'
 // 组件
 import EleTable from '@/components/EleTable/table'
-// import Search from '@/components/Search/search'
+import Search from '@/components/Search/search'
 // API
-import { getStatus } from '@/api/led/controller'
+import { getMainControl } from '@/api/led/controller'
 // 方法
 import { timestampToTime } from '@/utils/format'
 export default {
   components: {
-    EleTable
-    // Search
+    EleTable,
+    Search
   },
   mixins: [tabelData],
   data () {
     return {
       // 获取数据函数 字段必须为initData
-      initData: getStatus,
+      initData: getMainControl,
       // 表格列表数据
       list: [],
       // 表格数据展示数据key
@@ -63,6 +66,19 @@ export default {
           { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelItem },
           { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabelItem }
         ]
+      },
+      // 搜索配置
+      searchOptions: { // 最低能见度统计
+        type: [
+          {
+            type: 'input',
+            name: '搜索',
+            queryname: 'location',
+            query: null,
+            placeholder: '请输入安装位置',
+            callback: this.change
+          }
+        ]
       }
     }
   },
@@ -76,9 +92,13 @@ export default {
       console.log(val)
     }
   },
-  created () {
+  async created () {
     // 获取用户
-    this.getTabelData(this.initData)
+    await this.getTabelData(this.initData)
+    console.log(this.list)
+  },
+  mounted () {
+    console.log(this.list)
   }
 }
 </script>

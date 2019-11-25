@@ -83,7 +83,7 @@ export default {
       // 新增用户
       addDataFn: saveOrUpdateUser,
 
-      // 新增用户
+      // 删除用户
       deleteDataFn: deleteUserById,
 
       // 表格数据展示数据key
