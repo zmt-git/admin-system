@@ -50,22 +50,28 @@
 
     <!-- 角色资源授权 开始 -->
     <el-dialog
-      title="角色分配资源"
-      :visible.sync="popoverVisible"
-      width="300px">
-      <span>
-
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="popoverVisible = false">取 消</el-button>
+      :visible.sync="resvisible"
+      title="资源授权"
+      width="600px"
+      label-width="80px">
+      <div v-text="rolenames" class="user-div"></div>
+      <div style="height:1px;width: 100%;background-color: #989898;margin: 5px auto;">&nbsp;</div>
+      <div class="ztree_box custom-scroll">
+        <ul id="res-tree" class="ztree" style="margin-top: 5px;height:400px;overflow: auto;"></ul>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="resvisible = false">取 消</el-button>
         <el-button size="mini" type="primary" @click="changeRrsource">确 定</el-button>
-      </span>
+      </div>
     </el-dialog>
     <!-- 角色资源授权 结束 -->
   </div>
 <!-- root element -->
 </template>
 <script>
+import 'jquery'
+import 'ztree'
+import 'ztree/css/metroStyle/metroStyle.css'
 // 混入
 import tabelData from '@/mixins/tabelData'
 
@@ -79,8 +85,8 @@ import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
 
 // API
-import { pageRole, saveOrUpdateRole, isRole, deleteRoleById, assignResources } from '@/api/system/role'
-
+import { pageRole, saveOrUpdateRole, isRole, deleteRoleById, assignResources, getTreeResourceByRole } from '@/api/system/role'
+import { getTreeResource } from '@/api/system/system'
 export default {
   components: {
     EleTable,
@@ -123,7 +129,7 @@ export default {
         { prop: 'enName', label: '角色名' },
         { prop: 'createUser', label: '创建人', formatter: this.formatUsers },
         { prop: 'createTime', label: '创建时间', formatter: this.timestampToTimes },
-        { prop: 'updateUser', label: '更新人', formatter: this.formatUsers },
+        { prop: 'updateUser', label: '更新人', formatter: this.formatUpdataUsers },
         { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
         { prop: 'description', label: '备注' }
       ],
@@ -133,8 +139,8 @@ export default {
         fixed: 'right',
         width: '200px',
         list: [
-          { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false }, // 操作按钮 删除
-          { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit } // 编辑按钮
+          { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, title: '删除' }, // 操作按钮 删除
+          { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' } // 编辑按钮
         ]
       },
 
@@ -144,7 +150,7 @@ export default {
           {
             type: 'input', // 搜索框类型
             name: '搜索', // 搜索label
-            queryname: 'username', // 搜索字段
+            queryname: 'enName', // 搜索字段
             query: null, // v-model值
             placeholder: '请输入角色名', // 提示
             callback: this.change // input框值改变时
@@ -194,14 +200,29 @@ export default {
       // 角色分配资源
       resourcesIds: [],
 
-      // 分配资源弹出框 显示 隐藏
-      popoverVisible: false,
-
       // 表格数据选中list
       rolesList: [],
 
       // 角色id
-      roleId: ''
+
+      // ztree配置
+      roleId: '',
+      loading: false,
+      resvisible: false,
+      roleIds: '',
+      rolenames: '',
+      setting: {
+        check: {
+          enable: true
+        },
+        callback: {
+          onClick: this.treeClick
+        }
+      },
+      zNodes: [],
+      clickId: '',
+      treeNode: {},
+      tree: {}
     }
   },
   methods: {
@@ -235,10 +256,10 @@ export default {
         })
     },
 
-    // 表格转换创建人， 更新人数据
+    // 表格转换创建人，
     formatUsers (val) {
       let index = this.allUsers.findIndex(item => {
-        return item.id === val.id
+        return item.id === val.createUser
       })
       if (index > -1) {
         return this.allUsers[index].name
@@ -247,47 +268,116 @@ export default {
       }
     },
 
-    // 修改角色资源
-    async changeRrsource () {
-      this.resourcesIds = this.RolescheckList.join(',')
-      await assignResources({ resourceIds: this.resourcesIds, roleId: this.roleId })
-        .then(res => {
-          this.tip('角色分配成功', 'success')
-        })
-        .catch(error => {
-          console.error(error)
-          this.tip('角色分配失败', 'error')
-        })
-      this.popoverVisible = false
+    // 更新人数据
+    formatUpdataUsers (val) {
+      let index = this.allUsers.findIndex(item => {
+        return item.id === val.updateUser
+      })
+      if (index > -1) {
+        return this.allUsers[index].name
+      } else {
+        return null
+      }
     },
 
     // 显示资源授权弹框
     showResourceDialog () {
       // 判断表格是否选中
       if (this.rolesList.length === 1) {
-        this.popoverVisible = true
-        this.checkType = 'grounp'
-        this.checkList = []
-        this.checkItems = this.allGroups
-        this.dialogTitle = '用户分配设备组'
-
-        // 获取角色资源
-        findUserById({ id: this.userId })
-          .then(res => {
-            res.result.forEach(item => {
-              this.checkList.push(item)
-            })
-          })
-          .catch(error => {
-            console.log(error)
-          })
+        this.resvisible = true
+        this.init()
       } else {
-        if (this.userList.length > 1) {
-          this.tip('每次只能对一个用户进行角色分配', 'info')
+        if (this.rolesList.length > 1) {
+          this.tip('每次只能对一个角色进行资源授权', 'info')
         } else {
-          this.tip('请选中用户之后在进行分配角色', 'info')
+          this.tip('请选中角色之后在进行资源授权', 'info')
         }
       }
+    },
+
+    // 比较树形结构差异
+    compareDiffForTree (tree1 = [], tree2 = [{ children: [] }]) {
+      let indexs = -1
+      if (tree2.children && tree2.children.length > 0) {
+        tree2.children.forEach((item, index) => {
+          indexs = tree1.children.findIndex(ele => {
+            return ele.id === item.id
+          })
+          if (indexs > -1) {
+            tree1.children[index].check = true
+          }
+          this.compareDiffForTree(tree1.children, tree2.children)
+        })
+      } else {
+        return tree1
+      }
+    },
+
+    // 初始化树形结构
+    async init () {
+      let that = this
+      let arr = []
+      let treeResource = []
+      let TreeResourceByRole = []
+      await getTreeResource()
+        .then(res => {
+          treeResource = res.result
+        }).catch(err => {
+          console.log('error:' + err)
+          console.log(err)
+        })
+      await getTreeResourceByRole()
+        .then(res => {
+          TreeResourceByRole = res.result
+        }).catch(err => {
+          console.log('error:' + err)
+          console.log(err)
+        })
+      arr = this.compareDiffForTree(treeResource, TreeResourceByRole)
+      this.zNodes = []
+      this.zNodes.push(...arr)
+      // eslint-disable-next-line no-undef
+      this.tree = $.fn.zTree.init($('#res-tree'), that.setting, that.zNodes)
+      let node = this.tree.getNodeByParam('tId', 0, null)
+      this.tree.expandNode(node, true, false, false)
+    },
+
+    // 树形结构点击事件
+    treeClick: function (event, treeId, treeNode, clickFlag) {
+      this.clickId = treeNode.id
+      this.treeNode = treeNode
+      console.log(this.treeNode)
+    },
+
+    // 授权该角色资源
+    async changeRrsource () {
+      // 选中
+      var checkedNodes = this.tree.getCheckedNodes(true)
+      var checkedIds = []
+      for (var i = 0; i <= checkedNodes.length - 1; i++) {
+        checkedIds.push(checkedNodes[i].id)
+      }
+      console.log(checkedIds)
+      if (checkedNodes.length === 0) {
+        this.$message.error('请选择要授权的资源')
+        return
+      }
+      this.loading = true
+      await assignResources({ resourceIds: checkedIds.join(','), roleId: this.roleId })
+        .then(res => {
+          this.loading = false
+          this.tip('资源授权成功', 'success')
+        })
+        .catch(err => {
+          this.tip('资源授权失败', 'error')
+          console.log(err)
+        })
+      this.resvisible = false
+    },
+
+    // 隐藏授权资源弹框
+    cancel () {
+      this.resvisible = false
     }
   }
 }
@@ -296,5 +386,17 @@ export default {
 .checkBox{
   padding-left: 20px;
   line-height: 30px;
+}
+.user-div{
+  margin: 0;
+  padding: 0;
+  color: #3a8ee6;
+}
+.custom-scroll{
+  height: 420px;
+  line-height: 420px;
+  margin-top:5px;
+  padding-top: 0;
+  overflow: auto;
 }
 </style>

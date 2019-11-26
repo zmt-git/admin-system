@@ -20,6 +20,8 @@
   color: #606266;
   font-size: 14px;
   word-break: break-all;
+  max-height: 500px;
+  overflow: auto;
 }
 .el-dialog__footer {
   padding: 10px 20px 10px;

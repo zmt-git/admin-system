@@ -58,7 +58,7 @@ export function assignRoles (params) {
 export function assignGroup (params) {
   return http({
     url: 'userRole/assignGroup',
-    method: 'GET',
+    method: 'POST',
     params
   })
 }
@@ -76,6 +76,15 @@ export function isUser (params) {
 export function getUserRole (params) {
   return http({
     url: 'userRole/getUserRole',
+    method: 'GET',
+    params
+  })
+}
+
+// GET /userRole/getUserGroup 获取用户拥有分组
+export function getUserGroup (params) {
+  return http({
+    url: 'userRole/getUserGroup',
     method: 'GET',
     params
   })

@@ -61,3 +61,12 @@ export function assignResources (params) {
     params
   })
 }
+
+// GET /userRole/getTreeResourceByRole 获取指定角色资源树
+export function getTreeResourceByRole (params) {
+  return http({
+    url: 'userRole/getTreeResourceByRole',
+    method: 'GET',
+    params
+  })
+}

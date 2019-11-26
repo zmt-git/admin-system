@@ -10,11 +10,11 @@ export function saveOrUpdateGroup (params) {
 }
 
 // POST / userRole / pageGroup 分页查询分组
-export function pageGroup (params) {
+export function pageGroup (data) {
   return http({
     url: 'userRole/pageGroup',
     method: 'POST',
-    params
+    data
   })
 }
 

@@ -54,12 +54,13 @@
                 v-if="btn.show"
                 :key="index"
                 :type="btn.type"
-                size="mini"
                 :icon="btn.icon"
                 :disabled="btn.disabled"
                 :plain="btn.plain"
+                :title="btn.title ? btn.title : null"
                 style="padding: 7px 10px"
                 class="tableBtn"
+                size="mini"
                 @click.native.prevent="btn.method(key,scope.row)"
               >{{ btn.label }}</el-button>
             </template>

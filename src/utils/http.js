@@ -2,7 +2,7 @@ import axios from 'axios'
 // 包装param参数
 import router from '@/router'
 import { Notification, MessageBox } from 'element-ui'
-import store from '../store'
+import store from '@/store'
 import { getToken } from '@/utils/auth'
 import Config from '@/config'
 const service = axios.create({
@@ -50,10 +50,9 @@ service.interceptors.response.use(
             type: 'warning'
           }
         ).then(() => {
-          store.dispatch('LogOut').then(() => {
-            location.reload() // 为了重新实例化vue-router对象 避免bug
-            router.push('/login')
-          })
+          store.dispatch('Logout')
+          // location.reload() // 为了重新实例化vue-router对象 避免bug
+          router.push('/login')
         })
       }
       // eslint-disable-next-line prefer-promise-reject-errors
@@ -82,12 +81,16 @@ service.interceptors.response.use(
     } else if (code === 401) {
       router.push({ path: '/401' })
     } else {
-      const errorMsg = error.response.data.msg
-      if (errorMsg instanceof Array) {
-        errorMsg.forEach(item => {
+      let arr = []
+      let errorMsg = error.response.data.msg
+      errorMsg = errorMsg.replace('["', '')
+      errorMsg = errorMsg.replace('"]', '')
+      arr = errorMsg.split(',')
+      if (arr.length > 0) {
+        arr.forEach(item => {
           setTimeout(() => {
             Notification.error({
-              title: item.defaultMessage,
+              title: item,
               duration: 2500,
               offset: 50
             })

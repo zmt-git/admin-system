@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { findAllRole } from '@/api/system/role'
 import { findAllUser } from '@/api/system/user'
-import { findAllGroup } from '@/api/system/group'
+import { findAllGroup } from '@/api/group/group'
 
 Vue.use(Vuex)
 

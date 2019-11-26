@@ -64,6 +64,8 @@
                     <el-select
                       v-model="dataForm[item.model]"
                       :key="index"
+                      :multiple='!!item.multiple'
+                      :collapse-tags='!!item.collapseTags'
                       :clearable="item.clearable !== undefined ? item.clearable : true"
                       :placeholder="item.placeholder ? item.placeholder : '请选择内容'"
                       :disabled="item.disabled !== undefined ? item.disabled : false"

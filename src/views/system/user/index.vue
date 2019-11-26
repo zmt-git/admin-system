@@ -53,14 +53,14 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="popoverVisible"
-      width="300px">
+      :width="checkType === 'grounp' ? '500px' : '300px'">
       <span>
         <el-checkbox-group
           v-model="checkList"
           text-color='#fff'
           fill='#00b333'
         >
-          <div class="checkBox" :key='index' v-for="(item, index) in checkItems">
+          <div class="checkBox" :class="checkType === 'grounp' ? 'inlineBlock' : null" :key='index' v-for="(item, index) in checkItems">
             <el-checkbox :label="item.id">{{item.name}}</el-checkbox>
           </div>
         </el-checkbox-group>
@@ -88,7 +88,7 @@ import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
 
 // API
-import { pageUser, saveOrUpdateUser, deleteUserById, isUser, assignRoles, findUserById, getUserRole, assignGroup } from '@/api/system/user'
+import { pageUser, saveOrUpdateUser, deleteUserById, isUser, assignRoles, getUserGroup, getUserRole, assignGroup } from '@/api/system/user'
 
 export default {
   components: {
@@ -122,10 +122,10 @@ export default {
       columns: [
         { prop: 'name', label: '名称' },
         { prop: 'username', label: '用户名' },
-        { prop: 'creatTime', label: '创建时间', formatter: this.timestampToTimes },
-        { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
         { prop: 'creatUserId', label: '创建人', formatter: this.formatUsers },
-        { prop: 'updateUserId', label: '更新人', formatter: this.formatUsers },
+        { prop: 'creatTime', label: '创建时间', formatter: this.timestampToTimes },
+        { prop: 'updateUserId', label: '更新人', formatter: this.formatUpdataUsers },
+        { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
         { prop: 'synopsis', label: '备注' }
       ],
 
@@ -134,8 +134,8 @@ export default {
         fixed: 'right',
         width: '200px',
         list: [
-          { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false }, // 操作按钮 删除
-          { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit } // 编辑按钮
+          { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, title: '删除' }, // 操作按钮 删除
+          { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' } // 编辑按钮
         ]
       },
 
@@ -147,7 +147,7 @@ export default {
             name: '搜索', // 搜索label
             queryname: 'username', // 搜索字段
             query: null, // v-model值
-            placeholder: '请输入登录名', // 提示
+            placeholder: '请输入用户名', // 提示
             callback: this.change // input框值改变时
           }
         ]
@@ -253,10 +253,22 @@ export default {
         })
     },
 
-    // 表格转换创建人， 更新人数据
+    // 表格转换创建人，
     formatUsers (val) {
       let index = this.allUsers.findIndex(item => {
-        return item.id === val.id
+        return item.id === val.creatUserId
+      })
+      if (index > -1) {
+        return this.allUsers[index].name
+      } else {
+        return null
+      }
+    },
+
+    // 更新人数据
+    formatUpdataUsers (val) {
+      let index = this.allUsers.findIndex(item => {
+        return item.id === val.updateUserId
       })
       if (index > -1) {
         return this.allUsers[index].name
@@ -266,7 +278,7 @@ export default {
     },
 
     // 修改用户角色， 设备分组
-    async changeRole () {
+    async confirmCheck () {
       if (this.checkType === 'role') {
         this.roleIds = this.checkList.join(',')
         await assignRoles({ roleIds: this.roleIds, userId: this.userId })
@@ -301,7 +313,7 @@ export default {
         this.checkItems = this.allRoles
         this.dialogTitle = '用户分配角色'
         // 获取用户角色信息
-        getUserRole({ id: this.userId })
+        getUserRole({ userId: this.userId })
           .then(res => {
             res.result.forEach(item => {
               this.checkList.push(item)
@@ -330,7 +342,7 @@ export default {
         this.dialogTitle = '用户分配设备组'
 
         // 获取用户分组信息
-        findUserById({ id: this.userId })
+        getUserGroup({ id: this.userId })
           .then(res => {
             res.result.forEach(item => {
               this.checkList.push(item)
@@ -354,5 +366,8 @@ export default {
 .checkBox{
   padding-left: 20px;
   line-height: 30px;
+}
+.inlineBlock{
+  display: inline-block;
 }
 </style>

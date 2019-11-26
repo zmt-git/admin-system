@@ -59,20 +59,28 @@ export default {
       treeNode: {}
     }
   },
+  created () {
+
+  },
+  mounted () {
+    this.init(0)
+  },
   methods: {
     init: function (selectId) {
       let that = this
-      getTreeResource().then(res => {
-        that.zNodes.pop()
-        that.zNodes.push(...res.result)
-        // eslint-disable-next-line no-undef
-        var tree = $.fn.zTree.init($('#tree-rec'), that.setting, that.zNodes)
-        var node = tree.getNodeByParam('pId', selectId, null)
-        tree.expandNode(node, true, false, false)
-      }).catch(err => {
-        console.log('error:' + err)
-        console.log(err)
-      })
+      getTreeResource()
+        .then(res => {
+          that.zNodes.pop()
+          that.zNodes.push(...res.result)
+          // eslint-disable-next-line no-undef
+          var tree = $.fn.zTree.init($('#tree-rec'), that.setting, that.zNodes)
+          var node = tree.getNodeByParam('pId', selectId, null)
+          tree.expandNode(node, true, false, false)
+        })
+        .catch(err => {
+          console.log('error:' + err)
+          console.log(err)
+        })
     },
     treeClick: function (event, treeId, treeNode, clickFlag) {
       this.clickId = treeNode.id
@@ -210,12 +218,6 @@ export default {
       })
     }
 
-  },
-  created () {
-
-  },
-  mounted () {
-    this.init(0)
   }
 }
 </script>

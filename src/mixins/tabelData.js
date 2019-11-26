@@ -186,12 +186,14 @@ export default {
 
     // 输入框值改变时
     changeDia (key, val) {
-      console.log(key, val)
+      // do something
+      // console.log(key, val)
     },
 
     // 输入框的blur事件
     blur (key, val) {
-      console.log(key, val)
+      // do something
+      // console.log(key, val)
     },
 
     // 批量删除
@@ -201,7 +203,18 @@ export default {
         ids.push(item.id)
       })
       ids = ids.join(',')
-      this.deleteTabelData(ids)
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteTabelData(ids)
+      }).catch(() => {
+        Message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
