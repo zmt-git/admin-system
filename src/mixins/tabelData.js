@@ -18,7 +18,8 @@ export default {
       isAdd: false,
       list: [],
       durationTip: 3000,
-      editDataForm: {}
+      editDataForm: {},
+      deleteKey: 'ids'
     }
   },
   methods: {
@@ -73,7 +74,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteTabelData(val.id)
+        this.deleteTabelData(val.id, this.deleteKey)
       }).catch(() => {
         Message({
           type: 'info',
@@ -83,13 +84,9 @@ export default {
     },
 
     // 表格删除数据
-    deleteTabelData (id, key) {
+    deleteTabelData (id) {
       let obj = { }
-      if (key) {
-        obj.key = id
-      } else {
-        obj = { ids: id }
-      }
+      obj[this.deleteKey] = id
       this.deleteDataFn(obj)
         .then(res => {
           this.getTabelData(this.initDataFn)
