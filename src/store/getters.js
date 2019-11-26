@@ -6,6 +6,7 @@ const getters = {
   routers: state => state.asyncRouterList.routers,
   addRouters: state => state.asyncRouterList.addRouters,
   allRoles: state => state.system.allRoles,
-  allUsers: state => state.system.allUsers
+  allUsers: state => state.system.allUsers,
+  allGroups: state => state.system.allGroups
 }
 export default getters

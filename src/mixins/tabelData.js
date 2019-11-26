@@ -83,8 +83,14 @@ export default {
     },
 
     // 表格删除数据
-    deleteTabelData (id) {
-      this.deleteDataFn({ ids: id })
+    deleteTabelData (id, key) {
+      let obj = { }
+      if (key) {
+        obj.key = id
+      } else {
+        obj = { ids: id }
+      }
+      this.deleteDataFn(obj)
         .then(res => {
           this.getTabelData(this.initDataFn)
           this.tip('删除成功', 'success')
@@ -189,6 +195,16 @@ export default {
     // 输入框的blur事件
     blur (key, val) {
       console.log(key, val)
+    },
+
+    // 批量删除
+    deleteIds (list) {
+      let ids = []
+      list.forEach(item => {
+        ids.push(item.id)
+      })
+      ids = ids.join(',')
+      this.deleteTabelData(ids)
     }
   }
 }

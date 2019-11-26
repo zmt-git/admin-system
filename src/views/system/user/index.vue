@@ -11,12 +11,11 @@
 
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog()">添加</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
+      <el-button type="primary" icon="el-icon-set-up" size="mini" @click="showRoleDialog">分配角色</el-button>
+      <el-button type="warning" size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>设备组分配</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(userList)">批量删除</el-button>
     </el-button-group>
-
-    <!-- 角色分配复选框 开始 -->
-      <div></div>
-    <!-- 角色分配复选框 结束 -->
 
     <!-- 操作数据按钮 结束 -->
 
@@ -49,6 +48,29 @@
       ref="DialogForm"
     ></DialogForm>
     <!-- 表格数据编辑， 添加用户弹出层 结束 -->
+
+    <!-- 角色分配复选框 开始 -->
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="popoverVisible"
+      width="300px">
+      <span>
+        <el-checkbox-group
+          v-model="checkList"
+          text-color='#fff'
+          fill='#00b333'
+        >
+          <div class="checkBox" :key='index' v-for="(item, index) in checkItems">
+            <el-checkbox :label="item.id">{{item.name}}</el-checkbox>
+          </div>
+        </el-checkbox-group>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="popoverVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="confirmCheck(checkType)">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 角色分配复选框 结束 -->
   </div>
 <!-- root element -->
 </template>
@@ -66,7 +88,7 @@ import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
 
 // API
-import { pageUser, saveOrUpdateUser, deleteUserById, isUser, assignRoles } from '@/api/system/user'
+import { pageUser, saveOrUpdateUser, deleteUserById, isUser, assignRoles, findUserById, getUserRole, assignGroup } from '@/api/system/user'
 
 export default {
   components: {
@@ -76,7 +98,7 @@ export default {
   },
   mixins: [tabelData],
   computed: {
-    ...mapGetters(['allRoles', 'allUsers'])
+    ...mapGetters(['allRoles', 'allUsers', 'allGroups'])
   },
   created () {
     // 获取用户
@@ -98,8 +120,8 @@ export default {
 
       // 表格数据展示数据key
       columns: [
-        { prop: 'name', label: '用户名' },
-        { prop: 'username', label: '登录名' },
+        { prop: 'name', label: '名称' },
+        { prop: 'username', label: '用户名' },
         { prop: 'creatTime', label: '创建时间', formatter: this.timestampToTimes },
         { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
         { prop: 'creatUserId', label: '创建人', formatter: this.formatUsers },
@@ -144,8 +166,8 @@ export default {
 
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
-        { model: 'name', label: '用户名', placeholder: '请输入用户名' },
-        { model: 'username', label: '登录名', placeholder: '请输入登录名', blur: this.isOnlyCode },
+        { model: 'name', label: '名称', placeholder: '请输入名称' },
+        { model: 'username', label: '用户名', placeholder: '请输入用户名', blur: this.isOnlyCode },
         { model: 'password', label: '密码', placeholder: '请输入密码', type: 'password' },
         { model: 'synopsis', label: '备注', placeholder: '请输入备注' }
       ],
@@ -154,10 +176,10 @@ export default {
       formAttr: {
         rules: {
           name: [
-            { required: true, message: '请输入用户名', trigger: 'blur' }
+            { required: true, message: '请输入名称', trigger: 'blur' }
           ],
           username: [
-            { required: true, message: '请输入登录账户', trigger: 'blur' }
+            { required: true, message: '请输入用户名', trigger: 'blur' }
           ],
           password: [
             { required: true, message: '请输入登录密码', trigger: 'blur' }
@@ -175,8 +197,29 @@ export default {
         'synopsis': null
       },
 
-      // 批量给用户分配角色
-      roleIds: ''
+      // 给用户分配角色
+      roleIds: [],
+
+      // 给用户分配设备组
+      grounpIds: [],
+
+      // 分配角色Popover 弹出框 显示 隐藏
+      popoverVisible: false,
+
+      // 复选框选中Array
+      checkList: [],
+
+      // 复选框循环数据
+      checkItems: [],
+
+      // 复选框title
+      dialogTitle: '',
+
+      // 复选框类型
+      checkType: null,
+
+      // 表格数据选中list
+      userList: []
     }
   },
   methods: {
@@ -187,25 +230,13 @@ export default {
 
     // 表格多行选中 分配角色
     handleSelectionChange (val) {
-      if (val.length > 0) {
-        let ids = []
-        val.forEach(item => {
-          ids.push(item.id)
-        })
-        ids = ids.join(',')
-        this.roleIds = ids
+      this.userList = val
+      if (val.length === 1) {
+        this.userId = val[0].id
       }
-      assignRoles({ roleIds: this.roleIds })
-        .then(res => {
-          this.tip('角色分配成功', 'success')
-        })
-        .then(error => {
-          console.error(error)
-          this.tip('角色分配失败', 'error')
-        })
     },
 
-    // 判断登录桩号是否唯一
+    // 判断登录账号是否唯一
     isOnlyCode (key, val) {
       isUser({ username: val[key] })
         .then(res => {
@@ -227,11 +258,101 @@ export default {
       let index = this.allUsers.findIndex(item => {
         return item.id === val.id
       })
-      return this.allUsers[index].name
+      if (index > -1) {
+        return this.allUsers[index].name
+      } else {
+        return null
+      }
+    },
+
+    // 修改用户角色， 设备分组
+    async changeRole () {
+      if (this.checkType === 'role') {
+        this.roleIds = this.checkList.join(',')
+        await assignRoles({ roleIds: this.roleIds, userId: this.userId })
+          .then(res => {
+            this.tip('角色分配成功', 'success')
+          })
+          .catch(error => {
+            console.error(error)
+            this.tip('角色分配失败', 'error')
+          })
+      } else if (this.checkType === 'grounp') {
+        this.grounpIds = this.checkList.join(',')
+        await assignGroup({ groupIds: this.grounpIds, userId: this.userId })
+          .then(res => {
+            this.tip('设备组分配成功', 'success')
+          })
+          .catch(error => {
+            console.error(error)
+            this.tip('设备组分配失败', 'error')
+          })
+      }
+      this.popoverVisible = false
+    },
+
+    // 显示角色弹框
+    showRoleDialog () {
+      // 判断表格是否选中
+      if (this.userList.length === 1) {
+        this.popoverVisible = true
+        this.checkType = 'role'
+        this.checkList = []
+        this.checkItems = this.allRoles
+        this.dialogTitle = '用户分配角色'
+        // 获取用户角色信息
+        getUserRole({ id: this.userId })
+          .then(res => {
+            res.result.forEach(item => {
+              this.checkList.push(item)
+            })
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      } else {
+        if (this.userList.length > 1) {
+          this.tip('每次只能对一个用户进行角色分配', 'info')
+        } else {
+          this.tip('请选中用户之后在进行分配角色', 'info')
+        }
+      }
+    },
+
+    // 用户分组分配
+    showGrounpDialog () {
+      // 判断表格是否选中
+      if (this.userList.length === 1) {
+        this.popoverVisible = true
+        this.checkType = 'grounp'
+        this.checkList = []
+        this.checkItems = this.allGroups
+        this.dialogTitle = '用户分配设备组'
+
+        // 获取用户分组信息
+        findUserById({ id: this.userId })
+          .then(res => {
+            res.result.forEach(item => {
+              this.checkList.push(item)
+            })
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      } else {
+        if (this.userList.length > 1) {
+          this.tip('每次只能对一个用户进行角色分配', 'info')
+        } else {
+          this.tip('请选中用户之后在进行分配角色', 'info')
+        }
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-
+.checkBox{
+  padding-left: 20px;
+  line-height: 30px;
+}
 </style>

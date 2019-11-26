@@ -182,15 +182,7 @@ export default {
     // 多行选中
     handleSelectionChange (val) {
       this.multipleSelection = val
-      if (this.Radio) {
-        let popArr = this.multipleSelection.pop()
-        this.$refs.multipleTable.clearSelection()
-        // this.$refs.multipleTable.toggleRowSelection(popArr)
-        this.multipleSelection.push(popArr)
-        this.$emit('handleSelectionChange', popArr)
-      } else {
-        this.$emit('handleSelectionChange', val)
-      }
+      this.$emit('handleSelectionChange', val)
     },
 
     // 当前条数

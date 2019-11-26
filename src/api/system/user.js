@@ -49,7 +49,7 @@ export function deleteUserById (params) {
 export function assignRoles (params) {
   return http({
     url: 'userRole/assignRoles',
-    method: 'GET',
+    method: 'POST',
     params
   })
 }
@@ -67,6 +67,15 @@ export function assignGroup (params) {
 export function isUser (params) {
   return http({
     url: 'userRole/isUser',
+    method: 'GET',
+    params
+  })
+}
+
+// GET /userRole/getUserRole 获取用户拥有角色
+export function getUserRole (params) {
+  return http({
+    url: 'userRole/getUserRole',
     method: 'GET',
     params
   })

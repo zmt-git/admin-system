@@ -82,8 +82,8 @@ service.interceptors.response.use(
     } else if (code === 401) {
       router.push({ path: '/401' })
     } else {
-      const errorMsg = error.response.data.errors
-      if (errorMsg !== undefined) {
+      const errorMsg = error.response.data.msg
+      if (errorMsg instanceof Array) {
         errorMsg.forEach(item => {
           setTimeout(() => {
             Notification.error({
@@ -95,7 +95,7 @@ service.interceptors.response.use(
         })
       } else {
         Notification.error({
-          title: error.response.data.error,
+          title: error.response.data.msg || error.response.data.error,
           duration: 2500,
           offset: 50
         })

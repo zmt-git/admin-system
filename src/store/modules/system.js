@@ -2,12 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { findAllRole } from '@/api/system/role'
 import { findAllUser } from '@/api/system/user'
+import { findAllGroup } from '@/api/system/group'
+
 Vue.use(Vuex)
 
 export default {
   state: {
     allRoles: [],
-    allUsers: []
+    allUsers: [],
+    allGroups: []
   },
   mutations: {
     SET_ALL_ROLES (state, allRoles) {
@@ -15,6 +18,9 @@ export default {
     },
     SET_ALL_USERS (state, allUsers) {
       state.allUsers = allUsers
+    },
+    SET_ALL_GROUPS (state, allGroups) {
+      state.allGroups = allGroups
     }
   },
   actions: {
@@ -41,6 +47,20 @@ export default {
           })
           .catch(error => {
             console.error('src/store/modules/system.js "getAllUsers"')
+            console.error(error)
+            reject(error)
+          })
+      })
+    },
+    findAllGroupS ({ commit }) {
+      return new Promise((resolve, reject) => {
+        findAllGroup()
+          .then(res => {
+            commit('SET_ALL_GROUPS', res.result)
+            resolve()
+          })
+          .catch(error => {
+            console.error('src/store/modules/system.js "findAllGroupS"')
             console.error(error)
             reject(error)
           })

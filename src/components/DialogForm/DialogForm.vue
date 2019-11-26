@@ -200,8 +200,8 @@
 
         <!-- footer start -->
         <span slot="footer" class="dialog-footer">
-          <el-button size="mini" type="danger" @click="cancel">取 消</el-button>
-          <el-button size="mini" type="success" @click="confirm">确 定</el-button>
+          <el-button size="mini" @click="cancel">取 消</el-button>
+          <el-button size="mini" type="primary" @click="confirm">确 定</el-button>
         </span>
         <!-- footer end -->
       </el-dialog>
