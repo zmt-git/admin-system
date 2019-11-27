@@ -204,9 +204,9 @@ export default {
       rolesList: [],
 
       // 角色id
+      roleId: '',
 
       // ztree配置
-      roleId: '',
       loading: false,
       resvisible: false,
       roleIds: '',
@@ -296,20 +296,18 @@ export default {
     },
 
     // 比较树形结构差异
-    compareDiffForTree (tree1 = [], tree2 = [{ children: [] }]) {
-      let indexs = -1
-      if (tree2.children && tree2.children.length > 0) {
+    compareDiffForTree (tree2 = { children: [] }, zTree) {
+      if (!!tree2.children && tree2.children.length > 0) {
         tree2.children.forEach((item, index) => {
-          indexs = tree1.children.findIndex(ele => {
-            return ele.id === item.id
-          })
-          if (indexs > -1) {
-            tree1.children[index].check = true
+          let node = zTree.getNodeByParam('id', item.id)
+          zTree.checkNode(node, true, true)
+          zTree.updateNode(node)
+          if (!!item.children && item.children.length > 0) {
+            this.compareDiffForTree(item.children)
           }
-          this.compareDiffForTree(tree1.children, tree2.children)
         })
       } else {
-        return tree1
+        return null
       }
     },
 
@@ -317,29 +315,26 @@ export default {
     async init () {
       let that = this
       let arr = []
-      let treeResource = []
-      let TreeResourceByRole = []
       await getTreeResource()
         .then(res => {
-          treeResource = res.result
+          arr = res.result
         }).catch(err => {
           console.log('error:' + err)
           console.log(err)
         })
-      await getTreeResourceByRole()
-        .then(res => {
-          TreeResourceByRole = res.result
-        }).catch(err => {
-          console.log('error:' + err)
-          console.log(err)
-        })
-      arr = this.compareDiffForTree(treeResource, TreeResourceByRole)
       this.zNodes = []
       this.zNodes.push(...arr)
       // eslint-disable-next-line no-undef
       this.tree = $.fn.zTree.init($('#res-tree'), that.setting, that.zNodes)
       let node = this.tree.getNodeByParam('tId', 0, null)
       this.tree.expandNode(node, true, false, false)
+      await getTreeResourceByRole({ roleId: this.roleId })
+        .then(res => {
+          this.compareDiffForTree(...res.result, this.tree)
+        }).catch(err => {
+          console.log('error:' + err)
+          console.log(err)
+        })
     },
 
     // 树形结构点击事件

@@ -71,6 +71,25 @@
       </span>
     </el-dialog>
     <!-- 角色分配复选框 结束 -->
+    <template>
+  <el-time-picker
+    is-range
+    v-model="value1"
+    range-separator="至"
+    start-placeholder="开始时间"
+    end-placeholder="结束时间"
+    placeholder="选择时间范围">
+  </el-time-picker>
+  <el-time-picker
+    is-range
+    arrow-control
+    v-model="value2"
+    range-separator="至"
+    start-placeholder="开始时间"
+    end-placeholder="结束时间"
+    placeholder="选择时间范围">
+  </el-time-picker>
+</template>
   </div>
 <!-- root element -->
 </template>
@@ -106,6 +125,8 @@ export default {
   },
   data () {
     return {
+      value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
+      value2: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
       // 获取表格数据函数 initDataFn
       initDataFn: pageUser,
 
@@ -279,8 +300,13 @@ export default {
 
     // 修改用户角色， 设备分组
     async confirmCheck () {
+      console.log(this.checkList)
+      let arr = []
+      // this.checkList.forEach(item => {
+      //   arr.push(item.id)
+      // })
       if (this.checkType === 'role') {
-        this.roleIds = this.checkList.join(',')
+        this.roleIds = arr
         await assignRoles({ roleIds: this.roleIds, userId: this.userId })
           .then(res => {
             this.tip('角色分配成功', 'success')
@@ -290,7 +316,7 @@ export default {
             this.tip('角色分配失败', 'error')
           })
       } else if (this.checkType === 'grounp') {
-        this.grounpIds = this.checkList.join(',')
+        this.grounpIds = arr.join(',')
         await assignGroup({ groupIds: this.grounpIds, userId: this.userId })
           .then(res => {
             this.tip('设备组分配成功', 'success')
