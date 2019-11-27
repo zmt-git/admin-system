@@ -101,11 +101,11 @@ export function timestampToTime (timestamp, type) {
   }
   var date = new Date(timestamp) // 时间戳为10位需*1000，时间戳为13位的话不需乘1000
   let Y = date.getFullYear() + '-'
-  let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
-  let D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) + ' '
-  let h = (date.getHours() < 10 ? '0' + (date.getHours()) : date.getHours()) + ':'
-  let m = (date.getMinutes() < 10 ? '0' + (date.getMinutes()) : date.getMinutes()) + ':'
-  let s = date.getSeconds() < 10 ? '0' + (date.getSeconds()) : date.getSeconds()
+  let M = (date.getMonth() + 1).toString().padStart(2, '0') + '-'
+  let D = date.getDate().toString().padStart(2, '0') + ' '
+  let h = date.getHours().toString().padStart(2, '0') + ':'
+  let m = date.getMinutes().toString().padStart(2, '0') + ':'
+  let s = date.getSeconds().toString().padStart(2, '0')
   if (type === undefined) {
     return Y + M + D + h + m + s
   } else if (type === 'hh:mm') {

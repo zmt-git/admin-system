@@ -49,7 +49,7 @@
                 </el-col>
                 <!-- 单选按钮 结束-->
 
-                <!-- 下拉框 开始-->
+                <!-- 下拉框 开始 -->
                 <el-col
                   v-else-if="item.type === 'select'"
                   :key="index"
@@ -70,8 +70,7 @@
                       :placeholder="item.placeholder ? item.placeholder : '请选择内容'"
                       :disabled="item.disabled !== undefined ? item.disabled : false"
                       :style="item.width ? {width: item.width + 'px'} : 'width: 200px'"
-                      @change="item.change ? item.change(item.model, dataForm) : change(item.model, dataForm)"
-                      autocomplete="off">
+                      @change="item.change ? item.change(item.model, dataForm) : change(item.model, dataForm)">
                       <el-option
                         v-for="(ele, index) in item.selectOptions"
                         :key="index"

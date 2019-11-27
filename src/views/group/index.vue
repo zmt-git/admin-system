@@ -141,7 +141,7 @@ export default {
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
         { model: 'name', label: '组名', placeholder: '请输入用户名', blur: this.isOnlyCode },
-        { model: 'synopsis', label: '备注', placeholder: '请输入登录名' }
+        { model: 'synopsis', label: '备注', placeholder: '请输入备注' }
       ],
 
       // 表单验证规则

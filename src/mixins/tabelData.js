@@ -215,6 +215,24 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+
+    // 解决select下拉框vuex监听不到属性变化
+    /**
+     * @param {*} options DialogForm组件下拉表配置详情见readme文件
+     * @param {*} target设置属性名
+     * @param {*} arr设置select的options
+     */
+    setSelectOptions (options = [], target, arr) {
+      if (options.length > 0) {
+        let indexs
+        indexs = options.findIndex((ele, index) => {
+          if (ele.model === target) {
+            return index
+          }
+        })
+        this.$set(options[indexs], 'selectOptions', arr)
+      }
     }
   }
 }
