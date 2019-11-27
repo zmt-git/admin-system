@@ -17,11 +17,11 @@ export function saveOrUpdateResource (params) {
   })
 }
 
-// POST /userRole/deleteResourceById 删除资源信息
+// DELETE /userRole/deleteResourceById 删除资源信息
 export function deleteResourceById (params) {
   return http({
     url: 'userRole/deleteResourceById',
-    method: 'POST',
+    method: 'DELETE',
     params
   })
 }

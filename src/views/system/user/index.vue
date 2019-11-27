@@ -60,7 +60,11 @@
           text-color='#fff'
           fill='#00b333'
         >
-          <div class="checkBox" :class="checkType === 'grounp' ? 'inlineBlock' : null" :key='index' v-for="(item, index) in checkItems">
+          <div class="checkBox"
+            v-for="(item, index) in checkItems"
+            :class="checkType === 'grounp' ? 'inlineBlock' : null"
+            :key='index'
+          >
             <el-checkbox :label="item.id">{{item.name}}</el-checkbox>
           </div>
         </el-checkbox-group>
@@ -71,25 +75,7 @@
       </span>
     </el-dialog>
     <!-- 角色分配复选框 结束 -->
-    <template>
-  <el-time-picker
-    is-range
-    v-model="value1"
-    range-separator="至"
-    start-placeholder="开始时间"
-    end-placeholder="结束时间"
-    placeholder="选择时间范围">
-  </el-time-picker>
-  <el-time-picker
-    is-range
-    arrow-control
-    v-model="value2"
-    range-separator="至"
-    start-placeholder="开始时间"
-    end-placeholder="结束时间"
-    placeholder="选择时间范围">
-  </el-time-picker>
-</template>
+
   </div>
 <!-- root element -->
 </template>
@@ -125,8 +111,6 @@ export default {
   },
   data () {
     return {
-      value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
-      value2: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
       // 获取表格数据函数 initDataFn
       initDataFn: pageUser,
 
@@ -300,11 +284,9 @@ export default {
 
     // 修改用户角色， 设备分组
     async confirmCheck () {
-      console.log(this.checkList)
       let arr = []
-      // this.checkList.forEach(item => {
-      //   arr.push(item.id)
-      // })
+      arr = this.checkList
+      arr = arr.join(',')
       if (this.checkType === 'role') {
         this.roleIds = arr
         await assignRoles({ roleIds: this.roleIds, userId: this.userId })
@@ -316,7 +298,7 @@ export default {
             this.tip('角色分配失败', 'error')
           })
       } else if (this.checkType === 'grounp') {
-        this.grounpIds = arr.join(',')
+        this.grounpIds = arr
         await assignGroup({ groupIds: this.grounpIds, userId: this.userId })
           .then(res => {
             this.tip('设备组分配成功', 'success')
@@ -342,7 +324,11 @@ export default {
         getUserRole({ userId: this.userId })
           .then(res => {
             res.result.forEach(item => {
-              this.checkList.push(item)
+              let index = -1
+              index = this.checkList.indexOf(item.id)
+              if (index === -1) {
+                this.checkList.push(item.id)
+              }
             })
           })
           .catch(error => {
@@ -371,7 +357,11 @@ export default {
         getUserGroup({ id: this.userId })
           .then(res => {
             res.result.forEach(item => {
-              this.checkList.push(item)
+              let index = -1
+              index = this.checkList.indexOf(item.id)
+              if (index === -1) {
+                this.checkList.push(item.id)
+              }
             })
           })
           .catch(error => {

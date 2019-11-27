@@ -44,11 +44,11 @@ export function findRoleById (params) {
   })
 }
 
-// POST /userRole/deleteRoleById 删除角色信息
+// DELETE /userRole/deleteRoleById 删除角色信息
 export function deleteRoleById (params) {
   return http({
     url: 'userRole/deleteRoleById',
-    method: 'POST',
+    method: 'DELETE',
     params
   })
 }

@@ -36,11 +36,11 @@ export function findUserById (params) {
   })
 }
 
-// POST /userRole/deleteUserById 删除用户信息
+// DELETE /userRole/deleteUserById 删除用户信息
 export function deleteUserById (params) {
   return http({
     url: 'userRole/deleteUserById',
-    method: 'POST',
+    method: 'DELETE',
     params
   })
 }

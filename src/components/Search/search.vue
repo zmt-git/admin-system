@@ -1,6 +1,6 @@
 <template>
   <div class="head-container">
-    <el-form :inline="true" class="demo-form-inline" v-model="query">
+    <el-form :inline="true" class="demo-form-inline" v-model="query" size="small">
       <template v-for="(item, key, index) in options.type">
         <el-form-item style="margin-top:2px;" v-if="item.type === 'select'" :key="index" :label="item.name" :class="options.labelClass">
           <el-select
@@ -9,7 +9,7 @@
             v-model="item.query"
             @change="item.callback(that, item.query)"
             :placeholder="item.placeholder"
-            :style="{width:item.width, height: item.height}"
+            :style="item.width ? {width: item.width + 'px'} : 'width: 200px'"
           >
             <el-option v-for="(ele,index) in item.options" :label="ele[item.optionskey.label]" :value="ele[item.optionskey.value]" :key="index"></el-option>
           </el-select>
@@ -21,7 +21,8 @@
             @input="item.callback(that, item.query)"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
-            :style="{width:item.width, height: item.height}">
+            :style="item.width ? {width: item.width + 'px'} : 'width: 200px'"
+            >
           </el-input>
         </el-form-item>
         <el-form-item style="margin-top:2px;" v-if="item.type === 'data'" :key="index" :label="item.name" :class="options.labelClass">
@@ -31,7 +32,7 @@
             @change="item.callback(that, item.query)"
             :disabled="item.disabled"
             :placeholder="item.placeholder"
-            :style="{width:item.width, height: item.height}"
+            :style="item.width ? {width: item.width + 'px'} : 'width: 200px'"
             :picker-options="item.pickerOptions"
             type="date"
             :format="item.format"
@@ -42,7 +43,7 @@
       </template>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" size="mini" icon="el-icon-search" @click="toQuery">查询</el-button>
+          <el-button type="primary" class='searchBtn' size="mini" icon="el-icon-search" @click="toQuery">查询</el-button>
         </el-button-group>
       </el-form-item>
     </el-form>
@@ -130,5 +131,8 @@ export default {
 .head-container{
   padding: 5px 10px 0;
   height: 55px;
+}
+.searchBtn{
+  margin-top: 3px;
 }
 </style>

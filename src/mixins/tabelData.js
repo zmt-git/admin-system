@@ -19,7 +19,8 @@ export default {
       list: [],
       durationTip: 3000,
       editDataForm: {},
-      deleteKey: 'ids'
+      deleteKey: 'ids',
+      isformat: false
     }
   },
   methods: {
@@ -139,11 +140,21 @@ export default {
     },
 
     // 弹出层添加 编辑
+    /**
+     * @param {Object} dataForm提交表单数据
+     * @param {ArrayObject} formatArr
+     */
     async confirm (dataForm) {
+      let obj = {}
+      if (this.isformat) {
+        obj = this.formatTypes()
+      } else {
+        obj = dataForm
+      }
       let msg = '编辑'
       if (this.isAdd) {
         msg = '添加'
-        this.addDataFn(dataForm)
+        this.addDataFn(obj)
           .then(res => {
             this.getTabelData(this.initDataFn)
             this.tip(`${msg}成功`, 'success')
@@ -153,7 +164,7 @@ export default {
             this.tip(`${msg}失败`, 'error')
           })
       } else {
-        this.editDataForm = Object.assign(this.editDataForm, dataForm)
+        this.editDataForm = Object.assign(this.editDataForm, obj)
         this.editDataFn(this.editDataForm)
           .then(res => {
             this.getTabelData(this.initDataFn)
@@ -198,6 +209,10 @@ export default {
 
     // 批量删除
     deleteIds (list) {
+      if (list.length <= 0) {
+        this.tip('至少选择一项数据，进行批量删除', 'warning')
+        return
+      }
       let ids = []
       list.forEach(item => {
         ids.push(item.id)

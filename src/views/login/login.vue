@@ -45,7 +45,7 @@
             @keyup.enter.native="handleLogin"
           />
           <i class="show-pwd" @click="showPwd">
-            <i ref="eyeicon" class="iconfont" v-html="passwordTypeIcon"></i>
+            <i ref="eyeicon" class="iconfont" :class="passwordTypeIcon"></i>
           </i>
         </el-form-item>
       </el-tooltip>
@@ -87,7 +87,7 @@ export default {
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
-      passwordTypeIcon: '&#xe61b;',
+      passwordTypeIcon: 'icon-yey',
       capsTooltip: false,
       loading: false,
       showDialog: false,
@@ -138,10 +138,10 @@ export default {
     showPwd () {
       if (this.passwordType === 'password') {
         this.passwordType = ''
-        this.passwordTypeIcon = '&#xe607;'
+        this.passwordTypeIcon = 'icon-eyesopen'
       } else {
         this.passwordType = 'password'
-        this.passwordTypeIcon = '&#xe61b;'
+        this.passwordTypeIcon = 'icon-yey'
       }
       this.$nextTick(() => {
         this.$refs.password.focus()

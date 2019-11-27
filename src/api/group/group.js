@@ -45,11 +45,11 @@ export function findAllGroup (params) {
   })
 }
 
-// POST /userRole/deleteGroupById 删除分组信息
+// DELETE /userRole/deleteGroupById 删除分组信息
 export function deleteGroupById (params) {
   return http({
     url: 'userRole/deleteGroupById',
-    method: 'POST',
+    method: 'DELETE',
     params
   })
 }
