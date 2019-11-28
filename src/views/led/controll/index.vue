@@ -57,7 +57,7 @@
               placeholder="选择时间范围">
             </el-time-picker>
           </div>
-          <el-button type="primary" @click="syncTime()">同步时间</el-button>
+          <el-button type="primary" size="mini" style="display: inline-block" @click="syncTime()">同步时间</el-button>
         </li>
         <li class="lamp">
           <!-- 风扇开关 -->
@@ -117,6 +117,11 @@ export default {
     ...mapGetters(['allUsers'])
   },
   mixins: [tabelData],
+  watch: {
+    allUsers (newval, oldval) {
+      this.selectOptions(this.formLists, 'username', newval)
+    }
+  },
   data () {
     return {
       fanVal: true, // 风扇开关
@@ -125,7 +130,7 @@ export default {
       radio1: '自动', // 风扇调速
       autoFly: '', // 风扇自动/手动
       disabled: false, // 控制调速是否可用
-      fanNumber: '', // 风扇速率
+      fanNumber: null, // 风扇速率
       valueList: [], // 打开控制弹框表格的数据
       value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
       userName: [],
@@ -190,7 +195,7 @@ export default {
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
         { model: 'latitude', label: '纬度', placeholder: '请输入纬度' },
         { model: 'note', label: '备注', placeholder: '请输入备注' },
-        { model: 'createUserId', label: '用户', type: 'select', selectOptions: [] }
+        { model: 'createUserId', label: '用户', type: 'select', selectOptions: this.allUsers, key: 'name', value: 'id' }
       ],
       // 表单验证规则
       formAttr: {
@@ -199,10 +204,18 @@ export default {
             { required: true, message: '请输入安装位置', trigger: 'blur' }
           ],
           code: [
-            { required: true, message: '请输入灯组编码', trigger: 'blur' }
+            { required: true, message: '请输入灯组编码', trigger: 'blur' },
+            { pattern: /^NX_LASER_[0-9]{4}/, message: '编码规则为NX_LASER_xxxx' }
           ],
           lampNum: [
-            { required: true, message: '请输入数量', trigger: 'blur' }
+            { required: true, message: '请输入数量', trigger: 'blur' },
+            { type: 'number', message: '必须为数字值' }
+          ],
+          longitude: [
+            { pattern: /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/, message: '经度整数部分为0-180,小数部分为0到6位' }
+          ],
+          latitude: [
+            { pattern: /^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/, message: '纬度整数部分为0-90,小数部分为0到6位' }
           ]
         },
         labelWidth: null
@@ -319,18 +332,19 @@ export default {
 }
 .lampBox {
   width: 100%;
-  height: 400px;
+  height: 300px;
   margin-bottom: 10px;
 }
 .lamp {
   width: 100%;
   height: 25%;
   margin-right: 10px;
+  /* padding: 30px 0; */
 }
 .lamp:last-child {
   margin-right: 0;
 }
-.tit {
-  text-align: center;
+.openTime {
+  display: inline-block;
 }
 </style>
