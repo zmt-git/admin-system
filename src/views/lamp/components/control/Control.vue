@@ -226,11 +226,12 @@ export default {
         if (key === 'brightness') {
           this.submitForm[key] = this.dataForm[key] / 10
         } else if (key === 'frequency') {
-          this.submitForm[key] = this.dataForm[key]
+          this.submitForm[key] = brightnessF[this.dataForm[key] / 10]
         } else {
-          this.submitForm[key] = brightnessF[this.dataForm[key]]
+          this.submitForm[key] = this.dataForm[key]
         }
       }
+      this.submitForm.code = this.code
     },
 
     // 弹框表单 数据转换
@@ -260,7 +261,7 @@ export default {
 
     // 设置工作模式
     async setLedModel (model) {
-      await manualAuto({ code: this.dataForm.code, model: this.controlModel })
+      await manualAuto({ code: this.code, model: this.controlModel })
         .then(res => {
           this.tip('工作模式修改成功', 'success')
         })

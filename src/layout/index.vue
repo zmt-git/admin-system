@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     toggleSideBar () {
-      this.$store.dispatch('toggleSideBar')
+      // this.$store.dispatch('toggleSideBar')
       this.isCollapse = !this.isCollapse
     },
     async logout () {

@@ -32,7 +32,7 @@ service.interceptors.response.use(
     return response.data
   },
   error => {
-    let code = 0
+    let code = null
     try {
       code = error.response.status
     } catch (e) {
