@@ -160,14 +160,14 @@
   </div>
 </template>
 <script>
-import { updateLead, manualAuto } from '@/api/lamp/lampInfo'
+import { updateLead, manualAuto, getMainStatus } from '@/api/lamp/lampInfo'
 import brightnessF from '../../config/brightness'
 import { Message } from 'element-ui'
 
 export default {
   props: {
-    masterInfo: {
-      type: Object,
+    code: {
+      type: String,
       default: () => {}
     }
   },
@@ -184,7 +184,7 @@ export default {
     return {
       dialogVisible: false,
       dataForm: {
-        id: null,
+        code: null,
         brightness: null,
         frequency: null,
         atNight: 0,
@@ -193,13 +193,14 @@ export default {
       },
       controlModel: 0,
       submitForm: {
-        id: null,
+        code: null,
         brightness: null,
         frequency: null,
         atNight: null,
         wake: null,
         voice: null
-      }
+      },
+      masterInfo: {}
     }
   },
   methods: {
@@ -210,7 +211,7 @@ export default {
 
     // 重置数据
     reset () {
-      this.dataForm.id = this.masterInfo.mianControlLeadId
+      this.dataForm.code = this.code
       this.dataForm.brightness = 0
       this.dataForm.frequency = 0
       this.dataForm.atNight = 0
@@ -222,31 +223,31 @@ export default {
     // 更新状态前，进行数据转换
     updataFormat () {
       for (let key in this.dataForm) {
-        this.submitForm[key] = this.dataForm[key]
+        if (key === 'brightness') {
+          this.submitForm[key] = this.dataForm[key] / 10
+        } else if (key === 'frequency') {
+          this.submitForm[key] = this.dataForm[key]
+        } else {
+          this.submitForm[key] = brightnessF[this.dataForm[key]]
+        }
       }
     },
 
     // 弹框表单 数据转换
     showFormat () {
-      if (Object.keys(this.masterInfo).length <= 0) {
-        return
-      }
-      let arr = Object.keys(this.dataForm)
-      arr.forEach(item => {
-        if (item === 'id') {
-          this.dataForm[item] = this.masterInfo.mianControlLeadId
-        } else if (item === 'brightness') {
-          this.dataForm[item] = brightnessF[this.masterInfo[item]]
-        } else {
-          this.dataForm[item] = this.masterInfo[item].toString()
-        }
-      })
+      this.dataForm.code = this.masterInfo.mianControlLeadCode
+      this.dataForm.brightness = this.masterInfo.brightness * 10
+      this.dataForm.frequency = this.masterInfo.frequency * 10
+      this.dataForm.atNight = this.masterInfo.nightMode.toString()
+      this.dataForm.wake = this.masterInfo.wake.toString()
+      this.dataForm.voice = this.masterInfo.voice.toString()
+      this.controlModel = this.masterInfo.controlMode.toString()
     },
 
     // 更新引导灯主控状态
-    updataMaster () {
+    async updataMaster () {
       this.updataFormat()
-      updateLead(this.submitForm)
+      await updateLead(this.submitForm)
         .then(res => {
           this.tip('设备状态修改成功', 'success')
         })
@@ -254,11 +255,12 @@ export default {
           console.log(err)
           this.tip('设备状态修改失败', 'error')
         })
+      this.getMainStatu()
     },
 
     // 设置工作模式
-    setLedModel (model) {
-      manualAuto({ id: this.dataForm.id, model: this.controlModel })
+    async setLedModel (model) {
+      await manualAuto({ code: this.dataForm.code, model: this.controlModel })
         .then(res => {
           this.tip('工作模式修改成功', 'success')
         })
@@ -266,18 +268,27 @@ export default {
           console.log(err)
           this.tip('工作模式修改失败', 'error')
         })
+      this.getMainStatu()
     },
 
     // 弹框显示回调
     openDialog () {
       this.$nextTick(() => {
-        this.showFormat()
+        this.getMainStatu()
       })
     },
 
     // 弹框关闭回调
     closeDialog () {
       this.reset()
+    },
+
+    getMainStatu () {
+      getMainStatus({ code: this.code })
+        .then(res => {
+          this.masterInfo = res.result
+          this.showFormat()
+        })
     },
 
     // 提示函数

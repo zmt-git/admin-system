@@ -286,91 +286,86 @@ export default {
         this.isConnect = '设备离线'
       }
     },
+
+    // 设备开关
     manual () {
       if (this.handOff === '1') {
         manualSwitch({ code: this.code, powerSwitch: 1 })
           .then(res => {
-            if (res.code === 1) {
-              this.$message({
-                showClose: true,
-                message: '设备已打开',
-                type: 'success'
-              })
-            }
+            this.getMainStatu()
+            this.$message({
+              showClose: true,
+              message: '设备已打开',
+              type: 'success'
+            })
           })
           .catch(err => console.log(err))
       } else {
         manualSwitch({ code: this.code, powerSwitch: 0 })
           .then(res => {
-            if (res.code === 1) {
-              this.$message({
-                showClose: true,
-                message: '设备已关闭',
-                type: 'success'
-              })
-            }
+            this.getMainStatu()
+            this.$message({
+              showClose: true,
+              message: '设备已关闭',
+              type: 'success'
+            })
           })
           .catch(err => console.log(err))
       }
     },
+
     // 播放模式（0：对应车辆检测播放，1：连续自动播放）
     play () {
       if (this.playModel === '1') {
         playMode({ code: this.code, playMode: 1 })
           .then(res => {
-            if (res.code === 1) {
-              this.$message({
-                showClose: true,
-                message: '切换为自动连续播放',
-                type: 'success'
-              })
-            }
+            this.getMainStatu()
+            this.$message({
+              showClose: true,
+              message: '切换为自动连续播放',
+              type: 'success'
+            })
           })
           .catch(err => console.log(err))
       } else {
         playMode({ code: this.code, playMode: 0 })
           .then(res => {
-            if (res.code === 1) {
-              this.$message({
-                showClose: true,
-                message: '切换为车辆检测播放',
-                type: 'success'
-              })
-            }
+            this.getMainStatu()
+            this.$message({
+              showClose: true,
+              message: '切换为车辆检测播放',
+              type: 'success'
+            })
           })
           .catch(err => console.log(err))
       }
     },
+
+    // 同步成功
     syncTime () {
       setTime({ code: this.code })
         .then(res => {
-          if (res.code === 1) {
-            this.$message({
-              showClose: true,
-              message: '同步成功',
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              showClose: true,
-              message: res.msg
-            })
-          }
+          this.getMainStatu()
+          this.$message({
+            showClose: true,
+            message: '同步成功',
+            type: 'success'
+          })
         })
         .catch(err => console.log(err))
     },
-    // 确定时间
+
+    // 设置开关机
     determine () {
       if (this.offTime && this.onTime) {
         setOnOrOffTime({ on: this.onTime, off: this.offTime, code: this.code })
           .then(res => {
-            if (res.code === 1) {
-              this.$message({
-                showClose: true,
-                message: '设置成功',
-                type: 'success'
-              })
-            }
+            this.getMainStatu()
+            this.$message({
+              showClose: true,
+              message: '设置成功',
+              type: 'success'
+            })
           })
           .catch(err => console.log(err))
       } else {
@@ -380,23 +375,18 @@ export default {
         })
       }
     },
+
     // 播放内容
     playNmb () {
       if (this.voice !== '' && this.valueNmb !== '' && this.volume !== '' && this.valueContent !== '') {
         setFlanSh({ code: this.code, number: 1, voice: this.voice, num: this.valueNmb, volume: this.volume, content: this.valueContent })
           .then(res => {
-            if (res.code === 1) {
-              this.$message({
-                showClose: true,
-                message: '设置成功',
-                type: 'success'
-              })
-            } else {
-              this.$message({
-                showClose: true,
-                message: res.msg
-              })
-            }
+            this.getMainStatu()
+            this.$message({
+              showClose: true,
+              message: '设置成功',
+              type: 'success'
+            })
           })
           .catch(err => console.log(err))
       } else {
@@ -406,42 +396,37 @@ export default {
         })
       }
     },
+
+    // 显示弹框
     show () {
       this.dialogVisible = true
     },
-    formatfrequency (val) {
 
+    // 设备状态
+    getMainStatu () {
+      return getMainStatus({ code: this.code })
+        .then(res => {
+          this.loading = false
+          this.masterStatus = res.result
+          this.getMainStatusInit()
+        })
+        .catch(err => {
+          this.loading = false
+          console.log(err)
+        })
     },
-    reset () {
-      this.custom = ''
-    },
-    updataFormat () {
 
-    },
-    showFormat () {
-
-    },
-    updataMaster () {
-
-    },
+    // 弹框打开回调
     openDialog () {
       this.$nextTick(async () => {
         this.code = this.code
-        await getMainStatus({ code: this.code })
-          .then(res => {
-            this.loading = false
-            this.masterStatus = res.result
-          })
-          .catch(err => {
-            this.loading = false
-            console.log(err)
-          })
-        this.getMainStatusInit()
-        this.showFormat()
+        await this.getMainStatu()
       })
     },
+
+    // 弹框关闭回调
     closeDialog () {
-      this.reset()
+      this.custom = ''
     }
   }
 }

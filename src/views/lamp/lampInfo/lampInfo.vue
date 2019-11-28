@@ -50,7 +50,7 @@
     <!-- 主控控制 开始 -->
     <DialogControl
      ref="DialogControl"
-     :masterInfo='masterInfo'
+    :code='code'
      ></DialogControl>
     <!-- 主控控制 结束 -->
 
@@ -86,7 +86,7 @@ import VisibilityEcharts from '../components/VisibilityEcharts/VisibilityEcharts
 import { mapGetters } from 'vuex'
 
 // API
-import { pageMainControl, saveOrUpdate, deleteByIds, isCode, getMainStatus } from '@/api/lamp/lampInfo'
+import { pageMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/lamp/lampInfo'
 
 export default {
   components: {
@@ -245,7 +245,10 @@ export default {
       masterInfo: {},
 
       // 表格操作按钮选中code
-      code: null
+      code: null,
+
+      // 参数改为code
+      deleteVal: true
     }
   },
   methods: {
@@ -273,12 +276,8 @@ export default {
 
     // 设置状况状态
     setStatus (key, val) {
+      this.code = val.code
       this.$refs.DialogControl.show()
-      // 获取主控状态
-      getMainStatus({ code: val.id })
-        .then(res => {
-          this.masterInfo = res.result
-        })
     },
 
     // 查看能见度

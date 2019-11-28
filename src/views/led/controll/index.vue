@@ -212,9 +212,11 @@ export default {
             { type: 'number', message: '必须为数字值' }
           ],
           longitude: [
+            // eslint-disable-next-line no-useless-escape
             { pattern: /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/, message: '经度整数部分为0-180,小数部分为0到6位' }
           ],
           latitude: [
+            // eslint-disable-next-line no-useless-escape
             { pattern: /^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/, message: '纬度整数部分为0-90,小数部分为0到6位' }
           ]
         },
