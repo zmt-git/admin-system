@@ -64,3 +64,27 @@ export function autoFan (params) {
     params
   })
 }
+// GET /laser/setLaser 设置亮度
+export function setLaser (params) {
+  return http({
+    url: 'laser/setLaser',
+    method: 'GET',
+    params
+  })
+}
+// GET /laser/setFlanSh 设置屏闪方案
+export function setFlanSh (params) {
+  return http({
+    url: 'laser/setFlanSh',
+    method: 'GET',
+    params
+  })
+}
+// GET /laser/setOnOrOffTime 设置工作时间
+export function setOnOrOffTime (params) {
+  return http({
+    url: 'laser/setOnOrOffTime',
+    method: 'GET',
+    params
+  })
+}
