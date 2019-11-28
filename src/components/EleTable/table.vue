@@ -3,6 +3,7 @@
     <el-table
       ref="multipleTable"
       v-loading.iTable="options.loading"
+      :size="options.small ? options.small: 'small'"
       :data="list"
       :stripe="options.stripe"
       :header-row-style="{height: options.height, padding: options.padding}"
@@ -54,7 +55,7 @@
                 v-if="btn.show"
                 :key="index"
                 :type="btn.type"
-                :icon="btn.icon"
+                :icon="btn.icon ? btn.icon : null"
                 :disabled="btn.disabled"
                 :plain="btn.plain"
                 :title="btn.title ? btn.title : null"
@@ -62,7 +63,7 @@
                 class="tableBtn"
                 size="mini"
                 @click.native.prevent="btn.method(key,scope.row)"
-              >{{ btn.label }}</el-button>
+              ><i v-if="!!btn.iconfont" class="iconfont tabelIcon" :class="btn.iconfont"></i>{{ btn.label }}</el-button>
             </template>
           </el-button-group>
         </template>
@@ -110,7 +111,7 @@ export default {
         return {
           stripe: false, // 是否为斑马纹 table
           highlightCurrentRow: false, // 是否要高亮当前行
-          loading: false, // 是否添加表格loading加载动画
+          loading: true, // 是否添加表格loading加载动画
           mutiSelect: true, // 是否支持列表项选中功能
           height: '20px',
           border: true,
@@ -131,13 +132,11 @@ export default {
     },
     total: {
       type: Number,
-      default: 0,
-      required: true
+      default: 0
     },
     currentPage: {
       type: Number,
-      default: 0,
-      required: true
+      default: 0
     },
     'pageSizes': {
       type: Array,
@@ -210,4 +209,7 @@ export default {
     padding-right: 3px;
     text-align: center;
   }
+.tabelIcon{
+  font-size: 12px;
+}
 </style>

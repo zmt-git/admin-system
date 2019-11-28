@@ -68,3 +68,21 @@ export function updateLead (params) {
     params
   })
 }
+
+// /lead/findVIS 查询四小时内的能见度变化(返回表格)
+export function findVIS (params) {
+  return http({
+    url: 'lead/findVIS',
+    method: 'GET',
+    params
+  })
+}
+
+// GET /lead/findVISStu 查询四小时内的能见度变化
+export function findVISStu (params) {
+  return http({
+    url: 'lead/findVISStu',
+    method: 'GET',
+    params
+  })
+}

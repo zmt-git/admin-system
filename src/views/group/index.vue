@@ -23,6 +23,7 @@
       :list='list'
       :columns='columns'
       :operates='operates'
+      :options='options'
       :total='total'
       :currentPage='currentPage'
       :page-sizes='pageSizes'

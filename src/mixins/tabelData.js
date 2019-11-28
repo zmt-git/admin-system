@@ -20,7 +20,19 @@ export default {
       durationTip: 3000,
       editDataForm: {},
       deleteKey: 'ids',
-      isformat: false
+      isformat: false,
+      deleteVal: false,
+      deleteValKey: 'code',
+      options: {
+        stripe: false, // 是否为斑马纹 table
+        highlightCurrentRow: false, // 是否要高亮当前行
+        loading: true, // 是否添加表格loading加载动画
+        mutiSelect: true, // 是否支持列表项选中功能
+        height: '20px',
+        border: true,
+        padding: '5px 0',
+        hasPagination: true
+      }
     }
   },
   methods: {
@@ -52,6 +64,11 @@ export default {
         .then(res => {
           this.upDatepagination(res.result)
           this.list = res.result.records
+          this.options.loading = false
+        })
+        .catch(err => {
+          console.log(err)
+          this.options.loading = false
         })
     },
 
@@ -75,7 +92,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteTabelData(val.id, this.deleteKey)
+        let target = ''
+        if (this.deleteVal) {
+          target = val[this.deleteValKey]
+        } else {
+          target = val.id
+        }
+        this.deleteTabelData(target, this.deleteKey)
       }).catch(() => {
         Message({
           type: 'info',
@@ -186,7 +209,7 @@ export default {
       })
     },
 
-    // 成功通知
+    // 通知
     tip (msg, type) {
       Message({
         duration: this.durationTip,
@@ -214,9 +237,15 @@ export default {
         return
       }
       let ids = []
-      list.forEach(item => {
-        ids.push(item.id)
-      })
+      if (this.deleteVal) {
+        list.forEach(item => {
+          ids.push(item[this.deleteValKey])
+        })
+      } else {
+        list.forEach(item => {
+          ids.push(item.id)
+        })
+      }
       ids = ids.join(',')
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',

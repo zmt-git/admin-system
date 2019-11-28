@@ -29,35 +29,7 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    const code = parseInt(response.data.code)
-    if (code === 1) {
-      return response.data
-    } else {
-      Notification.error({
-        title: response.data.msg || response.data.message,
-        offset: 50
-      })
-      if (code === 1006) {
-        router.push('/404')
-      }
-      if (code === 1013) {
-        MessageBox.confirm(
-          '登录状态已过期，您可以继续留在该页面，或者重新登录',
-          '系统提示',
-          {
-            confirmButtonText: '重新登录',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        ).then(() => {
-          store.dispatch('Logout')
-          // location.reload() // 为了重新实例化vue-router对象 避免bug
-          router.push('/login')
-        })
-      }
-      // eslint-disable-next-line prefer-promise-reject-errors
-      return Promise.reject('error')
-    }
+    return response.data
   },
   error => {
     let code = 0
@@ -78,14 +50,30 @@ service.interceptors.response.use(
     // 代码未修改
     if (code === 404) {
       router.push({ path: '/404' })
-    } else if (code === 401) {
+    } else if (code === 407) {
       router.push({ path: '/401' })
+    } else if (code === 401) {
+      MessageBox.confirm(
+        '登录状态已过期，您可以继续留在该页面，或者重新登录',
+        '系统提示',
+        {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        store.dispatch('Logout')
+        // location.reload() // 为了重新实例化vue-router对象 避免bug
+        router.push('/login')
+      })
     } else {
       let arr = []
       let errorMsg = error.response.data.msg
-      errorMsg = errorMsg.replace('["', '')
-      errorMsg = errorMsg.replace('"]', '')
-      arr = errorMsg.split(',')
+      if (errorMsg instanceof String) {
+        errorMsg = errorMsg.replace('["', '')
+        errorMsg = errorMsg.replace('"]', '')
+        arr = errorMsg.split(',')
+      }
       if (arr.length > 0) {
         arr.forEach(item => {
           setTimeout(() => {
@@ -98,7 +86,7 @@ service.interceptors.response.use(
         })
       } else {
         Notification.error({
-          title: error.response.data.msg || error.response.data.error,
+          title: error.response.data.msg || error.response.data.error || '请求超时',
           duration: 2500,
           offset: 50
         })
