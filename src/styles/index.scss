@@ -251,6 +251,7 @@ aside {
 /* 设置滚动条样式 (不支持火狐)*/
 ::-webkit-scrollbar {
   width: 8px;
+  height: 10px;
 }
 /*外层轨道。可以用display:none让其不显示，也可以添加背景图片，颜色改变显示效果*/
 ::-webkit-scrollbar-track {

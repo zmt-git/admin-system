@@ -19,9 +19,9 @@
 
     <!-- 表格+分页 开始 -->
     <EleTable
-      :Radio='true'
       :list='list'
       :columns='columns'
+      :options='options'
       :operates='operates'
       :total='total'
       :currentPage='currentPage'
@@ -54,6 +54,19 @@
      ></DialogControl>
     <!-- 主控控制 结束 -->
 
+    <!-- 能见度表格 开始 -->
+    <Visibility
+      :code='code'
+      ref="Visibility"
+     ></Visibility>
+    <!-- 能见度表格 结束 -->
+
+    <!-- 能见度echarts 开始 -->
+    <VisibilityEcharts
+      :code='code'
+      ref="VisibilityEcharts"
+     ></VisibilityEcharts>
+    <!-- 能见度echarts 结束 -->
   </div>
 <!-- root element -->
 </template>
@@ -66,9 +79,10 @@ import EleTable from '@/components/EleTable/table'
 import Search from '@/components/Search/search'
 import DialogForm from '@/components/DialogForm/DialogForm'
 import DialogControl from '../components/control/Control'
+import Visibility from '../components/Visibility/Visibility'
+import VisibilityEcharts from '../components/VisibilityEcharts/VisibilityEcharts'
 
 // 方法
-import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
 
 // API
@@ -79,7 +93,9 @@ export default {
     EleTable,
     Search,
     DialogForm,
-    DialogControl
+    DialogControl,
+    Visibility,
+    VisibilityEcharts
   },
   mixins: [tabelData],
   computed: {
@@ -123,7 +139,8 @@ export default {
           { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, title: '删除' }, // 操作按钮 删除
           { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' }, // 编辑按钮
           { show: true, type: 'success', icon: 'el-icon-setting', method: this.setStatus, title: '状态设置' }, // 状态设置按钮
-          { show: true, type: 'warning', icon: 'el-icon-partly-cloudy', method: this.viewVisibility, title: '能见度' } // 能见度按钮
+          { show: true, type: 'warning', iconfont: 'icon-nengjianduyi', method: this.viewVisibility, title: '能见度' }, // 能见度按钮
+          { show: true, type: 'primary', iconfont: 'icon-tubiaozhexiantu', method: this.viewVisibilityEcharts, title: '能见度折线图' } // 能见度按钮
         ]
       },
 
@@ -225,15 +242,13 @@ export default {
       deleteKey: 'codes',
 
       // 主控状态数据
-      masterInfo: {}
+      masterInfo: {},
+
+      // 表格操作按钮选中code
+      code: null
     }
   },
   methods: {
-    // 时间转化
-    timestampToTimes (val, key) {
-      return timestampToTime(val[key.prop])
-    },
-
     // 表格多行选中 分配角色
     handleSelectionChange (val) {
       this.lampList = val
@@ -268,7 +283,8 @@ export default {
 
     // 查看能见度
     viewVisibility (key, val) {
-
+      this.code = val.code
+      this.$refs.Visibility.show()
     },
 
     // 转化表单提交数据
@@ -278,6 +294,12 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.dataForm))
       obj.groupIds = arr
       return obj
+    },
+
+    // 能见度echarts
+    viewVisibilityEcharts (key, val) {
+      this.code = val.code
+      this.$refs.VisibilityEcharts.show()
     }
 
   },

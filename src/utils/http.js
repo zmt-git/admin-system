@@ -83,9 +83,11 @@ service.interceptors.response.use(
     } else {
       let arr = []
       let errorMsg = error.response.data.msg
-      errorMsg = errorMsg.replace('["', '')
-      errorMsg = errorMsg.replace('"]', '')
-      arr = errorMsg.split(',')
+      if (errorMsg instanceof String) {
+        errorMsg = errorMsg.replace('["', '')
+        errorMsg = errorMsg.replace('"]', '')
+        arr = errorMsg.split(',')
+      }
       if (arr.length > 0) {
         arr.forEach(item => {
           setTimeout(() => {
@@ -98,7 +100,7 @@ service.interceptors.response.use(
         })
       } else {
         Notification.error({
-          title: error.response.data.msg || error.response.data.error,
+          title: error.response.data.msg || error.response.data.error || '请求超时',
           duration: 2500,
           offset: 50
         })

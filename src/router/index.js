@@ -109,19 +109,19 @@ router.beforeEach(async (to, from, next) => {
 
           NProgress.done()
         } catch (error) {
-          // 删除token
-          await store.dispatch('Logout')
+          // 提示出错
+          Message.error({
+            type: 'info',
+            message: error || '未知错误'
+          })
 
           // 清空路由表
           await store.commit('SET_ROUTERS', [])
 
           await store.dispatch('updateLoadMenus')
 
-          // 提示出错
-          Message.error({
-            type: 'info',
-            message: error || '未知错误'
-          })
+          // 删除token
+          await store.dispatch('Logout')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
