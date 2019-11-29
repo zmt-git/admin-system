@@ -321,13 +321,13 @@ export default {
         stripe: false, // 是否为斑马纹 table
         highlightCurrentRow: false, // 是否要高亮当前行
         loading: true, // 是否添加表格loading加载动画
-        mutiSelect: true, // 是否支持列表项选中功能
+        mutiSelect: false, // 是否支持列表项选中功能
         height: '20px',
         border: true,
         padding: '5px 0',
         hasPagination: false
       },
-      tableLoading: 'optionsState',
+      tableLoading: ['options', 'optionsState'],
       // 搜索配置
       searchOptions: { // 最低能见度统计
         type: [
