@@ -1,7 +1,7 @@
 <template>
   <div class="textAlginLeft">
     <el-button-group>
-      <el-button type="primary" icon="el-icon-share" size="mini" @click="showAddDialog()">添加模块</el-button>
+      <el-button type="primary" icon="el-icon-plus" size="mini" @click="showAddDialog()">添加模块</el-button>
       <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddMenu()">添加功能菜单</el-button>
       <el-button type="warning" icon="el-icon-plus" size="mini" @click="doAddBtns()">添加按钮</el-button>
       <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEdit()">修改</el-button>
@@ -155,7 +155,6 @@ export default {
         this.$refs.form.dataForm.parentId = this.clickId
         this.$refs.form.dataForm.type = 1
         this.$refs.form.dataForm.name = this.treeNode.name
-        this.$refs.form.dataForm.sortOrder = 1
         this.$refs.form.showparent = true
         this.showAdd = true
       }

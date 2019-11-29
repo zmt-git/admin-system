@@ -180,8 +180,11 @@ export default {
           code: [
             { required: true, message: '请输入编码', trigger: 'blur' }
           ],
-          groupIds: [
-            { required: true, message: '请选择设备分组', trigger: 'change' }
+          num: [
+            { required: true, message: '请输入数量', trigger: 'change' }
+          ],
+          location: [
+            { required: true, message: '请输入安装位置', trigger: 'change' }
           ]
         },
         labelWidth: null
