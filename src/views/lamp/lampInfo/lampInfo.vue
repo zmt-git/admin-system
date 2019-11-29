@@ -79,7 +79,7 @@ import EleTable from '@/components/EleTable/table'
 import Search from '@/components/Search/search'
 import DialogForm from '@/components/DialogForm/DialogForm'
 import DialogControl from '../components/control/Control'
-import Visibility from '../components/Visibility/Visibility'
+import Visibility from '../components/visibility/Visibility'
 import VisibilityEcharts from '../components/VisibilityEcharts/VisibilityEcharts'
 
 // 方法

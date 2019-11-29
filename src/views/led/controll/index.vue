@@ -17,6 +17,7 @@
     :list='list'
     :columns='columns'
     :operates='operates'
+    :options='options'
     :total='total'
     :currentPage='currentPage'
     :page-sizes='pageSizes'
@@ -105,7 +106,7 @@
             <span>激光亮度调节：</span>
             <el-select v-model="brightness" @change="changeBrigh" size="mini" style="width:100px;" placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in brightVal"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -142,6 +143,20 @@
     </div>
   </el-dialog>
   <!-- 控制激光灯弹框  结束 -->
+
+  <!-- 激光灯状态弹框  开始 -->
+  <el-dialog
+    title="激光灯状态"
+    :visible.sync="dialogState"
+    width="610px"
+  >
+    <EleTable
+    :list='listState'
+    :columns='columnsState'
+    :options='optionsState'
+  ></EleTable>
+  </el-dialog>
+  <!-- 激光灯状态弹框  结束 -->
 </div>
 </template>
 
@@ -164,12 +179,12 @@ export default {
     DialogForm
   },
   computed: {
-    ...mapGetters(['allUsers'])
+    ...mapGetters(['allGroups'])
   },
   mixins: [tabelData],
   watch: {
-    allUsers (newval, oldval) {
-      this.selectOptions(this.formLists, 'username', newval)
+    allGroups (newval, oldval) {
+      this.setSelectOptions(this.formLists, 'groupIds', newval)
     }
   },
   data () {
@@ -196,7 +211,8 @@ export default {
       valueList: [], // 打开控制弹框表格的数据
       userName: [],
       dialogVisible: false, // 激光灯控制弹出框
-      options: [{
+      dialogState: false, // 激光灯状态
+      brightVal: [{
         value: 0,
         label: '0%'
       }, {
@@ -287,11 +303,31 @@ export default {
         fixed: 'right',
         width: '200px',
         list: [
-          { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false },
-          { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit },
-          { show: true, type: 'primary', icon: 'el-icon-s-operation', method: this.control }
+          { show: true, type: 'danger', title: '删除', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false },
+          { show: true, type: 'info', title: '编辑', icon: 'el-icon-edit', method: this.tabeledit },
+          { show: true, type: 'primary', title: '激光灯控制', icon: 'el-icon-s-operation', method: this.control },
+          { show: true, type: 'warning', title: '查看激光灯状态', icon: 'el-icon-view', method: this.controlState }
         ]
       },
+      // 激光灯状态表格
+      listState: [], // 数据
+      columnsState: [
+        { prop: 'location', label: '安装位置', align: 'center' },
+        { prop: 'code', label: '灯组编号', align: 'center' },
+        { prop: 'lampNum', label: '激光灯数量（个）', align: 'center' },
+        { prop: 'createTime', label: '安装时间', align: 'center', formatter: this.timestampToTimes }
+      ],
+      optionsState: {
+        stripe: false, // 是否为斑马纹 table
+        highlightCurrentRow: false, // 是否要高亮当前行
+        loading: true, // 是否添加表格loading加载动画
+        mutiSelect: true, // 是否支持列表项选中功能
+        height: '20px',
+        border: true,
+        padding: '5px 0',
+        hasPagination: false
+      },
+      tableLoading: 'optionsState',
       // 搜索配置
       searchOptions: { // 最低能见度统计
         type: [
@@ -323,7 +359,7 @@ export default {
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
         { model: 'latitude', label: '纬度', placeholder: '请输入纬度' },
         { model: 'note', label: '备注', placeholder: '请输入备注' },
-        { model: 'createUserId', label: '用户', type: 'select', selectOptions: this.allUsers, key: 'name', value: 'id' }
+        { model: 'groupIds', label: '设备分组', type: 'select', key: 'name', value: 'id', multiple: true, collapseTags: true }
       ],
       // 表单验证规则
       formAttr: {
@@ -359,7 +395,7 @@ export default {
         'longitude': null,
         'latitude': null,
         'note': null,
-        'createUserId': null
+        'groupIds': null
       }
 
     }
@@ -370,6 +406,9 @@ export default {
       this.valueList = val
       this.dialogVisible = true
       this.getStatus()
+    },
+    controlState (key, val) {
+      this.dialogState = true
     },
     // 开关灯设置
     changeOn (data) {
@@ -403,10 +442,12 @@ export default {
         this.onOrOff = 1 // 打开
         this.radio = false
         this.disabled = false
+        this.fanVal = true
       } else {
         this.onOrOff = 0
         this.radio = true
         this.disabled = true
+        this.fanVal = false
       }
       setFan({ code: this.valueList.code, onOrOff: this.onOrOff, speed: 0 })
         .then((res) => {
@@ -513,6 +554,8 @@ export default {
           this.onTime = this.mainControlStatus.onTime // 开灯时间
           this.offTime = this.mainControlStatus.offTime // 关灯时间
           this.brightness = this.mainControlStatus.brightness // 激光灯亮度
+          this.onOrOff = '0' // 风扇开关状态
+          console.log(this.onOrOff)
         })
         .catch((err) => {
           console.log(err)
@@ -525,11 +568,7 @@ export default {
     console.log(this.list)
   },
   mounted () {
-    console.log(this.allUsers)
-    // this.allUsers.forEach(element => {
-    //   this.userName = element.name
-    //   console.log(this.userName)
-    // })
+
   }
 }
 </script>
