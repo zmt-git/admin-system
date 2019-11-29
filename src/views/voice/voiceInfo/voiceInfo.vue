@@ -12,6 +12,7 @@
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
       <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>      <el-button type="warning" size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
       <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(groupList)">批量删除</el-button>
     </el-button-group>
 
@@ -50,6 +51,14 @@
     <!-- 控制 开始 -->
       <Control ref="Control" :code='code'></Control>
     <!-- 控制 结束 -->
+
+    <!-- 分配分组 开始 -->
+    <Group
+      :options='groupOptions'
+      :itemLists='allGroups'
+      @confirmCheck='confirmCheck'
+    ></Group>
+    <!-- 分配分组 结束 -->
   </div>
 <!-- root element -->
 </template>
@@ -62,6 +71,7 @@ import EleTable from '@/components/EleTable/table'
 import Search from '@/components/Search/search'
 import DialogForm from '@/components/DialogForm/DialogForm'
 import Control from '../components/Control/Control'
+import Group from '@/components/Group/Group'
 
 // 方法
 import { timestampToTime } from '@/utils/format'
@@ -69,13 +79,15 @@ import { mapGetters } from 'vuex'
 
 // API
 import { pageMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/voice/voiceInfo'
+import { assignDevice } from '@/api/group/group'
 
 export default {
   components: {
     EleTable,
     Search,
     DialogForm,
-    Control
+    Control,
+    Group
   },
   mixins: [tabelData],
   computed: {
@@ -203,7 +215,22 @@ export default {
       deleteVal: true,
 
       // 主控code
-      code: null
+      code: null,
+
+      // 设备分组选中array
+      radio: -1,
+
+      // 设备分组选中array
+      groupOptions: {
+        type: 'radio',
+        title: '设备分组',
+        popoverVisible: false,
+        width: '610px',
+        label: 'id',
+        name: 'name',
+        disabled: false,
+        showFooter: true
+      }
     }
   },
   methods: {
@@ -271,6 +298,50 @@ export default {
     control (key, val) {
       this.code = val.code
       this.$refs.Control.show()
+    },
+
+    // 设备分组
+    showGrounpDialog () {
+      if (this.groupList.length >= 1) {
+        this.groupOptions.popoverVisible = true
+        // 获取设备的分组
+      } else {
+        this.tip('请选中设备之后在进行分组分配', 'info')
+      }
+    },
+
+    // 确定设备分组
+    async confirmCheck (val) {
+      let deviceList = []
+      this.groupList.forEach(item => {
+        deviceList.push(item.code)
+      })
+      deviceList = deviceList.join(',')
+      let obj = {
+        groupId: null,
+        type: 2,
+        deviceCodes: deviceList
+      }
+      if (this.groupOptions.type === 'radio') {
+        this.radio = val
+        delete obj.groupIds
+        obj.groupId = this.radio
+      } else {
+        delete obj.groupId
+        this.checkedList = val
+        let arr = []
+        arr = this.checkedList.join(',')
+        obj.groupIds = arr
+      }
+      await assignDevice(obj)
+        .then(res => {
+          this.tip('设备批量分组成功', 'success')
+        })
+        .catch(err => {
+          console.error(err)
+          this.tip('设备批量分组失败', 'error')
+        })
+      this.groupOptions.popoverVisible = false
     }
   },
   watch: {

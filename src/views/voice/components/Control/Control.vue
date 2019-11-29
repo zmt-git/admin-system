@@ -174,7 +174,7 @@ import { manualSwitch, setOnOrOffTime, setTime, setFlanSh, playMode, getMainStat
 export default {
   props: {
     code: {
-      type: Object,
+      type: String,
       default: () => {}
     }
   },

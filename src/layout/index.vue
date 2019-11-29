@@ -22,29 +22,40 @@
       <!-- 展示信息 开始 -->
       <el-container>
         <div class="navbar">
+          <!-- 隐藏显示侧边栏 开始 -->
           <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+          <!-- 隐藏显示侧边栏 结束 -->
+
+          <!-- 面包屑 开始 -->
           <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+          <!-- 面包屑 结束 -->
+
+          <!-- 用户信息 开始 -->
           <div class="right-menu">
             <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
               <div class="avatar-wrapper">
-                <i class="fa fa-compass"></i>
+                <i class="iconfont icon-admin user"></i>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <router-link to="/main">
+                <router-link to="/index">
                   <el-dropdown-item>
-                    <i class="fa fa-home" aria-hidden="true"></i>首页
+                    <i class="iconfont icon-yemian-copy-copy" aria-hidden="true"></i>首页
                   </el-dropdown-item>
                 </router-link>
                 <el-dropdown-item divided>
-                  <span style="display:block;" @click="logout"><i class="fa fa-sign-out"></i>退出</span>
+                  <span style="display:block;" @click="logout"><i class="iconfont icon-tuichu"></i>退出</span>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
+          <!-- 用户信息 结束 -->
+
         </div>
         <el-main>
+
           <!-- 二级路由跳转 -->
           <router-view style="margin-top:5px;"/>
+
         </el-main>
         <!-- 底部 -->
         <el-footer style="background-color: #2d3a4b; line-height: 50px;height: 50px;">
@@ -63,6 +74,7 @@ import sideMenus from './SideMenus'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { Message } from 'element-ui'
 
 export default {
   computed: {
@@ -84,10 +96,21 @@ export default {
       // this.$store.dispatch('toggleSideBar')
       this.isCollapse = !this.isCollapse
     },
-    async logout () {
-      await this.$store.dispatch('Logout')
-      this.$router.push(`/?redirect=${this.$route.fullPath}`)
-      location.reload()
+    logout () {
+      this.$confirm('此操作将退出账户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await this.$store.dispatch('Logout')
+        this.$router.push(`/?redirect=${this.$route.fullPath}`)
+        location.reload()
+      }).catch(() => {
+        Message({
+          type: 'info',
+          message: '已取消退出'
+        })
+      })
     }
   },
   created () {
@@ -245,11 +268,18 @@ export default {
       }
 
       .avatar-container {
-        margin-right: 30px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ccc;
+        margin-top: 5px;
+        margin-right: 10px;
+        padding: 0px;
 
         .avatar-wrapper {
-          margin-top: 5px;
           position: relative;
+          height: 40px;
+          line-height: 40px;
 
           .user-avatar {
             cursor: pointer;
@@ -268,5 +298,8 @@ export default {
         }
       }
     }
+  }
+  .user{
+    font-size: 32px;
   }
 </style>

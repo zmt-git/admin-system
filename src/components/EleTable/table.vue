@@ -15,7 +15,7 @@
       <!--选择框-->
       <el-table-column v-if="options.mutiSelect" type="selection" style="width: 55px;"></el-table-column>
       <!--数据列-->
-      <template v-for="(column, index) in columns">
+      <template v-for="(column) in columns">
         <el-table-column
           :prop="column.prop"
           :key="column.label"
@@ -33,7 +33,13 @@
               </template>
             </template>
             <template v-else>
-              <expand-dom :column="column" :row="scope.row" :render="column.render" :index="index"></expand-dom>
+              <el-popover trigger="hover" placement="left">
+                <p :key='index' v-for="(ele, index) in scope.row[column.prop]">{{ele}}</p>
+                <div slot="reference" class="name-wrapper">
+                  <el-tag size="medium">查看分组</el-tag>
+                </div>
+              </el-popover>
+              <!-- <expand-dom :column="column" :row="scope.row" :render="column.render" :index="index"></expand-dom> -->
             </template>
           </template>
         </el-table-column>
@@ -149,29 +155,6 @@ export default {
       default: 15
     }
   },
-  // 组件
-  components: {
-    expandDom: {
-      functional: true,
-      props: {
-        row: Object,
-        render: Function,
-        index: Number,
-        column: {
-          type: Object,
-          default: null
-        }
-      },
-      render: (h, ctx) => {
-        const params = {
-          row: ctx.props.row,
-          index: ctx.props.index
-        }
-        if (ctx.props.column) params.column = ctx.props.column
-        return ctx.props.render(h, params)
-      }
-    }
-  },
   // 数据
   data () {
     return {
@@ -211,5 +194,8 @@ export default {
   }
 .tabelIcon{
   font-size: 12px;
+}
+.name-wrapper{
+  cursor: pointer;
 }
 </style>

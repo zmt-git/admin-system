@@ -11,7 +11,7 @@
 
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>      <el-button type="warning" size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
       <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(lampList)">批量删除</el-button>
     </el-button-group>
 
@@ -67,6 +67,14 @@
       ref="VisibilityEcharts"
      ></VisibilityEcharts>
     <!-- 能见度echarts 结束 -->
+
+    <!-- 分配分组 开始 -->
+    <Group
+      :options='groupOptions'
+      :itemLists='allGroups'
+      @confirmCheck='confirmCheck'
+    ></Group>
+    <!-- 分配分组 结束 -->
   </div>
 <!-- root element -->
 </template>
@@ -81,12 +89,14 @@ import DialogForm from '@/components/DialogForm/DialogForm'
 import DialogControl from '../components/control/Control'
 import Visibility from '../components/Visibility/Visibility'
 import VisibilityEcharts from '../components/VisibilityEcharts/VisibilityEcharts'
+import Group from '@/components/Group/Group'
 
 // 方法
 import { mapGetters } from 'vuex'
 
 // API
 import { pageMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/lamp/lampInfo'
+import { assignDevice } from '@/api/group/group'
 
 export default {
   components: {
@@ -95,7 +105,8 @@ export default {
     DialogForm,
     DialogControl,
     Visibility,
-    VisibilityEcharts
+    VisibilityEcharts,
+    Group
   },
   mixins: [tabelData],
   computed: {
@@ -128,7 +139,8 @@ export default {
         { prop: 'location', label: '安装位置' },
         { prop: 'model', label: '型号' },
         { prop: 'note', label: '备注' },
-        { prop: 'visibility', label: '能见度检测仪数量' }
+        { prop: 'visibility', label: '能见度检测仪数量' },
+        { prop: 'id', label: '分组', render: true }
       ],
 
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)
@@ -140,7 +152,7 @@ export default {
           { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' }, // 编辑按钮
           { show: true, type: 'success', icon: 'el-icon-setting', method: this.setStatus, title: '状态设置' }, // 状态设置按钮
           { show: true, type: 'warning', iconfont: 'icon-nengjianduyi', method: this.viewVisibility, title: '能见度' }, // 能见度按钮
-          { show: true, type: 'primary', iconfont: 'icon-tubiaozhexiantu', method: this.viewVisibilityEcharts, title: '能见度折线图' } // 能见度按钮
+          { show: true, type: 'primary', iconfont: 'icon-tubiaozhexiantu', method: this.viewVisibilityEcharts, title: '能见度折线图' }
         ]
       },
 
@@ -197,23 +209,8 @@ export default {
           lampNum: [
             { required: true, message: '请输入引导灯数量', trigger: 'blur' }
           ],
-          latitude: [
-            { required: true, message: '请输入纬度', trigger: 'blur' }
-          ],
-          longitude: [
-            { required: true, message: '请输入经度', trigger: 'blur' }
-          ],
           location: [
             { required: true, message: '请输入位置', trigger: 'blur' }
-          ],
-          model: [
-            { required: true, message: '请输入型号', trigger: 'blur' }
-          ],
-          note: [
-            { required: true, message: '请输入备注', trigger: 'blur' }
-          ],
-          groupIds: [
-            { required: true, message: '请选择设备组', trigger: 'blur' }
           ],
           visibility: [
             { required: true, message: '请输入能见度检测仪数量', trigger: 'blur' }
@@ -248,7 +245,22 @@ export default {
       code: null,
 
       // 参数改为code
-      deleteVal: true
+      deleteVal: true,
+
+      // 设备分组选中array
+      radio: -1,
+
+      // 设备分组选中array
+      groupOptions: {
+        type: 'radio',
+        title: '设备分组',
+        popoverVisible: false,
+        width: '610px',
+        label: 'id',
+        name: 'name',
+        disabled: false,
+        showFooter: true
+      }
     }
   },
   methods: {
@@ -299,8 +311,56 @@ export default {
     viewVisibilityEcharts (key, val) {
       this.code = val.code
       this.$refs.VisibilityEcharts.show()
-    }
+    },
 
+    // 设备分组
+    showGrounpDialog () {
+      if (this.lampList.length >= 1) {
+        this.groupOptions.popoverVisible = true
+        // 获取设备的分组
+      } else {
+        this.tip('请选中设备之后在进行分组分配', 'info')
+      }
+    },
+
+    // 确定设备分组
+    async confirmCheck (val) {
+      let deviceList = []
+      this.lampList.forEach(item => {
+        deviceList.push(item.code)
+      })
+      deviceList = deviceList.join(',')
+      let obj = {
+        groupId: null,
+        type: 1,
+        deviceCodes: deviceList
+      }
+      if (this.groupOptions.type === 'radio') {
+        this.radio = val
+        delete obj.groupIds
+        obj.groupId = this.radio
+      } else {
+        delete obj.groupId
+        this.checkedList = val
+        let arr = []
+        arr = this.checkedList.join(',')
+        obj.groupIds = arr
+      }
+      await assignDevice(obj)
+        .then(res => {
+          this.tip('设备批量分组成功', 'success')
+        })
+        .catch(err => {
+          console.error(err)
+          this.tip('设备批量分组失败', 'error')
+        })
+      this.groupOptions.popoverVisible = false
+    },
+
+    // 查看分组
+    viewGroup () {
+
+    }
   },
   watch: {
     allGroups (newval, oldval) {
@@ -313,5 +373,8 @@ export default {
 .checkBox{
   padding-left: 20px;
   line-height: 30px;
+}
+.inlineBlock{
+  display: inline-block;
 }
 </style>

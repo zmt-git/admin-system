@@ -63,7 +63,7 @@ service.interceptors.response.use(
         }
       ).then(() => {
         store.dispatch('Logout')
-        // location.reload() // 为了重新实例化vue-router对象 避免bug
+        location.reload() // 为了重新实例化vue-router对象 避免bug
         router.push('/login')
       })
     } else {

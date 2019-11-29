@@ -153,7 +153,7 @@ export default {
         this.$refs.form.btnshow = true
         this.$refs.form.dataForm.parentName = this.treeNode.name
         this.$refs.form.dataForm.parentId = this.clickId
-        this.$refs.form.dataForm.type = 2
+        this.$refs.form.dataForm.type = 1
         this.$refs.form.dataForm.name = this.treeNode.name
         this.$refs.form.dataForm.sortOrder = 1
         this.$refs.form.showparent = true
