@@ -10,7 +10,7 @@
       <el-form-item label="图标" prop="iconClass">
         <el-input v-model="dataForm.iconClass" autocomplete="off" ></el-input>
       </el-form-item>
-      <el-form-item label="排序" prop="sortOrder" v-show="!btnshow">
+      <el-form-item label="排序" prop="sortOrder">
         <el-input type="number" v-model.number="dataForm.sortOrder" :rules="{ required: !btnshow, message: '请输入排序', trigger: 'blur' }"></el-input>
       </el-form-item>
       <el-form-item label="组件路径" v-show="!btnshow" prop="component" :rules="{required: !btnshow, message: '组件路径不能为空', trigger: 'blur'}">

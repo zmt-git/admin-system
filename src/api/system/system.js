@@ -25,3 +25,12 @@ export function deleteResourceById (params) {
     params
   })
 }
+
+// GET /userRole/getDeviceGroup 根据主控查找所属分组的ID和name {code： code}
+export function getDeviceGroup (params) {
+  return http({
+    url: 'userRole/getDeviceGroup',
+    method: 'GET',
+    params
+  })
+}

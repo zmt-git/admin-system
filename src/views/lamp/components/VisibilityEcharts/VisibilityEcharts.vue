@@ -151,7 +151,7 @@ export default {
             for (let i = 0; i < res.result.length; i++) {
               res.result[i].time = res.result[i].time.reverse()
               if (res.result[i].vis.length <= 0 || res.result[i].time.length <= 0) {
-                // setTimeout(() => { this.tip(res.result[i].name + '数据为空', 'warning') }, 500)
+                setTimeout(() => { this.tip(res.result[i].name + '数据为空', 'warning') }, 500)
               }
               if (res.result[i].time <= 0) continue
               for (let l = 0; l < res.result[i].time.length; l++) {

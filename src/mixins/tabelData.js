@@ -32,7 +32,8 @@ export default {
         border: true,
         padding: '5px 0',
         hasPagination: true
-      }
+      },
+      tableLoading: 'options'
     }
   },
   methods: {
@@ -64,11 +65,11 @@ export default {
         .then(res => {
           this.upDatepagination(res.result)
           this.list = res.result.records
-          this.options.loading = false
+          this[this.tableLoading].loading = false
         })
         .catch(err => {
           console.log(err)
-          this.options.loading = false
+          this[this.tableLoading].loading = false
         })
     },
 
