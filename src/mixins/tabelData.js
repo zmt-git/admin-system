@@ -33,7 +33,7 @@ export default {
         padding: '5px 0',
         hasPagination: true
       },
-      tableLoading: 'options'
+      tableLoading: ['options']
     }
   },
   methods: {
@@ -57,20 +57,21 @@ export default {
     },
 
     // 获取表格分页数据
-    getTabelData (fn) {
-      fn({
+    async getTabelData (fn) {
+      await fn({
         pageNum: this.currentPage,
         numPerPage: this.pageSize
       })
         .then(res => {
           this.upDatepagination(res.result)
           this.list = res.result.records
-          this[this.tableLoading].loading = false
         })
         .catch(err => {
           console.log(err)
-          this[this.tableLoading].loading = false
         })
+      this.tableLoading.forEach(item => {
+        this[item].loading = false
+      })
     },
 
     // 获取搜索数据
