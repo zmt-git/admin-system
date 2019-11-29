@@ -103,8 +103,8 @@ export default {
             // 添加模块 添加功能菜单 添加按钮
             saveOrUpdateResource(this.dataForm).then(res => {
               this.resetForm()
-              this.$notify({
-                title: '添加成功',
+              this.$message({
+                message: '添加成功',
                 type: 'success',
                 duration: 2500
               })
@@ -126,8 +126,8 @@ export default {
       if (!this.isAdd) {
         saveOrUpdateResource(this.dataForm).then(res => {
           this.resetForm()
-          this.$notify({
-            title: '修改成功',
+          this.$message({
+            message: '修改成功',
             type: 'success',
             duration: 2500
           })

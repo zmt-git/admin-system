@@ -9,8 +9,14 @@
         :modal-append-to-body="true"
         @open="openDialog"
         @close="closeDialog">
+        <!-- 状态 开始-->
+        <!-- 状态 结束-->
+        <div class="statusBox">
+          <i class="iconfont icon-zhuangtai1" :class='status === 0 ? "iconOn":"iconOFF"'></i>
+          <span :class='status === 0 ? "fontStyleOn":"fontStyleOFF"'>{{isConnect}}</span>
+        </div>
         <ul class="controlList">
-          <li class="controlitem controlitembg">
+          <li class="controlitem">
 
             <!-- 手动开关 开始 -->
             <div class="Licontrolitem">
@@ -34,13 +40,9 @@
               <el-button style="width: 80px;" plain type="primary" size="mini" @click="syncTime()">同步</el-button>
             </div>
             <!-- 同步时间 结束 -->
-
-            <!-- 状态 开始-->
-            <div class="statusBox" :class='status === 0?"isConnect":"notConnect"'>{{isConnect}}</div>
-            <!-- 状态 结束-->
           </li>
 
-          <li class="controlitem">
+          <li class="controlitem controlitembg">
             <!-- 定时开关机 开始 -->
              <div class="Licontrolitem">
             <span class="contolItem">开机时间</span><i class="iconfont controlIcon icon-main_dingshikaiguanji"></i>
@@ -75,7 +77,7 @@
 
           <!-- 设置播放方案 开始 -->
           <div class="program">
-            <li class="controlitem controlitembg">
+            <li class="controlitem">
 
               <!-- 播放次数 开始 -->
               <div class="Licontrolitem">
@@ -117,7 +119,7 @@
 
             </li>
 
-            <li class="controlitem controlitembg">
+            <li class="controlitem">
               <!-- 播放内容 开始 -->
               <div class="Licontrolitem">
                 <span class="contolItem">播放内容</span><i class="iconfont controlIcon icon-neirong"></i>
@@ -182,90 +184,94 @@ export default {
     return {
       loading: true,
       custom: '', // 自定义指令
-      status: '',
-      isConnect: '',
+      status: 1,
+      isConnect: '设备离线',
       dialogVisible: false,
       handOff: null, // 手动开关
       playModel: '', // 播放模式
       offTime: '', // 关机时间
       onTime: '', // 开机时间
       volume: '', // 音量
-      optionsvolume: [{
-        value: 0,
-        label: '大'
-      }, {
-        value: 1,
-        label: '中'
-      }],
-      options: [{
-        value: 0,
-        label: '男声'
-      }, {
-        value: 1,
-        label: '女声'
-      }],
+      optionsvolume: [
+        {
+          value: 0,
+          label: '大'
+        }, {
+          value: 1,
+          label: '中'
+        }],
+      options: [
+        {
+          value: 0,
+          label: '男声'
+        }, {
+          value: 1,
+          label: '女声'
+        }],
       voice: '', // 声音
-      optionsNmb: [{
-        value: 200,
-        label: '循环播放'
-      }, {
-        value: 1,
-        label: '1次'
-      }, {
-        value: 2,
-        label: '2次'
-      }, {
-        value: 3,
-        label: '3次'
-      }, {
-        value: 4,
-        label: '4次'
-      }, {
-        value: 5,
-        label: '5次'
-      }, {
-        value: 6,
-        label: '6次'
-      }, {
-        value: 7,
-        label: '7次'
-      }, {
-        value: 8,
-        label: '8次'
-      }, {
-        value: 9,
-        label: '9次'
-      }, {
-        value: 10,
-        label: '10次'
-      }],
+      optionsNmb: [
+        {
+          value: 200,
+          label: '循环播放'
+        }, {
+          value: 1,
+          label: '1次'
+        }, {
+          value: 2,
+          label: '2次'
+        }, {
+          value: 3,
+          label: '3次'
+        }, {
+          value: 4,
+          label: '4次'
+        }, {
+          value: 5,
+          label: '5次'
+        }, {
+          value: 6,
+          label: '6次'
+        }, {
+          value: 7,
+          label: '7次'
+        }, {
+          value: 8,
+          label: '8次'
+        }, {
+          value: 9,
+          label: '9次'
+        }, {
+          value: 10,
+          label: '10次'
+        }],
       valueNmb: '', // 播放次数
       valueContent: '', // 播放内容
-      optionsContent: [{
-        value: 1,
-        label: '前方出口'
-      }, {
-        value: 2,
-        label: '冰雪天气，减速慢行'
-      }, {
-        value: 3,
-        label: '前方大雾，减速慢行'
-      }, {
-        value: 4,
-        label: '前方分流，靠右行驶'
-      }, {
-        value: 5,
-        label: '前方事故，谨慎慢行'
-      }, {
-        value: 6,
-        label: '前方拥堵，减速慢行'
-      }, {
-        value: 7,
-        label: '雨天路滑，谨慎驾驶'
-      }, {
-        value: 8,
-        label: '前方出口，提前变道'
-      }]
+      optionsContent: [
+        {
+          value: 1,
+          label: '前方出口'
+        }, {
+          value: 2,
+          label: '冰雪天气，减速慢行'
+        }, {
+          value: 3,
+          label: '前方大雾，减速慢行'
+        }, {
+          value: 4,
+          label: '前方分流，靠右行驶'
+        }, {
+          value: 5,
+          label: '前方事故，谨慎慢行'
+        }, {
+          value: 6,
+          label: '前方拥堵，减速慢行'
+        }, {
+          value: 7,
+          label: '雨天路滑，谨慎驾驶'
+        }, {
+          value: 8,
+          label: '前方出口，提前变道'
+        }]
     }
   },
   methods: {
@@ -413,6 +419,10 @@ export default {
         .catch(err => {
           this.loading = false
           console.log(err)
+          this.$message({
+            message: '获取主控状态失败',
+            type: 'error'
+          })
         })
     },
 
@@ -448,21 +458,19 @@ export default {
   display: inline-block;
   width: 80px;
   height: 30px;
-  background: #409EFF;
   line-height: 30px;
   text-align: center;
   border-radius: 6px;
-  color: #fff;
+  color: rgb(19, 206, 102);
 }
 .notConnect{
   display: inline-block;
   width: 80px;
   height: 30px;
-  background: #909399;
   line-height: 30px;
   text-align: center;
   border-radius: 6px;
-  color: #fff;
+  color: red;
 }
 .text{
   text-align: center;
@@ -552,10 +560,6 @@ export default {
 .controlIcon{
   margin-right: 20px;
   display: none;
-}
-.statusBox{
-  display: inline-block;
-  margin-top: 15px;
 }
 .program{
   position: relative;

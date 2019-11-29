@@ -8,7 +8,9 @@
   <!-- 表格数据搜索 结束 -->
   <!-- 添加按钮开始 -->
   <el-button-group>
-    <el-button type="primary" icon="el-icon-share" size="mini" @click="showAddDialog()">添加</el-button>
+    <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
+    <el-button type="warning" size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
+    <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(ledList)">批量删除</el-button>
   </el-button-group>
   <!-- 添加按钮结束 -->
 
@@ -40,108 +42,9 @@
     ref="DialogForm"
   ></DialogForm>
   <!-- 表格数据编辑， 添加用户弹出层 结束 -->
+
   <!-- 控制激光灯弹框  开始 -->
-  <el-dialog
-    title="激光灯控制"
-    :visible.sync="dialogVisible"
-    width="610px">
-    <div class="main">
-      <ul class="lampBox">
-        <li class="lamp">
-          <div class="openTime">
-            <span>开关灯时间：</span>
-             <el-time-picker
-                style="width:130px"
-                size="mini"
-                format="HH:mm"
-                value-format="HH:mm"
-                v-model="lampOn"
-                @change="changeOn"
-                placeholder="开灯时间">
-              </el-time-picker>
-              <el-time-picker
-                style="width:130px"
-                size="mini"
-                format="HH:mm"
-                value-format="HH:mm"
-                v-model="lampOff"
-                @change="changeOff"
-                placeholder="关灯时间">
-              </el-time-picker>
-              <el-button type="success" size="mini" style="margin-right:10px;" @click="setTime()">设置</el-button>
-          </div>
-          <el-button type="primary" size="mini" style="display: inline-block" @click="syncTime()">同步时间</el-button>
-          <el-button type="info" size="mini">在线状态</el-button>
-        </li>
-        <li class="lamp">
-          <!-- 风扇开关 -->
-          <div class="fanBox">
-            <span>风扇开关：</span>
-            <el-switch
-              style="display: inline-block;margin-bottom: 5px;"
-              v-model="fanVal"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="changeFan"
-              active-text="开"
-              inactive-text="关">
-            </el-switch>
-          </div>
-          <!-- 风扇自动/手动 -->
-          <div class="fanBox">
-            <span>风扇调速：</span>
-            <el-radio-group v-model="radio1" size="mini" @change="changeAuto">
-              <el-radio-button :disabled='this.radio' label="0">自动</el-radio-button>
-              <el-radio-button :disabled='this.radio' label="1">手动</el-radio-button>
-            </el-radio-group>
-            <!-- 风扇调速 -->
-            <div class="block rate">
-              <span class="demonstration">风扇转速：</span><span>{{`${fanNumber}%`}}</span>
-              <el-slider v-model="fanNumber" :disabled='this.disabled' @change="changeFanNumber"></el-slider>
-            </div>
-          </div>
-        </li>
-        <li class="lamp">
-          <div class="brightness">
-            <span>激光亮度调节：</span>
-            <el-select v-model="brightness" @change="changeBrigh" size="mini" style="width:100px;" placeholder="请选择">
-              <el-option
-                v-for="item in brightVal"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-            <el-button type="success" size="mini" @click="setLed()">设置</el-button>
-          </div>
-          <div class="brightness">
-            <!-- <div class="nessLeft">激光灯闪烁设置</div> -->
-            <div class="ness">
-              <div style="margin-left:10px">
-                <span>闪烁控制：</span>
-                <el-radio-group v-model="radioTwinkle" size="mini" @change="changeLed">
-                  <el-radio-button label="0">闪烁</el-radio-button>
-                  <el-radio-button label="1">常亮</el-radio-button>
-                </el-radio-group>
-              </div>
-              <div>
-                <span>闪烁方式：</span>
-                <el-select v-model="scintillaMode" :disabled='disMode' @change="changeMode" size="mini" style="width:110px;margin-left:10px;" placeholder="请选择">
-                <el-option
-                  v-for="item in optionMode"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-              <el-button type="success" size="mini" :disabled='disMode' @click="setWinkle()">设置</el-button>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </el-dialog>
+  <Control :code='code' ref="Control"></Control>
   <!-- 控制激光灯弹框  结束 -->
 
   <!-- 激光灯状态弹框  开始 -->
@@ -157,6 +60,13 @@
   ></EleTable>
   </el-dialog>
   <!-- 激光灯状态弹框  结束 -->
+  <!-- 分配分组 开始 -->
+  <Group
+    :options='groupOptions'
+    :itemLists='allGroups'
+    @confirmCheck='confirmCheck'
+  ></Group>
+  <!-- 分配分组 结束 -->
 </div>
 </template>
 
@@ -167,8 +77,11 @@ import tabelData from '@/mixins/tabelData'
 import EleTable from '@/components/EleTable/table'
 import Search from '@/components/Search/search'
 import DialogForm from '@/components/DialogForm/DialogForm'
+import Control from '../components/Control/Control'
+import Group from '@/components/Group/Group'
 // API
-import { getMainControl, saveOrUpdate, deleteByIds, isCode, setTime, setFan, autoFan, setLaser, setFlanSh, setOnOrOffTime, getLaserStatus } from '@/api/led/controller'
+import { getMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/led/controller'
+import { assignDevice } from '@/api/group/group'
 // 方法
 import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
@@ -176,7 +89,9 @@ export default {
   components: {
     EleTable,
     Search,
-    DialogForm
+    DialogForm,
+    Control,
+    Group
   },
   computed: {
     ...mapGetters(['allGroups'])
@@ -189,98 +104,8 @@ export default {
   },
   data () {
     return {
-      mainControlStatus: {}, // 存储当前状态
-      lampOn: new Date(2016, 9, 10, 18, 40),
-      lampOff: new Date(2016, 9, 10, 18, 40),
-      onTime: null, // 开灯时间
-      offTime: null, // 关灯时间
-      fanVal: true, // 风扇开关
-      onOrOff: '', // 风扇开关状态
-      speed: '', // 风扇转速
-      radio1: null, // 风扇调速
-      radioTwinkle: null, // 闪烁常亮
-      autoFly: '', // 风扇自动/手动
-      disabled: false, // 控制调速是否可用
-      disMode: false, // 控制闪烁按钮是否可用
-      radio: false, // 单选按钮
-      fanNumber: null, // 风扇速率
-      brightness: null, /// 激光灯亮度绑定值
-      scintillaMode: null, // 闪烁方式绑定值
-      ledNum: null, // 激光灯亮度值
-      twinkleNum: null, // 闪烁方式1-10
-      valueList: [], // 打开控制弹框表格的数据
-      userName: [],
-      dialogVisible: false, // 激光灯控制弹出框
-      dialogState: false, // 激光灯状态
-      brightVal: [{
-        value: 0,
-        label: '0%'
-      }, {
-        value: 10,
-        label: '10%'
-      }, {
-        value: 20,
-        label: '20%'
-      }, {
-        value: 30,
-        label: '30%'
-      }, {
-        value: 40,
-        label: '40%'
-      }, {
-        value: 50,
-        label: '50%'
-      }, {
-        value: 60,
-        label: '60%'
-      }, {
-        value: 70,
-        label: '70%'
-      }, {
-        value: 80,
-        label: '80%'
-      }, {
-        value: 90,
-        label: '90%'
-      }, {
-        value: 100,
-        label: '100%'
-      }],
-      optionMode: [
-        {
-          value: 1,
-          label: '闪烁方式一'
-        }, {
-          value: 2,
-          label: '闪烁方式二'
-        }, {
-          value: 3,
-          label: '闪烁方式三'
-        }, {
-          value: 4,
-          label: '闪烁方式四'
-        }, {
-          value: 5,
-          label: '闪烁方式五'
-        }, {
-          value: 6,
-          label: '闪烁方式六'
-        }, {
-          value: 7,
-          label: '闪烁方式七'
-        }, {
-          value: 8,
-          label: '闪烁方式八'
-        }, {
-          value: 9,
-          label: '闪烁方式九'
-        }, {
-          value: 10,
-          label: '闪烁方式十'
-        }
-      ],
       // 获取数据函数 字段必须为initData
-      initData: getMainControl,
+      initDataFn: getMainControl,
       // 编辑用户
       editDataFn: saveOrUpdate,
 
@@ -293,10 +118,12 @@ export default {
       list: [],
       // 表格数据展示数据key
       columns: [
-        { prop: 'location', label: '安装位置', align: 'center' },
-        { prop: 'code', label: '灯组编号', align: 'center' },
-        { prop: 'lampNum', label: '激光灯数量（个）', align: 'center' },
-        { prop: 'createTime', label: '安装时间', align: 'center', formatter: this.timestampToTimes }
+        { prop: 'location', label: '安装位置' },
+        { prop: 'code', label: '灯组编号' },
+        { prop: 'lampNum', label: '激光灯数量（个）' },
+        { prop: 'model', label: '型号' },
+        { prop: 'createTime', label: '安装时间', formatter: this.timestampToTimes },
+        { prop: 'note', label: '备注' }
       ],
       // 表格操作按钮
       operates: {
@@ -305,7 +132,7 @@ export default {
         list: [
           { show: true, type: 'danger', title: '删除', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false },
           { show: true, type: 'info', title: '编辑', icon: 'el-icon-edit', method: this.tabeledit },
-          { show: true, type: 'primary', title: '激光灯控制', icon: 'el-icon-s-operation', method: this.control },
+          { show: true, type: 'success', title: '激光灯控制', icon: 'el-icon-setting', method: this.control },
           { show: true, type: 'warning', title: '查看激光灯状态', icon: 'el-icon-view', method: this.controlState }
         ]
       },
@@ -334,9 +161,9 @@ export default {
           {
             type: 'input',
             name: '搜索',
-            queryname: 'location',
+            queryname: 'code',
             query: null,
-            placeholder: '请输入安装位置',
+            placeholder: '请输入编码',
             callback: this.change
           }
         ]
@@ -386,6 +213,10 @@ export default {
         },
         labelWidth: null
       },
+      // 参数改为code
+      deleteVal: true,
+      // 删除主控key
+      deleteKey: 'codes',
       // 弹出层表单数据
       dataForm: {
         'location': null,
@@ -396,131 +227,33 @@ export default {
         'latitude': null,
         'note': null,
         'groupIds': null
-      }
-
+      },
+      dialogState: false, // 激光灯状态
+      code: '',
+      ledList: [],
+      // 设备分组选中array
+      groupOptions: {
+        type: 'radio',
+        title: '设备分组',
+        popoverVisible: false,
+        width: '610px',
+        label: 'id',
+        name: 'name',
+        disabled: false,
+        showFooter: true
+      },
+      radio: null
     }
   },
+  created () {
+    // 获取用户
+    this.getTabelData(this.initDataFn)
+  },
   methods: {
-    // 控制激光灯
-    control (key, val) {
-      this.valueList = val
-      this.dialogVisible = true
-      this.getStatus()
-    },
+    // 显示控制弹窗
     controlState (key, val) {
+      this.code = val.code
       this.dialogState = true
-    },
-    // 开关灯设置
-    changeOn (data) {
-      this.onTime = data
-    },
-    changeOff (data) {
-      this.offTime = data
-    },
-    setTime () {
-      setOnOrOffTime({ code: this.valueList.code, on: this.onTime, off: this.offTime })
-        .then((res) => {
-          this.tip('时间设置成功', 'success')
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 同步时间
-    syncTime () {
-      setTime({ code: this.valueList.code })
-        .then((res) => {
-          this.tip('时间同步成功', 'success')
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 控制风扇
-    changeFan (data) {
-      if (data) {
-        this.onOrOff = 1 // 打开
-        this.radio = false
-        this.disabled = false
-        this.fanVal = true
-      } else {
-        this.onOrOff = 0
-        this.radio = true
-        this.disabled = true
-        this.fanVal = false
-      }
-      setFan({ code: this.valueList.code, onOrOff: this.onOrOff, speed: 0 })
-        .then((res) => {
-
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 风扇自动手动
-    changeAuto (data) {
-      if (data === '0') {
-        this.autoFly = 1
-        this.disabled = true
-      } else {
-        this.autoFly = 0
-        this.disabled = false
-      }
-      // 自动
-      autoFan({ code: this.valueList.code, onOrOff: this.autoFly })
-        .then((res) => {
-
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 风扇调速方法
-    changeFanNumber () {
-      setFan({ code: this.valueList.code, onOrOff: 1, speed: this.fanNumber })
-        .then((res) => {
-
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 激光灯亮度调节
-    changeBrigh (data) {
-      this.ledNum = data
-    },
-    setLed () {
-      setLaser({ code: this.valueList.code, laser: this.ledNum })
-        .then((res) => {
-          this.tip('亮度设置成功', 'success')
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-    // 设置激光灯闪烁或者常亮
-    changeLed (data) {
-      if (data === '1') {
-        this.disMode = true
-        setFlanSh({ code: this.valueList.code, onOrOff: 0, totalise: 1 })
-          .then((res) => {
-            this.tip('常亮设置成功', 'success')
-          })
-      } else {
-        this.disMode = false
-      }
-    },
-    changeMode (data) {
-      this.twinkleNum = data
-    },
-    setWinkle () {
-      setFlanSh({ code: this.valueList.code, onOrOff: 1, totalise: this.twinkleNum })
-        .then((res) => {
-          this.tip('闪烁方案设置成功', 'success')
-        })
-        .catch((err) => {
-          console.log(err)
-        })
     },
     // 时间转化
     timestampToTimes (val, key) {
@@ -528,7 +261,7 @@ export default {
     },
     // 表格多行选中
     handleSelectionChange (val) {
-      console.log(val)
+      this.ledList = val
     },
     // 判断主控是否唯一
     onlyCode (key, value) {
@@ -545,30 +278,54 @@ export default {
           console.log(err)
         })
     },
-    // 获取当前状态
-    getStatus () {
-      getLaserStatus({ code: this.valueList.code })
-        .then((res) => {
-          this.mainControlStatus = res.result.mainControlStatus
-          console.log(this.mainControlStatus)
-          this.onTime = this.mainControlStatus.onTime // 开灯时间
-          this.offTime = this.mainControlStatus.offTime // 关灯时间
-          this.brightness = this.mainControlStatus.brightness // 激光灯亮度
-          this.onOrOff = '0' // 风扇开关状态
-          console.log(this.onOrOff)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    }
-  },
-  async created () {
-    // 获取用户
-    await this.getTabelData(this.initData)
-    console.log(this.list)
-  },
-  mounted () {
 
+    // 显示控制弹框
+    control (key, val) {
+      this.code = val.code
+      this.$refs.Control.show()
+    },
+
+    showGrounpDialog () {
+      if (this.ledList.length >= 1) {
+        this.groupOptions.popoverVisible = true
+        // 获取设备的分组
+      } else {
+        this.tip('请选中设备之后在进行分组分配', 'info')
+      }
+    },
+    // 确定设备分组
+    async confirmCheck (val) {
+      let deviceList = []
+      this.ledList.forEach(item => {
+        deviceList.push(item.code)
+      })
+      deviceList = deviceList.join(',')
+      let obj = {
+        groupId: null,
+        type: 1,
+        deviceCodes: deviceList
+      }
+      if (this.groupOptions.type === 'radio') {
+        this.radio = val
+        delete obj.groupIds
+        obj.groupId = this.radio
+      } else {
+        delete obj.groupId
+        this.checkedList = val
+        let arr = []
+        arr = this.checkedList.join(',')
+        obj.groupIds = arr
+      }
+      await assignDevice(obj)
+        .then(res => {
+          this.tip('设备批量分组成功', 'success')
+        })
+        .catch(err => {
+          console.error(err)
+          this.tip('设备批量分组失败', 'error')
+        })
+      this.groupOptions.popoverVisible = false
+    }
   }
 }
 </script>

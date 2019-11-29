@@ -9,10 +9,13 @@
         custom-class="myDialogbtn"
         :modal="true"
         :modal-append-to-body="true"
-        center
         @open="openDialog"
         @close="closeDialog">
         <!-- 控制表单 开始 -->
+      <div class="statusBox">
+        <i class="iconfont icon-zhuangtai1" :class='status === 0 ? "iconOn":"iconOFF"'></i>
+        <span :class='status === 0 ? "fontStyleOn":"fontStyleOFF"'>{{isConnect}}</span>
+      </div>
         <ul class="controlList">
           <li class="controlitem">
 
@@ -200,7 +203,9 @@ export default {
         wake: null,
         voice: null
       },
-      masterInfo: {}
+      masterInfo: {},
+      status: 1,
+      isConnect: '设备离线'
     }
   },
   methods: {
@@ -243,6 +248,12 @@ export default {
       this.dataForm.wake = this.masterInfo.wake.toString()
       this.dataForm.voice = this.masterInfo.voice.toString()
       this.controlModel = this.masterInfo.controlMode.toString()
+      this.status = this.masterInfo.status // 状态
+      if (this.masterInfo.status === 0) {
+        this.isConnect = '设备在线'
+      } else {
+        this.isConnect = '设备离线'
+      }
     },
 
     // 更新引导灯主控状态
@@ -289,6 +300,10 @@ export default {
         .then(res => {
           this.masterInfo = res.result
           this.showFormat()
+        })
+        .catch(err => {
+          this.tip('获取主控状态失败', 'error')
+          console.log(err)
         })
     },
 

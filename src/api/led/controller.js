@@ -24,11 +24,11 @@ export function saveOrUpdate (params) {
     params
   })
 }
-// POST /laser/deleteByIds 删除主控信息
+// DELETE /laser/deleteByIds 删除主控信息
 export function deleteByIds (params) {
   return http({
     url: 'laser/deleteByIds',
-    method: 'POST',
+    method: 'DELETE',
     params
   })
 }
