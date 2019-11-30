@@ -104,7 +104,7 @@ export default {
 
     /**
      * @function 搜索数据提交字段
-     * @returns obj2
+     * @returns obj2 提交字段
      */
     submitKey () {
       let obj2 = {}
