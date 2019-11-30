@@ -81,6 +81,7 @@ import Control from '../components/Control/Control'
 import Group from '@/components/Group/Group'
 // API
 import { getMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/led/controller'
+import { getDeviceGroup } from '@/api/system/system'
 import { assignDevice } from '@/api/group/group'
 // 方法
 import { timestampToTime } from '@/utils/format'
@@ -97,13 +98,11 @@ export default {
     ...mapGetters(['allGroups'])
   },
   mixins: [tabelData],
-  watch: {
-    allGroups (newval, oldval) {
-      this.setSelectOptions(this.formLists, 'groupIds', newval)
-    }
-  },
   data () {
     return {
+      // 查看分组
+      getDeviceGroupFn: getDeviceGroup,
+
       // 获取数据函数 字段必须为initData
       initDataFn: getMainControl,
       // 编辑用户
@@ -123,7 +122,8 @@ export default {
         { prop: 'lampNum', label: '激光灯数量（个）' },
         { prop: 'model', label: '型号' },
         { prop: 'createTime', label: '安装时间', formatter: this.timestampToTimes },
-        { prop: 'note', label: '备注' }
+        { prop: 'note', label: '备注' },
+        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true }
       ],
       // 表格操作按钮
       operates: {
@@ -132,8 +132,8 @@ export default {
         list: [
           { show: true, type: 'danger', title: '删除', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false },
           { show: true, type: 'info', title: '编辑', icon: 'el-icon-edit', method: this.tabeledit },
-          { show: true, type: 'success', title: '激光灯控制', icon: 'el-icon-setting', method: this.control },
-          { show: true, type: 'warning', title: '查看激光灯状态', icon: 'el-icon-view', method: this.controlState }
+          { show: true, type: 'success', title: '设备控制', icon: 'el-icon-setting', method: this.control },
+          { show: true, type: 'warning', title: '激光灯状态查看', icon: 'el-icon-view', method: this.controlState }
         ]
       },
       // 激光灯状态表格
@@ -165,6 +165,17 @@ export default {
             query: null,
             placeholder: '请输入编码',
             callback: this.change
+          },
+          {
+            type: 'select', // 搜索框类型
+            name: null, // 搜索label
+            clearable: true,
+            options: [],
+            optionskey: { label: 'name', value: 'id' },
+            queryname: 'groupId', // 搜索字段
+            query: null, // v-model值
+            placeholder: '请选择分组', // 提示
+            callback: this.onChangeSelect // input框值改变时
           }
         ]
       },
@@ -325,6 +336,12 @@ export default {
           this.tip('设备批量分组失败', 'error')
         })
       this.groupOptions.popoverVisible = false
+    }
+  },
+  watch: {
+    allGroups (newval, oldval) {
+      this.setSelectOptions(this.formLists, 'groupIds', newval)
+      this.setSelectOptions(this.searchOptions.type, 'groupId', newval, 'queryname', 'options')
     }
   }
 }

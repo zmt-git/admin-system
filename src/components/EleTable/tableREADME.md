@@ -14,7 +14,16 @@
 ### operates 操作按钮组
   **必填**
   **表单绑定数据**
-```dataform: {id}
+```operates: {
+  list: [
+    { show: true,
+      type: 'warning',
+      title: '激光灯状态查看', //按钮权限使用字段
+      icon: 'el-icon-view',
+      method: this.controlState
+     }
+  ]
+}
 ```
 ### options 表格的控制参数
   **必填**

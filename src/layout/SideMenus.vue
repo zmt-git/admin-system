@@ -7,7 +7,7 @@
       <template v-if="item.children&&item.children.length===1">
         <el-submenu :key="index" :index="item.path">
           <template slot="title">
-            <i v-if="item.meta.icon" class="iconfont sideIcon sideIcon" :class='item.meta.icon'></i>
+            <svgIcon v-if="item.meta.icon" :className="'sideIcon'" :iconClass='item.meta.icon'></svgIcon>
             <span class="title">{{item.meta.title}}</span>
           </template>
             <router-link :to="item.path+'/'+item.children[0].path">
@@ -15,7 +15,7 @@
               <el-menu-item :index="item.path+'/'+item.children[0].path">
                 <template slot="title">
                   <!-- 设置icon -->
-                  <i v-if="item.children[0].meta.icon" class="iconfont sideIcon" :class='item.children[0].meta.icon'></i>
+                  <svgIcon v-if="item.children[0].meta.icon" :className="'sideIcon'" :iconClass='item.children[0].meta.icon'></svgIcon>
                   <!-- 菜单名称 -->
                   <span class="title">{{item.children[0].meta.title}}</span>
                 </template>
@@ -28,7 +28,7 @@
       <template v-else-if="item.meta.title!='地图展示'">
         <el-submenu  :key="index" :index="item.path">
           <template slot="title">
-            <i v-if="item.meta.icon" class="iconfont sideIcon" :class='item.meta.icon'></i>
+            <svgIcon v-if="item.meta.icon" :className="'sideIcon'" :iconClass='item.meta.icon'></svgIcon>
             <span class="title">{{item.meta.title}}</span>
           </template>
           <!-- 遍历子菜单 -->
@@ -42,7 +42,7 @@
             <template v-else>
               <router-link  :key="index" :to="item.path+'/'+itemChild.path">
                 <el-menu-item :index="item.path+'/'+itemChild.path">
-                  <i v-if="itemChild.meta.icon" class="iconfont sideIcon" :class='itemChild.meta.icon'></i>
+                  <svgIcon v-if="itemChild.meta.icon" :className="'sideIcon'" :iconClass='itemChild.meta.icon'></svgIcon>
                   <span class="title">{{itemChild.meta.title}}</span>
                 </el-menu-item>
               </router-link>
@@ -59,7 +59,11 @@
 </template>
 <script>
 // import '@/styles/index.css'
+import svgIcon from '@/components/SvgIcon/index'
 export default {
+  components: {
+    svgIcon
+  },
   name: 'side-menus',
   props: {
     routes: {

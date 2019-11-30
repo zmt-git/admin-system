@@ -34,7 +34,8 @@
           <div class="right-menu">
             <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
               <div class="avatar-wrapper">
-                <i class="iconfont icon-admin user"></i>
+                <!-- <img class="userImg" src="../assets/img/Superadministrator.png" alt=""> -->
+                <svgIcon :className="'userIcon'" :iconClass='userIcon'></svgIcon>
               </div>
               <el-dropdown-menu slot="dropdown">
                 <router-link to="/index">
@@ -70,11 +71,12 @@
 
 <script>
 // 左侧菜单组件
-import sideMenus from './SideMenus'
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import Breadcrumb from '@/components/Breadcrumb'
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
+import sideMenus from './SideMenus'
+import svgIcon from '@/components/SvgIcon/index'
 
 export default {
   computed: {
@@ -83,12 +85,14 @@ export default {
   components: {
     sideMenus,
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    svgIcon
   },
   data () {
     return {
       userRole: 'Topest',
-      isCollapse: false
+      isCollapse: false,
+      userIcon: 'icon-chaojiguanliyuan'
     }
   },
   methods: {
@@ -301,5 +305,12 @@ export default {
   }
   .user{
     font-size: 32px;
+  }
+  .userImg{
+    width: 40px;
+    height: 40px;
+  }
+  .userIcon{
+    font-size: 33px;
   }
 </style>

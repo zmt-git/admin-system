@@ -6,11 +6,102 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "270312",
+      "name": "眼睛 闭眼 闭着眼睛",
+      "font_class": "yey",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "760699",
+      "name": "能见度仪",
+      "font_class": "nengjianduyi",
+      "unicode": "e8a6",
+      "unicode_decimal": 59558
+    },
+    {
+      "icon_id": "1327260",
+      "name": "主控",
+      "font_class": "zhukong",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "1646528",
+      "name": "语音",
+      "font_class": "yuyin",
+      "unicode": "e69f",
+      "unicode_decimal": 59039
+    },
+    {
+      "icon_id": "1652805",
+      "name": "夜间",
+      "font_class": "yejian",
+      "unicode": "e7b2",
+      "unicode_decimal": 59314
+    },
+    {
+      "icon_id": "1952033",
+      "name": "睁眼",
+      "font_class": "eyesopen",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "2076202",
+      "name": "闪光灯打开",
+      "font_class": "shanguangdengdakai",
+      "unicode": "e873",
+      "unicode_decimal": 59507
+    },
+    {
+      "icon_id": "2082304",
+      "name": "控制台",
+      "font_class": "kongzhitai",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
       "icon_id": "2124369",
       "name": "睁眼",
       "font_class": "zhengyan",
       "unicode": "e607",
       "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "2400753",
+      "name": "播放次数",
+      "font_class": "bofangcishu",
+      "unicode": "e6ca",
+      "unicode_decimal": 59082
+    },
+    {
+      "icon_id": "2458163",
+      "name": "语音",
+      "font_class": "yuyin1",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "2899298",
+      "name": "设备控制",
+      "font_class": "shebeikongzhi",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "3088172",
+      "name": "状态",
+      "font_class": "zhuangtai1",
+      "unicode": "e866",
+      "unicode_decimal": 59494
+    },
+    {
+      "icon_id": "3113460",
+      "name": "亮度",
+      "font_class": "liangdu",
+      "unicode": "e606",
+      "unicode_decimal": 58886
     },
     {
       "icon_id": "3564903",
@@ -20,6 +111,13 @@
       "unicode_decimal": 58903
     },
     {
+      "icon_id": "3882433",
+      "name": "资源授权_icon",
+      "font_class": "ziyuanshouquan_icon",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
       "icon_id": "3965918",
       "name": "系统",
       "font_class": "cogs",
@@ -27,11 +125,32 @@
       "unicode_decimal": 58888
     },
     {
+      "icon_id": "4028143",
+      "name": "同步",
+      "font_class": "tongbu",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "4144167",
+      "name": "声音 音量 线性",
+      "font_class": "shengyinyinliangxianxing",
+      "unicode": "e94d",
+      "unicode_decimal": 59725
+    },
+    {
       "icon_id": "4152382",
       "name": "密码 (2)",
       "font_class": "mima",
       "unicode": "e610",
       "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "4723884",
+      "name": "定位",
+      "font_class": "dingwei",
+      "unicode": "e657",
+      "unicode_decimal": 58967
     },
     {
       "icon_id": "5045424",
@@ -48,11 +167,130 @@
       "unicode_decimal": 58969
     },
     {
+      "icon_id": "5600863",
+      "name": "角色管理",
+      "font_class": "jiaoseguanli",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "6080297",
+      "name": "设备分组详情",
+      "font_class": "shebeifenzuxiangqing",
+      "unicode": "e6ef",
+      "unicode_decimal": 59119
+    },
+    {
+      "icon_id": "6490449",
+      "name": "用户管理",
+      "font_class": "yonghuguanli",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "6710292",
+      "name": "状态",
+      "font_class": "zhuangtai",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "6823864",
+      "name": "内容",
+      "font_class": "neirong",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "6856143",
+      "name": "频率",
+      "font_class": "pinshuai",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "7505175",
+      "name": "退出",
+      "font_class": "tuichu",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "7708180",
+      "name": "首页-选中",
+      "font_class": "yemian-copy-copy",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "8774040",
+      "name": "图表 折线图",
+      "font_class": "tubiaozhexiantu",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "8983069",
+      "name": "自动",
+      "font_class": "zidong",
+      "unicode": "e707",
+      "unicode_decimal": 59143
+    },
+    {
+      "icon_id": "9367809",
+      "name": "普通管理员",
+      "font_class": "putongguanliyuan",
+      "unicode": "e6da",
+      "unicode_decimal": 59098
+    },
+    {
+      "icon_id": "9369111",
+      "name": "超级管理员",
+      "font_class": "chaojiguanliyuan",
+      "unicode": "e6db",
+      "unicode_decimal": 59099
+    },
+    {
+      "icon_id": "9407945",
+      "name": "管理员",
+      "font_class": "admin",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
       "icon_id": "9961608",
       "name": "see user",
       "font_class": "seeuser",
       "unicode": "e600",
       "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "10418067",
+      "name": "引导",
+      "font_class": "yindao",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "10784003",
+      "name": "JIGUANGDENG",
+      "font_class": "JIGUANGDENG",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "11249423",
+      "name": "main_定时开关机",
+      "font_class": "main_dingshikaiguanji",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "11994036",
+      "name": "yindaodeng",
+      "font_class": "yindaodeng",
+      "unicode": "e609",
+      "unicode_decimal": 58889
     }
   ]
 }

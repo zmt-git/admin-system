@@ -79,6 +79,7 @@ import { mapGetters } from 'vuex'
 
 // API
 import { pageMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/voice/voiceInfo'
+import { getDeviceGroup } from '@/api/system/system'
 import { assignDevice } from '@/api/group/group'
 
 export default {
@@ -99,6 +100,9 @@ export default {
   },
   data () {
     return {
+      // 查看分组
+      getDeviceGroupFn: getDeviceGroup,
+
       // 获取表格数据函数 initDataFn
       initDataFn: pageMainControl,
 
@@ -119,11 +123,10 @@ export default {
         { prop: 'longitude', label: '经度' },
         { prop: 'model', label: '型号' },
         { prop: 'location', label: '安装位置' },
-        { prop: 'createTime', label: '创建时间', formatter: this.timestampToTimes },
-        { prop: 'createUserId', label: '创建人', formatter: this.formatUsers },
-        { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
-        { prop: 'updateUserId', label: '更新人', formatter: this.formatUpdataUsers },
-        { prop: 'note', label: '备注' }
+        // { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
+        // { prop: 'updateUserId', label: '更新人', formatter: this.formatUpdataUsers },
+        { prop: 'note', label: '备注' },
+        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true }
       ],
 
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)
@@ -147,6 +150,17 @@ export default {
             query: null, // v-model值
             placeholder: '请输入编码', // 提示
             callback: this.change // input框值改变时
+          },
+          {
+            type: 'select', // 搜索框类型
+            name: null, // 搜索label
+            clearable: true,
+            options: [],
+            optionskey: { label: 'name', value: 'id' },
+            queryname: 'groupId', // 搜索字段
+            query: null, // v-model值
+            placeholder: '请选择分组', // 提示
+            callback: this.onChangeSelect // input框值改变时
           }
         ]
       },
@@ -350,6 +364,7 @@ export default {
   watch: {
     allGroups (newval, oldval) {
       this.setSelectOptions(this.formLists, 'groupIds', newval)
+      this.setSelectOptions(this.searchOptions.type, 'groupId', newval, 'queryname', 'options')
     }
   }
 }

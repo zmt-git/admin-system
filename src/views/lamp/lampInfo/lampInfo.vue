@@ -11,8 +11,9 @@
 
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>      <el-button type="warning" size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(lampList)">批量删除</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog" v-hasBtn>添加</el-button>
+      <el-button type="warning" size="mini" @click="showGrounpDialog" v-hasBtn><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(lampList)" v-hasBtn>批量删除</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->
@@ -96,6 +97,7 @@ import { mapGetters } from 'vuex'
 
 // API
 import { pageMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/lamp/lampInfo'
+import { getDeviceGroup } from '@/api/system/system'
 import { assignDevice } from '@/api/group/group'
 
 export default {
@@ -118,6 +120,9 @@ export default {
   },
   data () {
     return {
+      // 查看分组
+      getDeviceGroupFn: getDeviceGroup,
+
       // 获取表格数据函数 initDataFn
       initDataFn: pageMainControl,
 
@@ -140,7 +145,7 @@ export default {
         { prop: 'model', label: '型号' },
         { prop: 'note', label: '备注' },
         { prop: 'visibility', label: '能见度检测仪数量' },
-        { prop: 'id', label: '分组', render: true }
+        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true }
       ],
 
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)
@@ -150,8 +155,8 @@ export default {
         list: [
           { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, title: '删除' }, // 操作按钮 删除
           { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' }, // 编辑按钮
-          { show: true, type: 'success', icon: 'el-icon-setting', method: this.setStatus, title: '状态设置' }, // 状态设置按钮
-          { show: true, type: 'warning', iconfont: 'icon-nengjianduyi', method: this.viewVisibility, title: '能见度' }, // 能见度按钮
+          { show: true, type: 'success', icon: 'el-icon-setting', method: this.setStatus, title: '设备控制' }, // 状态设置按钮
+          { show: true, type: 'warning', iconfont: 'icon-nengjianduyi', method: this.viewVisibility, title: '能见度信息' }, // 能见度按钮
           { show: true, type: 'primary', iconfont: 'icon-tubiaozhexiantu', method: this.viewVisibilityEcharts, title: '能见度折线图' }
         ]
       },
@@ -162,10 +167,22 @@ export default {
           {
             type: 'input', // 搜索框类型
             name: '搜索', // 搜索label
+            clearable: true,
             queryname: 'code', // 搜索字段
             query: null, // v-model值
             placeholder: '请输入编码', // 提示
             callback: this.change // input框值改变时
+          },
+          {
+            type: 'select', // 搜索框类型
+            name: null, // 搜索label
+            clearable: true,
+            options: [],
+            optionskey: { label: 'name', value: 'id' },
+            queryname: 'groupId', // 搜索字段
+            query: null, // v-model值
+            placeholder: '请选择分组', // 提示
+            callback: this.onChangeSelect // input框值改变时
           }
         ]
       },
@@ -355,16 +372,12 @@ export default {
           this.tip('设备批量分组失败', 'error')
         })
       this.groupOptions.popoverVisible = false
-    },
-
-    // 查看分组
-    viewGroup () {
-
     }
   },
   watch: {
     allGroups (newval, oldval) {
       this.setSelectOptions(this.formLists, 'groupIds', newval)
+      this.setSelectOptions(this.searchOptions.type, 'groupId', newval, 'queryname', 'options')
     }
   }
 }

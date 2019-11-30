@@ -1,13 +1,10 @@
 <template>
-  <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$listeners" />
-  <svg v-else :class="svgClass" aria-hidden="true" v-on="$listeners">
-    <use :href="iconName" />
+  <svg :class="svgClass" aria-hidden="true" v-on="$listeners">
+    <use :xlink:href="iconName" />
   </svg>
 </template>
 
 <script>
-// doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
-import { isExternal } from '@/utils/validate'
 
 export default {
   name: 'SvgIcon',
@@ -22,11 +19,8 @@ export default {
     }
   },
   computed: {
-    isExternal () {
-      return isExternal(this.iconClass)
-    },
     iconName () {
-      return `#icon-${this.iconClass}`
+      return `#${this.iconClass}`
     },
     svgClass () {
       if (this.className) {
@@ -47,9 +41,9 @@ export default {
 
 <style scoped>
 .svg-icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
+  width: 1.2em;
+  height: 1.2em;
+  /* vertical-align: -0.15em; */
   fill: currentColor;
   overflow: hidden;
 }

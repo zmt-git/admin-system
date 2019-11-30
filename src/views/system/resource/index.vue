@@ -185,10 +185,10 @@ export default {
           name: this.treeNode.name,
           parentId: this.treeNode.parentId,
           type: this.treeNode.type,
-          uri: this.treeNode.uri,
+          uri: this.treeNode.uri ? this.treeNode.uri : 'btn',
           sortOrder: this.treeNode.sortOrder,
           iconClass: this.treeNode.iconClass,
-          component: this.treeNode.component
+          component: this.treeNode.component ? this.treeNode.component : 'btn'
         }
       }
     },

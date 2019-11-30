@@ -3,6 +3,9 @@ import { Message } from 'element-ui'
 export default {
   data () {
     return {
+      _searchCode: null, // 混入后不建议重新定义修改
+      _searchGroupId: null, // 混入后不建议重新定义修改
+      _searchSubmit: {}, // 混入后不建议重新定义修改
       total: 0,
       currentPage: 0,
       pageSizes: [15, 20, 30, 50],
@@ -33,35 +36,51 @@ export default {
         padding: '5px 0',
         hasPagination: true
       },
-      tableLoading: ['options']
+      tableLoading: ['options'],
+      defaultParams: {
+        pageNum: this.currentPage,
+        numPerPage: this.pageSize
+      },
+      querySearch: {}
     }
   },
   methods: {
-    // 分页改变当前条数
+    /**
+     * @function 分页改变当前条数
+     * @param {*} e改变值
+     */
     handleSizeChange (e) {
       this.pageSize = e
-      this.getTabelData(this.initDataFn)
+      let obj2 = this.submitKey()
+      this.getTabelData(this.initDataFn, obj2)
     },
 
-    // 分页改变当前页
+    /**
+     * @function 分页改变当前页
+     * @param {*} e改变值
+     */
     handleCurrentChange (e) {
       this.currentPage = e
-      this.getTabelData(this.initDataFn)
+      let obj2 = this.submitKey()
+      this.getTabelData(this.initDataFn, obj2)
     },
 
-    // 分页数据更新
+    /**
+     * @function 分页数据更新
+     * @param {*} data请求返回值
+     */
     upDatepagination (data) {
       this.total = data.total
       this.currentPage = data.current
-      this.pageSize = data.size
     },
 
-    // 获取表格分页数据
-    async getTabelData (fn) {
-      await fn({
-        pageNum: this.currentPage,
-        numPerPage: this.pageSize
-      })
+    /**
+     * @function 获取表格分页数据
+     * @param {*} fn
+     * @param {*} [obj=this.defaultParams]提交字段，默认值为defaultParams
+     */
+    async getTabelData (fn, obj = this.defaultParams) {
+      await fn(obj)
         .then(res => {
           this.upDatepagination(res.result)
           this.list = res.result.records
@@ -74,20 +93,58 @@ export default {
       })
     },
 
-    // 获取搜索数据
-    getSearchTabelData (fn, obj) {
-      fn({
-        pageNum: this.currentPage,
-        numPerPage: this.pageSize,
-        condition: obj
-      })
-        .then(res => {
-          this.upDatepagination(res.result)
-          this.list = res.result.records
-        })
+    /**
+     * @function 搜索条件查询数据
+     * @param {*} fn回调函数
+     */
+    getSearchTabelData (fn) {
+      let obj2 = this.submitKey()
+      this.getTabelData(fn, obj2)
     },
 
-    // 表格删除按钮
+    /**
+     * @function 搜索数据提交字段
+     * @returns obj2
+     */
+    submitKey () {
+      let obj2 = {}
+      if (this._searchCode && this._searchGroupId) {
+        obj2 = {
+          groupId: this.groupId,
+          pageNum: this.currentPage,
+          numPerPage: this.pageSize,
+          sysCriteria: {
+            condition: this._searchSubmit
+          }
+        }
+      } else if (this._searchCode) {
+        obj2 = {
+          pageNum: this.currentPage,
+          numPerPage: this.pageSize,
+          sysCriteria: {
+            condition: this._searchSubmit
+          }
+        }
+      } else if (this._searchGroupId) {
+        obj2 = {
+          groupId: this._searchGroupId,
+          pageNum: this.currentPage,
+          numPerPage: this.pageSize
+        }
+      } else {
+        obj2 = {
+          pageNum: this.currentPage,
+          numPerPage: this.pageSize
+        }
+      }
+      return obj2
+    },
+
+    /**
+     * @function 表格删除数据（按钮）
+     * @param {*} key为选中数据的index
+     * @param {*} val为选中数据的code
+     */
     tabelDelete (key, val) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -109,13 +166,17 @@ export default {
       })
     },
 
-    // 表格删除数据
+    /**
+     * @function 删除表格数据（批量）
+     * @param {*} id为选中数据的codes
+     */
     deleteTabelData (id) {
       let obj = { }
       obj[this.deleteKey] = id
       this.deleteDataFn(obj)
         .then(res => {
-          this.getTabelData(this.initDataFn)
+          let obj2 = this.submitKey()
+          this.getTabelData(this.initDataFn, obj2)
           this.tip('删除成功', 'success')
         })
         .catch(error => {
@@ -124,23 +185,54 @@ export default {
         })
     },
 
-    // 搜索 输入/改变 回调函数
+    /**
+     * @function 搜索表单value值改变回调
+     * @param {*} that_搜索组件this
+     * @param {*} val表单绑定value
+     */
     change (that, val) {
+      this._searchCode = val
       if (!val) {
-        this.getTabelData(this.initDataFn)
+        let obj2 = this.submitKey()
+        this.getTabelData(this.initDataFn, obj2)
       }
     },
 
-    // 获取搜索数据
+    /**
+     * @function 搜索查看分组下拉框改变
+     * @param {*} that_搜索组件this
+     * @param {*} val表单绑定value
+     */
+    onChangeSelect (that, val) {
+      this._searchGroupId = val
+      if (val.toString !== '0' && !val) {
+        let obj2 = this.submitKey()
+        this.getTabelData(this.initDataFn, obj2)
+      }
+    },
+
+    /**
+     * @function 获取搜索数据目前查询:code,groupId
+     * @param {*} query搜索数据表单绑定值
+     * @param {*} options搜索表单配置
+     */
     toQuery (query, options) {
       let obj = {}
+      this.querySearch = query
       options.type.forEach((item) => {
         obj[item.queryname] = query[item.queryname]
       })
-      this.getSearchTabelData(this.initDataFn, obj)
+      this._searchGroupId = query.groupId
+
+      // 删除对象中的groupId
+      delete obj.groupId
+      this._searchSubmit = obj
+      this.getSearchTabelData(this.initDataFn)
     },
 
-    // 添加用户
+    /**
+     * @function 添加用户
+     */
     showAddDialog () {
       this.isAdd = true
       this.Dialogoptions.dialogVisible = true
@@ -150,7 +242,11 @@ export default {
       })
     },
 
-    // 表格编辑按钮
+    /**
+     * @function 表格编辑按钮
+     * @param {*} key下标
+     * @param {*} val表格选中数据
+     */
     tabeledit (key, val) {
       this.isAdd = false
       this.Dialogoptions.dialogVisible = true
@@ -164,8 +260,8 @@ export default {
       })
     },
 
-    // 弹出层添加 编辑
     /**
+     * @function 弹出层添加、编辑
      * @param {Object} dataForm提交表单数据
      * @param {ArrayObject} formatArr
      */
@@ -181,7 +277,8 @@ export default {
         msg = '添加'
         this.addDataFn(obj)
           .then(res => {
-            this.getTabelData(this.initDataFn)
+            let obj2 = this.submitKey()
+            this.getTabelData(this.initDataFn, obj2)
             this.tip(`${msg}成功`, 'success')
           })
           .catch(error => {
@@ -192,7 +289,8 @@ export default {
         this.editDataForm = Object.assign(this.editDataForm, obj)
         this.editDataFn(this.editDataForm)
           .then(res => {
-            this.getTabelData(this.initDataFn)
+            let obj2 = this.submitKey()
+            this.getTabelData(this.initDataFn, obj2)
             this.tip(`${msg}成功`, 'success')
           })
           .catch(error => {
@@ -203,7 +301,9 @@ export default {
       this.Dialogoptions.dialogVisible = false
     },
 
-    // 重置dataForm 数据
+    /**
+     * @function 重置dataForm数据
+     */
     resetDataForm () {
       let dataFormKey = Object.keys(this.dataForm)
       dataFormKey.forEach(item => {
@@ -211,7 +311,11 @@ export default {
       })
     },
 
-    // 通知
+    /**
+     * @function 通知
+     * @param {*} msg提示消息
+     * @param {*} type提示类型
+     */
     tip (msg, type) {
       Message({
         duration: this.durationTip,
@@ -220,19 +324,30 @@ export default {
       })
     },
 
-    // 输入框值改变时
+    /**
+     * @function 表单的change事件
+     * @param {*} key绑定值的key
+     * @param {*} val绑定值的value
+     */
     changeDia (key, val) {
       // do something
       // console.log(key, val)
     },
 
-    // 输入框的blur事件
+    /**
+     * @function 输入框的blur事件
+     * @param {*} key绑定值的key
+     * @param {*} val绑定值的value
+     */
     blur (key, val) {
       // do something
       // console.log(key, val)
     },
 
-    // 批量删除
+    /**
+     * @function 批量删除
+     * @param {*} list表格选中数据
+     */
     deleteIds (list) {
       if (list.length <= 0) {
         this.tip('至少选择一项数据，进行批量删除', 'warning')
@@ -263,22 +378,44 @@ export default {
       })
     },
 
-    // 解决select下拉框vuex监听不到属性变化
     /**
-     * @param {*} options DialogForm组件下拉表配置详情见readme文件
+     * @function 解决select下拉框vuex监听不到属性变化
+     * @param {*} options_DialogForm组件下拉表配置详情见readme文件
      * @param {*} target设置属性名
      * @param {*} arr设置select的options
      */
-    setSelectOptions (options = [], target, arr) {
+    setSelectOptions (options = [], target, arr, key = 'model', targetKey = 'selectOptions') {
       if (options.length > 0) {
         let indexs
         indexs = options.findIndex((ele, index) => {
-          if (ele.model === target) {
+          if (ele[key] === target) {
             return index
           }
         })
-        this.$set(options[indexs], 'selectOptions', arr)
+        this.$set(options[indexs], targetKey, arr)
       }
+    },
+
+    /**
+     * @function 查看分组
+     * @param {*} prop表格绑定属性
+     * @param {*} row表格点击数据
+     */
+    async viewGroups (prop, row) {
+      let index = this.columns.findIndex(item => {
+        return item.prop === prop
+      })
+      this.$set(this.columns[index], 'showList', ['空'])
+      this.$set(this.columns[index], 'loading', true)
+      await this.getDeviceGroupFn({ code: row.code })
+        .then(res => {
+          this.$set(this.columns[index], 'showList', res.result)
+        })
+        .catch(err => {
+          this.tip('获取分组信息失败', 'error')
+          console.log(err)
+        })
+      this.$set(this.columns[index], 'loading', false)
     }
   }
 }

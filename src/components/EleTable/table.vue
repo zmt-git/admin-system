@@ -33,8 +33,9 @@
               </template>
             </template>
             <template v-else>
-              <el-popover trigger="hover" placement="left">
-                <p :key='index' v-for="(ele, index) in scope.row[column.prop]">{{ele}}</p>
+              <el-popover trigger="hover" @show='column.method(column.prop, scope.row, column.showList)' placement="left">
+                <p class="loading" v-if="column.loading"><i class="el-icon-loading"></i></p>
+                <p class="groupsItem" v-else :key="index" v-for="(item, index) in column.showList">{{ (index+1) + '.' +item.name}}</p>
                 <div slot="reference" class="name-wrapper">
                   <el-tag size="medium">查看分组</el-tag>
                 </div>
@@ -58,6 +59,7 @@
           <el-button-group>
             <template v-for="(btn, key, index) in operates.list">
               <el-button
+                v-hasBtn='btn.title'
                 v-if="btn.show"
                 :key="index"
                 :type="btn.type"
@@ -197,5 +199,19 @@ export default {
 }
 .name-wrapper{
   cursor: pointer;
+}
+.loading{
+  line-height: 15px;
+  text-align: center;
+  font-size: 18px;
+  color: rgb(59, 204, 248);
+}
+.groupsItem{
+  line-height: 18px;
+  text-align: left;
+  padding-left: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #409EFF;;
 }
 </style>
