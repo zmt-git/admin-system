@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 import NProgress from 'nprogress'
-import Message from 'element-ui'
+import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
 import { filterAsyncRouter } from '@/store/modules/asyncRouterList'
 import { loadMenus } from '@/api/login/login'
@@ -117,13 +117,13 @@ router.beforeEach(async (to, from, next) => {
 
           // 清空路由表
           await store.commit('SET_ROUTERS', [])
+          NProgress.done()
 
           await store.dispatch('updateLoadMenus')
 
           // 删除token
           await store.dispatch('Logout')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
+          next({ path: `/login?redirect=${to.path}` })
         }
       }
     }

@@ -34,13 +34,21 @@
           <div class="right-menu">
             <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
               <div class="avatar-wrapper">
-                <!-- <img class="userImg" src="../assets/img/Superadministrator.png" alt=""> -->
-                <svgIcon :className="'userIcon'" :iconClass='userIcon'></svgIcon>
+                <el-badge is-dot>
+                  <svgIcon :className="'userIcon'" :iconClass='userIcon'></svgIcon>
+                </el-badge>
               </div>
               <el-dropdown-menu slot="dropdown">
                 <router-link to="/index">
                   <el-dropdown-item>
                     <i class="iconfont icon-yemian-copy-copy" aria-hidden="true"></i>首页
+                  </el-dropdown-item>
+                </router-link>
+                <router-link to="/deviceLog/alarm">
+                  <el-dropdown-item divided>
+                    <el-badge :value="120" :max="99" class="item">
+                      <span style="display:block;"><i class="iconfont icon-xiaoxi-"></i>消息</span>
+                    </el-badge>
                   </el-dropdown-item>
                 </router-link>
                 <el-dropdown-item divided>
@@ -70,12 +78,19 @@
 </template>
 
 <script>
-// 左侧菜单组件
+// 依赖
+import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
+
+// 方法
+import WebSocketWrapper from '@/utils/websocket'
+import eventBus from '@/utils/eventBus'
+import { getToken } from '@/utils/auth'
+import { isJSON } from '@/utils/format'
+// 组件
+import sideMenus from './SideMenus'
 import Hamburger from '@/components/Hamburger'
 import Breadcrumb from '@/components/Breadcrumb'
-import { mapGetters } from 'vuex'
-import { Message } from 'element-ui'
-import sideMenus from './SideMenus'
 import svgIcon from '@/components/SvgIcon/index'
 
 export default {
@@ -92,7 +107,16 @@ export default {
     return {
       userRole: 'Topest',
       isCollapse: false,
-      userIcon: 'icon-chaojiguanliyuan'
+      userIcon: 'icon-chaojiguanliyuan',
+      socket: null,
+      ws_params: {
+        versionNumber: 1.0, // 协议版本号
+        module: null, // 命令号
+        code: null, // 数据结果（0-成功 1-失败）
+        deviceType: null, // 设备类型（0-PC，1-手机）
+        token: getToken(), // 携带token
+        data: {}// 携带数据
+      }
     }
   },
   methods: {
@@ -115,18 +139,55 @@ export default {
           message: '已取消退出'
         })
       })
+    },
+    onmessage (data) {
+      if (isJSON(data.data)) {
+        // eventBus.$emit('ws_updataStatusLed', data)
+        // eventBus.$emit('ws_updataStatusLamp', data)
+        // eventBus.$emit('ws_updataStatusVoice', data)
+      }
     }
   },
   created () {
+    // 获取角色
     this.$store.dispatch('getAllRoles')
+
+    // 获取用户
     this.$store.dispatch('getAllUsers')
+
+    // 获取分组
     this.$store.dispatch('findAllGroupS')
+
+    // 创建监听
+    eventBus.$on('ws_connection', (code, type) => {
+      console.log('start' + code)
+      this.ws_params.module = type
+      this.ws_params.data = { code: code }
+      let obj = JSON.parse(JSON.stringify(this.ws_params))
+      obj = JSON.stringify(obj)
+      this.socket.send_(obj)
+    })
+    eventBus.$on('ws_close', (code, type) => {
+      console.log('close' + code)
+      this.ws_params.module = type
+      this.ws_params.data = { code: code }
+      let obj = JSON.parse(JSON.stringify(this.ws_params))
+      obj = JSON.stringify(obj)
+      this.socket.send_(obj)
+    })
   },
   mounted () {
+    // 建立websocket
+    this.socket = new WebSocketWrapper({ onmessage: this.onmessage })
+  },
+  destroyed () {
+    // 销毁监听
+    this.socket.websock.close()
+    eventBus.$off('ws_connection')
+    eventBus.$off('ws_close')
   }
 }
 </script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   $sideBarWidth: 220px;
   .title{

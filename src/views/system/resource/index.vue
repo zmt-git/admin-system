@@ -1,11 +1,11 @@
 <template>
   <div class="textAlginLeft">
     <el-button-group>
-      <el-button type="primary" icon="el-icon-plus" size="mini" @click="showAddDialog()">添加模块</el-button>
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddMenu()">添加功能菜单</el-button>
-      <el-button type="warning" icon="el-icon-plus" size="mini" @click="doAddBtns()">添加按钮</el-button>
-      <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEdit()">修改</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeNode()">删除</el-button>
+      <el-button type="primary" icon="el-icon-plus" v-hasBtn size="mini" @click="showAddDialog()">添加模块</el-button>
+      <el-button type="success" icon="el-icon-plus" v-hasBtn size="mini" @click="showAddMenu()">添加功能菜单</el-button>
+      <el-button type="warning" icon="el-icon-plus" v-hasBtn size="mini" @click="doAddBtns()">添加按钮</el-button>
+      <el-button type="primary" icon="el-icon-edit" v-hasBtn size="mini" @click="showEdit()">修改</el-button>
+      <el-button type="danger" icon="el-icon-delete" v-hasBtn size="mini" @click="removeNode()">删除</el-button>
     </el-button-group>
     <div class="ztree_box custom-scroll table-responsive">
       <ul id="tree-rec" class="ztree" style="margin-top: 5px;min-height:400px;overflow: auto;"></ul>

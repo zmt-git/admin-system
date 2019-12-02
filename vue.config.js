@@ -12,6 +12,7 @@ const name = 'vue Element Admin' // page title
 // For example, Mac: sudo npm run
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
+// eslint-disable-next-line no-unused-vars
 const port = process.env.port || process.env.npm_config_port || 3000 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
@@ -43,6 +44,14 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/socket': {
+        target: 'ws://192.168.2.172:5659', // 后端目标接口地址
+        changeOrigin: true, // 是否允许跨域
+        pathRewrite: {
+          '^/socket': '' // 重写,
+        },
+        ws: true // 开启ws, 如果是http代理此处可以不用设置
       }
     }
   },
