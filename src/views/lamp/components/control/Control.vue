@@ -116,6 +116,8 @@
               <el-slider
                 v-model="dataForm.brightness"
                 show-stops
+                :min='10'
+                :max="100"
                 :step="10"
                 :show-tooltip="false"
                 :disabled="leddisabled"
@@ -142,6 +144,7 @@
                 v-model="dataForm.frequency"
                 :step="10"
                 :max='120'
+                :min='10'
                 :show-tooltip="false"
                 show-stops
                 :disabled="leddisabled"
@@ -163,9 +166,15 @@
   </div>
 </template>
 <script>
+// API
 import { updateLead, manualAuto, getMainStatus } from '@/api/lamp/lampInfo'
+
+// 配置
 import brightnessF from '../../config/brightness'
 import { Message } from 'element-ui'
+import module from '@/config/ws_module'
+// 中转
+import eventBus from '@/utils/eventBus'
 
 export default {
   props: {
@@ -285,6 +294,7 @@ export default {
 
     // 弹框显示回调
     openDialog () {
+      eventBus.$emit('ws_connection', this.code, module.LED)
       this.$nextTick(() => {
         this.getMainStatu()
       })
@@ -293,6 +303,7 @@ export default {
     // 弹框关闭回调
     closeDialog () {
       this.reset()
+      eventBus.$emit('ws_close', this.code, module.LED)
     },
 
     getMainStatu () {

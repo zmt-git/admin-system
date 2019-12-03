@@ -342,7 +342,6 @@ export default {
     treeClick: function (event, treeId, treeNode, clickFlag) {
       this.clickId = treeNode.id
       this.treeNode = treeNode
-      console.log(this.treeNode)
     },
 
     // 授权该角色资源
@@ -353,7 +352,6 @@ export default {
       for (var i = 0; i <= checkedNodes.length - 1; i++) {
         checkedIds.push(checkedNodes[i].id)
       }
-      console.log(checkedIds)
       if (checkedNodes.length === 0) {
         this.$message.error('请选择要授权的资源')
         return
