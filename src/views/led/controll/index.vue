@@ -123,7 +123,7 @@ export default {
         { prop: 'model', label: '型号' },
         { prop: 'createTime', label: '安装时间', formatter: this.timestampToTimes },
         { prop: 'note', label: '备注' },
-        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true }
+        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true, empty: false }
       ],
       // 表格操作按钮
       operates: {

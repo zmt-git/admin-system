@@ -1,4 +1,9 @@
 // dialog
+.alarm .el-dialog__header {
+  padding: 10px 20px 10px;
+  background: red;
+  color: #fff;
+}
 .el-dialog__header {
   padding: 10px 20px 10px;
   background: #000;
@@ -23,6 +28,13 @@
   max-height: 500px;
   overflow: auto;
 }
+.alarm .el-dialog__footer {
+  padding: 10px 20px 10px;
+  text-align: right;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background: red;
+}
 .el-dialog__footer {
   padding: 10px 20px 10px;
   text-align: right;
@@ -39,5 +51,8 @@
   padding: 0;
 }
 .control .el-dialog__body{
+  padding: 0px!important;
+}
+.alarm .el-dialog__body{
   padding: 0px!important;
 }

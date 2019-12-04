@@ -172,7 +172,7 @@
 <script>
 // API
 import { manualSwitch, setOnOrOffTime, setTime, setFlanSh, playMode, getMainStatus } from '@/api/voice/voiceInfo'
-
+import eventBus from '@/utils/eventBus'
 export default {
   props: {
     code: {
@@ -428,6 +428,12 @@ export default {
 
     // 弹框打开回调
     openDialog () {
+      eventBus.$emit('ws_connection', this.code, module.START)
+      eventBus.$on('updatavoiceStatus', (data) => {
+        // console.log(data)
+        this.masterStatus = data
+        this.getMainStatusInit()
+      })
       this.$nextTick(async () => {
         this.code = this.code
         await this.getMainStatu()
@@ -436,6 +442,7 @@ export default {
 
     // 弹框关闭回调
     closeDialog () {
+      eventBus.$emit('ws_close', this.code, module.END)
       this.custom = ''
     }
   }

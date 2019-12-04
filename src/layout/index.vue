@@ -1,5 +1,5 @@
 <template>
-  <div class="app_wapper">
+  <div class="app_wapper" ref="app_wapper">
     <el-container>
       <!-- 侧边栏 开始 -->
       <el-aside>
@@ -74,6 +74,48 @@
       <!-- 展示信息 结束 -->
 
     </el-container>
+    <el-dialog
+      width="610px"
+      title="告警提示"
+      custom-class='alarm'
+      :append-to-body='true'
+      :visible.sync="alarmDialogVisible"
+    >
+      <ul class="alarm">
+        <li>
+          <span class="alarmName">主控编码</span><span>NXYDD_XZ_0004</span>
+        </li>
+        <li>
+          <span class="alarmName">设备类型</span><span>激光灯</span>
+        </li>
+        <li>
+          <span class="alarmName">维护状态</span>
+          <el-button class="pointer" size="mini" type="danger" plain>未维护</el-button>
+        </li>
+        <li>
+          <span class="alarmName">设备状态</span>
+          <el-button class="pointer" size="mini" type="warning" plain>告警状态</el-button>
+        </li>
+        <li class="widthAll">
+          <span class="alarmName">报警时间</span><span>2019-12-3 11:01:11</span>
+        </li>
+        <li class="widthAll">
+          <span class="alarmName">告警原因</span><span style="color: red">电池电压过低</span>
+        </li>
+        <div class="read">
+          <el-checkbox v-model="checked" class="tip" style="color: #000" @change='read'>标记为已读状态</el-checkbox>
+        </div>
+      </ul>
+      <span slot="footer" class="dialog-footer">
+        <el-checkbox class="tip" v-model="checkedTip" @change='read'>勾选后，告警弹框将不再弹出，以声音提示</el-checkbox>
+        <span class="more">更多告警信息请前往<span class="info" @click="toAlarm">告警信息</span>查看</span>
+        <el-button type="warning" size="mini" @click="alarmDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <div class="checkedTip" ref="checkedTip" v-show="checkedTip">
+      <div class="number" ref="number" @mousedown.self="getPosition" @mouseup="position">99+</div>
+      <div class="message" v-show="messageShow" @click="alarmDialogVisible = true">告警信息</div>
+    </div>
   </div>
 </template>
 
@@ -84,7 +126,7 @@ import { mapGetters } from 'vuex'
 
 // 方法
 import WebSocketWrapper from '@/utils/websocket'
-import eventBus from '@/utils/eventBus'
+import eventBus, { type } from '@/utils/eventBus'
 import { getToken } from '@/utils/auth'
 import { isJSON } from '@/utils/format'
 // 组件
@@ -111,19 +153,26 @@ export default {
       socket: null,
       ws_params: {
         versionNumber: 1.0, // 协议版本号
-        module: null, // 命令号
-        code: null, // 数据结果（0-成功 1-失败）
-        deviceType: null, // 设备类型（0-PC，1-手机）
+        module: 'ledend', // 命令号
+        // deviceType: null, // 设备类型（0-PC，1-手机）
         token: getToken(), // 携带token
         data: {}// 携带数据
-      }
+      },
+      alarmDialogVisible: true,
+      alarm: {},
+      checked: false,
+      checkedTip: false,
+      messageShow: true
     }
   },
   methods: {
+    // 侧边栏显示隐藏
     toggleSideBar () {
       // this.$store.dispatch('toggleSideBar')
       this.isCollapse = !this.isCollapse
     },
+
+    // 登出
     logout () {
       this.$confirm('此操作将退出账户, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -140,11 +189,65 @@ export default {
         })
       })
     },
+
+    // websocket接受消息
     onmessage (data) {
       if (isJSON(data.data)) {
-        // eventBus.$emit('ws_updataStatusLed', data)
-        // eventBus.$emit('ws_updataStatusLamp', data)
-        // eventBus.$emit('ws_updataStatusVoice', data)
+        let message = JSON.parse(data.data)
+        if (message.type === 'alarm') {
+          this.alarmDialogVisible = true
+          this.alarm = message.data
+        } else {
+          eventBus.$emit(type[message.type], message.data)
+        }
+      }
+    },
+
+    // 告警信息link
+    toAlarm () {
+      this.alarmDialogVisible = false
+      this.$router.push('/deviceLog/alarm')
+    },
+
+    // 标记已读未读
+    read () {
+      if (this.checked) {
+        // 标记为已读 更新报警列表
+
+      } else {
+        // 标记为未读 更新报警列表
+
+      }
+    },
+
+    // 改变提示位置
+    changePosition (event) {
+      let e = event || window.event
+      if (this.positionCheck) {
+        this.$refs.checkedTip.style.top = e.pageY + 'px'
+        this.$refs.checkedTip.style.left = e.pageX + 'px'
+      }
+    },
+
+    // 鼠标弹起
+    position () {
+      this.$refs.number.style.cursor = 'grab'
+      this.messageShow = true
+      let e = event || window.event
+      this.$refs.checkedTip.style.top = e.pageY + 'px'
+      this.$refs.checkedTip.style.right = 0 + 'px'
+    },
+
+    // 鼠标按下
+    getPosition () {
+      this.$refs.number.style.cursor = 'grabing'
+      this.messageShow = false
+      this.$refs.app_wapper.onmousemove = () => {
+        if (!this.messageShow) {
+          let e = event || window.event
+          this.$refs.checkedTip.style.top = (e.pageY - 20) + 'px'
+          this.$refs.checkedTip.style.left = (e.pageX - 20) + 'px'
+        }
       }
     }
   },
@@ -165,7 +268,7 @@ export default {
       this.ws_params.data = { code: code }
       let obj = JSON.parse(JSON.stringify(this.ws_params))
       obj = JSON.stringify(obj)
-      this.socket.send_(obj)
+      this.socket.websock.send(obj)
     })
     eventBus.$on('ws_close', (code, type) => {
       console.log('close' + code)
@@ -173,7 +276,7 @@ export default {
       this.ws_params.data = { code: code }
       let obj = JSON.parse(JSON.stringify(this.ws_params))
       obj = JSON.stringify(obj)
-      this.socket.send_(obj)
+      this.socket.websock.send(obj)
     })
   },
   mounted () {
@@ -208,6 +311,7 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
+    overflow: hidden;
   }
   .app_content {
     min-height: 500px;
@@ -374,4 +478,100 @@ export default {
   .userIcon{
     font-size: 33px;
   }
+  .alarm{
+    font-size: 14px;
+    background: linear-gradient(#fff 50%, #eee 50%);
+    background-size: 100% 100px;
+    overflow: hidden;
+    & li{
+      float: left;
+      width: 50%;
+      line-height: 50px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      & .alarmName{
+        width: 80px;
+        text-align: center;
+        display: inline-block;
+        line-height: inherit;
+      }
+    }
+  }
+  .widthAll{
+    width: 100%!important;
+  }
+  .more{
+    font-size: 12px;
+    float: left;
+    line-height: 28px;
+    margin-left: 10px;
+    color: #fff;
+    & .info{
+      color: #409EFF;
+      padding: 0 5px;
+      cursor: pointer;
+    }
+    & .info:hover{
+      text-decoration: underline;
+    }
+  }
+  .pointer{
+    cursor: pointer!important;
+  }
+  .read{
+    float: right;
+    color: #409EFF;
+    line-height: 30px;
+    margin-right: 10px;
+  }
+  .tip{
+    float: left;
+    font-size: 12px;
+    color: #fff;
+    line-height: 28px;
+  }
+  .checkedTip{
+    overflow: hidden;
+    z-index: 9999;
+    position: absolute;
+    right: -70px;
+    // transition: all .5s;
+    top:60px;
+    & .number{
+      width: 40px;
+      height: 40px;
+      float: left;
+      background: red;
+      border-radius: 50%;
+      font-size: 18px;
+      line-height: 40px;
+      color: #fff;
+      cursor: grab;
+    }
+    & .message{
+      width: 70px;
+      height: 26px;
+      float: left;
+      font-size: 14px;
+      background: red;
+      line-height: 26px;
+      position: relative;
+      left: -6px;
+      top: 7px;
+      color: #fff;
+      cursor: pointer;
+    }
+    & .message:hover{
+      text-decoration: underline;
+    }
+  }
+  .checkedTip:hover{
+    right: -6px;
+    transition: all .5s;
+  }
+</style>
+<style>
+.tip .el-checkbox__label{
+  font-size: 12px;
+}
 </style>

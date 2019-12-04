@@ -4,6 +4,7 @@
       title="激光灯控制"
       :visible.sync="dialogVisible"
       @open='open'
+      @close='close'
       width="610px">
       <div class="statusBox">
         <i class="iconfont icon-zhuangtai1" :class='status === 0 ? "iconOn":"iconOFF"'></i>
@@ -119,6 +120,7 @@
 </template>
 <script>
 import { setTime, setFan, autoFan, setLaser, setFlanSh, setOnOrOffTime, getLaserStatus } from '@/api/led/controller'
+import eventBus from '@/utils/eventBus'
 export default {
   name: 'LedControl',
   props: {
@@ -229,9 +231,19 @@ export default {
       this.dialogVisible = true
     },
 
-    // 获取状态
+    // 弹框打开回调 获取状态
     open () {
+      eventBus.$emit('ws_connection', this.code, module.START)
+      eventBus.$on('updataledStatus', (data) => {
+        this.mainControlStatus = data
+        this.foramtBtn()
+      })
       this.getStatus()
+    },
+
+    // 弹框关闭回调
+    close () {
+      eventBus.$emit('ws_close', this.code, module.END)
     },
 
     // 获取当前状态
@@ -239,6 +251,7 @@ export default {
       getLaserStatus({ code: this.code })
         .then((res) => {
           this.mainControlStatus = res.result.mainControlStatus
+          this.foramtBtn()
         })
         .catch((err) => {
           console.log(err)

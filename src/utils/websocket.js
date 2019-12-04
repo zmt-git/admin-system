@@ -9,7 +9,7 @@ export default class WebSocketWrapper {
   constructor (_options) {
   // 构造方法
     this._options = _options || {}
-    this.timeout = 3000
+    this.timeout = 1000 * 60
     this.reconnectionTime = 4000
     this.closed = true
     this.timeoutObj = null
@@ -46,7 +46,6 @@ export default class WebSocketWrapper {
 
   // 获取消息
   websocketonmessage (agentData) {
-    console.log(agentData)
     if (this._options.onmessage) {
       this.onmessage_(agentData)
     }
@@ -117,7 +116,6 @@ export default class WebSocketWrapper {
         'token': getToken(), // 携带token
         'data': null// 携带数据
       }
-      console.log(obj)
       obj = JSON.stringify(obj)
       that.websock.send(obj)
       that.websocketHeartbeat(e)
