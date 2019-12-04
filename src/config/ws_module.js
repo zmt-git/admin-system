@@ -1,8 +1,6 @@
 export default {
-  LED: 'led',
-  LAMP: 'lamp',
-  VOICE: 'voice',
-  ALARM: 'alarm',
+  START: 'start',
+  END: 'end',
   STATUS: 'result',
   HEART: 'heart'
 }

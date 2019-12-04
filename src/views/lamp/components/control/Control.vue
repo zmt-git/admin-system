@@ -294,7 +294,11 @@ export default {
 
     // 弹框显示回调
     openDialog () {
-      eventBus.$emit('ws_connection', this.code, module.LED)
+      eventBus.$emit('ws_connection', this.code, module.START)
+      eventBus.$on('updatalampStatus', (data) => {
+        this.masterInfo = data
+        this.showFormat()
+      })
       this.$nextTick(() => {
         this.getMainStatu()
       })
@@ -303,7 +307,7 @@ export default {
     // 弹框关闭回调
     closeDialog () {
       this.reset()
-      eventBus.$emit('ws_close', this.code, module.LED)
+      eventBus.$emit('ws_close', this.code, module.END)
     },
 
     getMainStatu () {

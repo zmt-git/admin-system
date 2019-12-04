@@ -148,7 +148,7 @@ export default {
         { prop: 'model', label: '型号' },
         { prop: 'note', label: '备注' },
         { prop: 'visibility', label: '能见度检测仪数量' },
-        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true }
+        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true, empty: false }
       ],
 
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)

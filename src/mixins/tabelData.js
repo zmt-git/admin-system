@@ -401,7 +401,7 @@ export default {
      * @param {*} prop表格绑定属性
      * @param {*} row表格点击数据
      */
-    async viewGroups (prop, row) {
+    async viewGroups (prop, row, empty) {
       let index = this.columns.findIndex(item => {
         return item.prop === prop
       })
@@ -409,10 +409,12 @@ export default {
       this.$set(this.columns[index], 'loading', true)
       await this.getDeviceGroupFn({ code: row.code })
         .then(res => {
+          this.$set(this.columns[index], 'empty', false)
           this.$set(this.columns[index], 'showList', res.result)
         })
         .catch(err => {
           this.tip('获取分组信息失败', 'error')
+          this.$set(this.columns[index], 'empty', true)
           console.log(err)
         })
       this.$set(this.columns[index], 'loading', false)

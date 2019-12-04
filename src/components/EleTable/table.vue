@@ -32,12 +32,44 @@
                 <span>{{scope.row[column.prop]}}</span>
               </template>
             </template>
+            <template v-else-if="column.nopopover">
+              <div slot="reference" class="name-wrapper">
+                <template v-if="column.typeLists && column.typeLists.length >0">
+                  <span
+                    :key='index'
+                    v-for='(elem, index) in column.typeLists'>
+                    <span v-if="column.method">
+                      <el-tag
+                        v-if="scope.row[column.prop] === elem.value"
+                        size="medium"
+                        :type="elem.type ? elem.type : 'primary'"
+                        @click="column.method(column.prop, scope.row)"
+                        >
+                        {{elem.title}}
+                      </el-tag>
+                    </span>
+                    <span v-else>
+                      <el-tag
+                        v-if="scope.row[column.prop] === elem.value"
+                        size="medium"
+                        :type="elem.type ? elem.type : 'primary'"
+                        >
+                        {{elem.title}}
+                      </el-tag>
+                    </span>
+                  </span>
+                </template>
+                <el-tag v-else size="medium" :type="column.type ? column.type : 'primary'">{{column.title}}</el-tag>
+              </div>
+              <!-- <expand-dom :column="column" :row="scope.row" :render="column.render" :index="index"></expand-dom> -->
+            </template>
             <template v-else>
-              <el-popover trigger="hover" @show='column.method(column.prop, scope.row, column.showList)' placement="left">
+              <el-popover trigger="hover" @show='column.method(column.prop, scope.row, column.empty)' placement="left">
                 <p class="loading" v-if="column.loading"><i class="el-icon-loading"></i></p>
+                <p v-else-if='column.empty' style='color:red'>——————</p>
                 <p class="groupsItem" v-else :key="index" v-for="(item, index) in column.showList">{{ (index+1) + '.' +item.name}}</p>
                 <div slot="reference" class="name-wrapper">
-                  <el-tag size="medium">查看分组</el-tag>
+                  <el-tag size="medium" :type="column.type ? column.type : 'primary'">查看分组</el-tag>
                 </div>
               </el-popover>
               <!-- <expand-dom :column="column" :row="scope.row" :render="column.render" :index="index"></expand-dom> -->
@@ -84,7 +116,6 @@
         @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="pageSizes"
-        :page-size="100"
         :layout="layout"
         :total="total">
       </el-pagination>

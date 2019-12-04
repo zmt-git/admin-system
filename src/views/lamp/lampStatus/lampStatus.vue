@@ -1,7 +1,6 @@
 <template>
   <div class="textAlginLeft">
     <div>
-
       <!-- 选择主控 开始 -->
       <el-form ref="form" :model="masterForm" :rules="masterrules" style="float:left;" size="small" label-position="right" label-width="70px" >
         <el-row :gutter="20">
@@ -12,7 +11,7 @@
                   v-for="(item,index) in masterOptions"
                   :key="index"
                   :label="item.code"
-                  :value="item.id"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -90,11 +89,10 @@
         <el-pagination
           @size-change="sizeChange"
           @current-change="pageChange"
-          :currentPageNo="0"
-          :page-sizes="[15, 20, 50, 100]"
-          :page-size="size"
-          layout="total, prev, pager, next, sizes"
-          :total=total>
+          :current-page="currentPage"
+          :page-sizes="[15, 20, 30, 50]"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total='total'>
         </el-pagination>
       </el-col>
     </el-row>
@@ -109,6 +107,8 @@ import { findAllMainControl } from '@/api/lamp/lampInfo'
 
 // 方法
 import { timestampToTime } from '@/utils/format'
+
+// 组件
 export default {
   data () {
     return {
@@ -117,9 +117,10 @@ export default {
       daylist: [],
       model: '1',
       totallist: [],
-      page: 0,
-      size: 15,
+      pageNumber: 1,
+      pageSize: 15,
       total: 0,
+      currentPage: 0,
       delLoading: false,
       setWaningInfo: {},
       statusInfo: {},
@@ -143,41 +144,16 @@ export default {
       .catch(err => console.log(err))
   },
   methods: {
-    // 排序回调函数
-    compare (obj1, obj2) {
-      var val1 = obj1.code
-      var val2 = obj2.code
-      if (val1 < val2) {
-        return -1
-      } else if (val1 > val2) {
-        return 1
-      } else {
-        return 0
-      }
-    },
-
     // 显示条数改变
     sizeChange (e) {
-      this.size = e
-      if (this.page === 0) {
-        this.tableData = this.totallist.slice((this.page * this.size), this.size)
-        console.log('sizeChange:' + (this.page * this.size), this.size)
-      } else {
-        this.tableData = this.totallist.slice((this.page * this.size), (this.page * this.size + this.size))
-        console.log('sizeChange:' + (this.page * this.size), (this.page * this.size + this.size))
-      }
+      this.pageSize = e
+      this.getLampList(this.masterForm.masterControl)
     },
 
     // 改变页数
     pageChange (e) {
-      this.page = e - 1
-      if (this.page === 0) {
-        this.tableData = this.totallist.slice((this.page * this.size), this.size)
-        console.log('pageChange:' + (this.page * this.size), this.size)
-      } else {
-        this.tableData = this.totallist.slice((this.page * this.size), (this.page * this.size + this.size))
-        console.log('pageChange:' + (this.page * this.size), (this.page * this.size + this.size))
-      }
+      this.pageNumber = e
+      this.getLampList(this.masterForm.masterControl)
     },
 
     // 表格数据选中数据
@@ -248,24 +224,13 @@ export default {
     },
 
     // 初始化数据
-    getLampList (id) {
-      this.totallist = []
-      this.nightlist = []
-      this.daylist = []
-      this.total = 0
+    getLampList (code) {
       this.tableData = []
-      getLeadStatus({ code: id })
+      getLeadStatus({ code: code, pageNumber: this.pageNumber, pageSize: this.pageSize })
         .then(res => {
-          if (res.msg === '成功') {
-            this.page = 0
-            this.size = 15
-            res.result.sort(this.compare)
-            this.tableData = res.result.slice(0, 15)
-            this.nightlist = res.result
-            this.daylist = res.result
-            this.totallist = this.nightlist
-            this.total = parseInt(res.result.length)
-          }
+          this.currentPage = res.result.current
+          this.tableData = res.result.records
+          this.total = res.result.total
         })
         .catch(err => {
           console.log(err)
