@@ -32,8 +32,8 @@ export default {
             resolve()
           })
           .catch(error => {
-            console.error('src/store/modules/system.js "getAllRoles"')
-            console.error(error)
+            console.log('src/store/modules/system.js "getAllRoles"')
+            console.log(error)
             reject(error)
           })
       })
@@ -46,8 +46,8 @@ export default {
             resolve()
           })
           .catch(error => {
-            console.error('src/store/modules/system.js "getAllUsers"')
-            console.error(error)
+            console.log('src/store/modules/system.js "getAllUsers"')
+            console.log(error)
             reject(error)
           })
       })
@@ -60,8 +60,8 @@ export default {
             resolve()
           })
           .catch(error => {
-            console.error('src/store/modules/system.js "findAllGroupS"')
-            console.error(error)
+            console.log('src/store/modules/system.js "findAllGroupS"')
+            console.log(error)
             reject(error)
           })
       })

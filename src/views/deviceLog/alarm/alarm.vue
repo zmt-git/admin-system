@@ -12,7 +12,7 @@
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
       <el-button type="success" size="mini" v-hasBtn @click="allread"><i class="iconfont icon-zhanneixinyidu iconBtn"></i>一键已读</el-button>
-      <el-button type="info" size="mini" v-hasBtn @click="allread"><i class="iconfont icon-techreport- iconBtn"></i>一键维护</el-button>
+      <el-button type="info" size="mini" v-hasBtn @click="allmaintain"><i class="iconfont icon-techreport- iconBtn"></i>一键维护</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->
@@ -32,20 +32,6 @@
       @handleCurrentChange='handleCurrentChange'
     ></EleTable>
     <!-- 表格+分页 结束 -->
-
-    <!-- 表格数据编辑， 添加用户弹出层 开始 -->
-    <DialogForm
-      :options='Dialogoptions'
-      :formLists='formLists'
-      :dataForm='dataForm'
-      :formAttr='formAttr'
-      :isAdd='isAdd'
-      @confirm='confirm'
-      @change='changeDia'
-      @blur='blur'
-      ref="DialogForm"
-    ></DialogForm>
-    <!-- 表格数据编辑， 添加用户弹出层 结束 -->
   </div>
 <!-- root element -->
 </template>
@@ -56,7 +42,6 @@ import tabelData from '@/mixins/tabelData'
 // 组件
 import EleTable from '@/components/EleTable/table'
 import Search from '@/components/Search/search'
-import DialogForm from '@/components/DialogForm/DialogForm'
 
 // 方法
 import { timestampToTime } from '@/utils/format'
@@ -68,8 +53,7 @@ import { pageMainControl, saveOrUpdate, deleteByIds } from '@/api/voice/voiceInf
 export default {
   components: {
     EleTable,
-    Search,
-    DialogForm
+    Search
   },
   mixins: [tabelData],
   computed: {
@@ -77,7 +61,9 @@ export default {
   },
   created () {
     // 获取用户
-    this.getTabelData(this.initDataFn)
+    this.list = this.obj
+    this.options.loading = false
+    // this.getTabelData(this.initDataFn)
   },
   data () {
     return {
@@ -96,12 +82,12 @@ export default {
       // 表格数据展示数据key
       columns: [
         { prop: 'code', label: '设备编码', width: '130px' },
-        { prop: 'num', label: '设备类型', width: '130px' },
-        { prop: 'latitude', label: '报警时间', formatter: this.timestampToTimes, width: '140px' },
-        { prop: 'location', label: '报警原因' },
-        { prop: 'longitude', label: '主控状态', render: true, nopopover: true, title: '告警', type: 'danger', width: '70px', typeLists: [{ value: 0, title: '正常', type: 'success' }, { value: 1, title: '离线', type: 'danger' }, { value: 2, title: '告警', type: 'warning' }, { value: 3, title: '升级', type: 'info' }] },
-        { prop: 'model', label: '维护状态', render: true, nopopover: true, width: '80px', typeLists: [{ value: 0, title: '未维护', type: 'success' }, { value: 1, title: '已维护', type: 'success' }] },
-        { prop: 'note', label: '消息状态', render: true, nopopover: true, width: '70px', typeLists: [{ value: 0, title: '未读', type: 'danger' }, { value: 1, title: '已读', type: 'success' }], method: 'readMessage' }
+        { prop: 'deviceType', label: '设备类型', width: '130px', formatter: this.formatterType },
+        { prop: 'alarmTime', label: '报警时间', formatter: this.timestampToTimes, width: '140px' },
+        { prop: 'resion', label: '报警原因' },
+        { prop: 'deviceStatus', label: '主控状态', render: true, nopopover: true, title: '告警', type: 'danger', width: '70px', typeLists: { 0: { value: 0, title: '正常', type: 'success' }, 1: { value: 1, title: '离线', type: 'danger' }, 2: { value: 2, title: '告警', type: 'warning' }, 3: { value: 3, title: '升级', type: 'info' } } },
+        { prop: 'maintain', label: '维护状态', render: true, nopopover: true, width: '80px', typeLists: { 0: { value: 0, title: '未维护', type: 'danger' }, 1: { value: 1, title: '已维护', type: 'success' } }, method: this.maintain },
+        { prop: 'read', label: '消息状态', render: true, nopopover: true, width: '70px', typeLists: { 0: { value: 0, title: '未读', type: 'danger' }, 1: { value: 1, title: '已读', type: 'success' } }, method: this.readMessage }
       ],
 
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)
@@ -129,54 +115,6 @@ export default {
         ]
       },
 
-      // 编辑 添加 (混入数据包含该数据 ，修改初始状态，覆盖即可)
-      isAdd: false,
-
-      // 弹出层配置文件
-      Dialogoptions: {
-        title: '报警信息', // 弹框标题
-        width: '610px', // 弹框宽度
-        dialogVisible: false, // 弹框默认显示，隐藏状态属性
-        inline: false // 表单是否为内联
-      },
-
-      // 弹出层表单配置文件 不建议表格与弹框使用一个对象=
-      formLists: [
-        { model: 'code', label: '主控编码', placeholder: '请输入编码' },
-        { model: 'latitude', label: '设备类型', placeholder: '请输入纬度' },
-        { model: 'longitude', label: '报警原因', placeholder: '请输入经度' },
-        { model: 'model', label: '主控状态', placeholder: '请输入型号' },
-        { model: 'location', label: '维护状态', placeholder: '请输入安装位置' },
-        { model: 'note', label: '消息状态', placeholder: '请输入备注' }
-      ],
-
-      // 表单验证规则
-      formAttr: {
-        rules: {
-          code: [
-            { required: true, message: '请输入编码', trigger: 'blur' }
-          ],
-          num: [
-            { required: true, message: '请输入数量', trigger: 'change' }
-          ],
-          location: [
-            { required: true, message: '请输入安装位置', trigger: 'change' }
-          ]
-        },
-        labelWidth: null
-      },
-
-      // 弹出层表单数据
-      dataForm: {
-        'code': null,
-        'num': null,
-        'latitude': null,
-        'longitude': null,
-        'model': null,
-        'location': null,
-        'note': null
-      },
-
       // 表格选中数据
       alarmList: [],
 
@@ -190,7 +128,21 @@ export default {
       deleteVal: true,
 
       // 主控code
-      code: null
+      code: null,
+
+      // 设备类型
+      deviceType: {
+        led: '激光灯',
+        lamp: '引导灯',
+        voice: '红外对射'
+      },
+      obj: [
+        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 0, maintain: 1, read: 1 },
+        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 1, maintain: 0, read: 0 },
+        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 2, maintain: 0, read: 0 },
+        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 3, maintain: 0, read: 0 },
+        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 2, maintain: 0, read: 0 }
+      ]
     }
   },
   methods: {
@@ -204,24 +156,46 @@ export default {
       this.alarmList = val
     },
 
-    // 已读
+    // 一键已读 TODO
     allread () {
       if (this.alarmList.length <= 0) {
         this.tip('至少选中一条数据，才能进行操作', 'info')
       } else {
-        console.log(this.alarmList)
         this.tip('操作成功', 'success')
       }
     },
 
-    // 设备维护
-    maintain () {
-
+    // 一键维护 TODO
+    allmaintain () {
+      if (this.alarmList.length <= 0) {
+        this.tip('至少选中一条数据，才能进行操作', 'info')
+      } else {
+        this.tip('操作成功', 'success')
+      }
     },
 
-    // 消息已读 未读
-    readMessage () {
+    // 设备维护 TODO
+    maintain (key, row) {
+      // 点击转换状态
+      if (row[key]) {
+        this.$set(this.obj[0], 'maintain', 0)
+      } else {
+        this.$set(this.obj[0], 'maintain', 1)
+      }
+    },
 
+    // 消息已读 未读 TODO
+    readMessage (key, row) {
+      // 点击标记为已读
+      if (row[key]) {
+        this.$set(this.obj[0], 'read', 0)
+      } else {
+        this.$set(this.obj[0], 'read', 1)
+      }
+    },
+
+    formatterType (val, key) {
+      return this.deviceType[val[key.prop]]
     }
   }
 }

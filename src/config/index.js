@@ -15,9 +15,17 @@ export default {
    */
   webName: 'itms',
   /**
-   * @description token key
+   * @description token key请求token
    */
   TokenKey: 'ADMIN-TOEKN',
+  /**
+   * @description 告警声音
+   */
+  VoiceKey: 'ADMIN-VOICE',
+  /**
+   * @description 告警弹框
+   */
+  AlarmKey: 'ADMIN-ALARM',
   /**
    * @description 请求超时时间，毫秒（默认2分钟）
    */

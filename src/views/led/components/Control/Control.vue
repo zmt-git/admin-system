@@ -7,8 +7,8 @@
       @close='close'
       width="610px">
       <div class="statusBox">
-        <i class="iconfont icon-zhuangtai1" :class='status === 0 ? "iconOn":"iconOFF"'></i>
-        <span :class='status === 0 ? "fontStyleOn":"fontStyleOFF"'>{{isConnect}}</span>
+        <i class="iconfont icon-zhuangtai1 iconStyle" :class='deviceType[status].iconClass'></i>
+        <span class="fontStyle" :class='deviceType[status].textClass'>{{deviceType[status].title}}</span>
       </div>
       <ul class="lampBox">
         <!-- 开关灯时间 开始 -->
@@ -58,6 +58,9 @@
             <span class="title">同步时间</span>
             <el-button type="primary" plain size="mini" style="width: 110px;height: 32px;" @click="syncTime()">同步</el-button>
           </div>
+           <!-- 调试按钮 开始 -->
+              <el-button type="primary" class="debugging" v-hasBtn plain size="small">调试</el-button>
+            <!-- 调试按钮 开始 -->
         </li>
         <li class="lamp">
            <!-- 闪烁方式 -->
@@ -222,7 +225,12 @@ export default {
         }
       ],
       status: 1,
-      isConnect: '设备离线'
+      deviceType: {
+        0: { value: 0, title: '设备正常', iconClass: 'iconsuccess', textClass: 'success' },
+        1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
+        2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
+        3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
+      }
     }
   },
   methods: {

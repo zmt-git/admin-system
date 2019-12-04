@@ -253,7 +253,7 @@ export default {
           }
         })
         .catch(error => {
-          console.error(error)
+          console.log(error)
         })
     },
 
@@ -297,19 +297,20 @@ export default {
     },
 
     // 比较树形结构差异
-    compareDiffForTree (tree2 = { children: [] }, zTree) {
-      if (!!tree2.children && tree2.children.length > 0) {
-        tree2.children.forEach((item, index) => {
-          let node = zTree.getNodeByParam('id', item.id)
-          zTree.checkNode(node, true, true)
-          zTree.updateNode(node)
-          if (!!item.children && item.children.length > 0) {
-            this.compareDiffForTree(item.children)
-          }
-        })
-      } else {
-        return null
-      }
+    compareDiffForTree (tree2 = [], zTree) {
+      let that = this
+      tree2.forEach(ele => {
+        if (!!ele.children && ele.children.length > 0) {
+          ele.children.forEach((item, index) => {
+            let node = zTree.getNodeByParam('id', item.id)
+            zTree.checkNode(node, true, true)
+            zTree.updateNode(node)
+            if (!!item.children && item.children.length > 0) {
+              that.compareDiffForTree(item.children, zTree)
+            }
+          })
+        }
+      })
     },
 
     // 初始化树形结构
@@ -327,11 +328,11 @@ export default {
       this.zNodes.push(...arr)
       // eslint-disable-next-line no-undef
       this.tree = $.fn.zTree.init($('#res-tree'), that.setting, that.zNodes)
-      let node = this.tree.getNodeByParam('tId', 0, null)
+      let node = this.tree.getNodeByParam('id', 0)
       this.tree.expandNode(node, true, false, false)
       await getTreeResourceByRole({ roleId: this.roleId })
         .then(res => {
-          this.compareDiffForTree(...res.result, this.tree)
+          this.compareDiffForTree(res.result, this.tree)
         }).catch(err => {
           console.log('error:' + err)
           console.log(err)

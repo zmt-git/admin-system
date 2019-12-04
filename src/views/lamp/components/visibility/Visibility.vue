@@ -98,7 +98,7 @@ export default {
           this.options.loading = false
         })
         .catch(error => {
-          console.error(error)
+          console.log(error)
           this.options.loading = false
         })
     }

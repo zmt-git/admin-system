@@ -274,30 +274,6 @@ aside {
 ::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
-.iconOn{
-  color: #13ce66;
-  font-size: 24px;
-  vertical-align: middle;
-  margin-left: 5px;
-}
-.iconOFF{
-  color: #ff4949;
-  font-size: 24px;
-  vertical-align: middle;
-  margin-left: 5px;
-}
-.fontStyleOn{
-  color: #13ce66;
-  font-size: 14px;
-  vertical-align: middle;
-  margin-left: 5px;
-}
-.fontStyleOFF{
-  color: #ff4949;
-  font-size: 14px;
-  vertical-align: middle;
-  margin-left: 5px;
-}
 .statusBox{
   display: inline-block;
   position: absolute;
@@ -305,4 +281,44 @@ aside {
   right: 65px;
   height: 44px;
   line-height: 43px;
+}
+.iconStyle{
+  color: #ccc;
+  font-size: 24px;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+.fontStyle{
+  color: #ccc;
+  font-size: 14px;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+.iconsuccess{
+  color: #00d231;
+}
+.icondanger{
+  color: #ff4949;
+}
+.iconwarning{
+  color: #ffbc08;
+}
+.iconinfo{
+  color: #bdbcba;
+}
+.success{
+  color: #00d231;
+}
+.danger{
+  color: #ff4949;
+}
+.warning{
+  color: #ffbc08;
+}
+.info{
+  color: #bdbcba;
+}
+.debugging{
+  margin-top: 20px;
+  width: 80px;
 }

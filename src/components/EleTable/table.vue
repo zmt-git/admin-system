@@ -6,6 +6,7 @@
       :size="options.small ? options.small: 'small'"
       :data="list"
       :stripe="options.stripe"
+      header-row-class-name='headStyle'
       :header-row-style="{height: options.height, padding: options.padding}"
       :row-style="{height: options.height}"
       :cell-style='{padding: options.padding}'
@@ -34,32 +35,27 @@
             </template>
             <template v-else-if="column.nopopover">
               <div slot="reference" class="name-wrapper">
-                <template v-if="column.typeLists && column.typeLists.length >0">
-                  <span
-                    :key='index'
-                    v-for='(elem, index) in column.typeLists'>
-                    <span v-if="column.method">
-                      <el-tag
-                        v-if="scope.row[column.prop] === elem.value"
-                        size="medium"
-                        :type="elem.type ? elem.type : 'primary'"
-                        @click="column.method(column.prop, scope.row)"
-                        >
-                        {{elem.title}}
-                      </el-tag>
-                    </span>
-                    <span v-else>
-                      <el-tag
-                        v-if="scope.row[column.prop] === elem.value"
-                        size="medium"
-                        :type="elem.type ? elem.type : 'primary'"
-                        >
-                        {{elem.title}}
-                      </el-tag>
-                    </span>
+                <template v-if="column.typeLists">
+                  <span v-if="column.method">
+                    <el-tag
+                      size="small"
+                      :type="column.typeLists[scope.row[column.prop]].type ? column.typeLists[scope.row[column.prop]].type : 'primary'"
+                      @click="column.method(column.prop, scope.row)"
+                      >
+                      {{column.typeLists[scope.row[column.prop]].title}}
+                    </el-tag>
+                  </span>
+                  <span v-else>
+                    <el-tag
+                      size="small"
+                      style="cursor: text"
+                      :type="column.typeLists[scope.row[column.prop]].type ? column.typeLists[scope.row[column.prop]].type : 'primary'"
+                      >
+                      {{column.typeLists[scope.row[column.prop]].title}}
+                    </el-tag>
                   </span>
                 </template>
-                <el-tag v-else size="medium" :type="column.type ? column.type : 'primary'">{{column.title}}</el-tag>
+                <el-tag v-else size="small" :type="column.type ? column.type : 'primary'">{{column.title}}</el-tag>
               </div>
               <!-- <expand-dom :column="column" :row="scope.row" :render="column.render" :index="index"></expand-dom> -->
             </template>
@@ -244,5 +240,10 @@ export default {
   box-sizing: border-box;
   font-size: 14px;
   color: #409EFF;;
+}
+</style>
+<style>
+.headStyle th{
+  background: #f4f4f4;
 }
 </style>

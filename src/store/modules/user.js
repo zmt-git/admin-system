@@ -1,5 +1,5 @@
 import { login } from '@/api/login/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, removeAlarm, removeVoice } from '@/utils/auth'
 
 const user = {
   state: {
@@ -48,6 +48,8 @@ const user = {
         commit('SET_USER', {})
         commit('SET_LOAD_MENUS', false)
         removeToken()
+        removeAlarm()
+        removeVoice()
         resolve()
       })
     },

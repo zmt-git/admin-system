@@ -255,7 +255,7 @@ export default {
           }
         })
         .catch(error => {
-          console.error(error)
+          console.log(error)
         })
     },
 
@@ -295,7 +295,7 @@ export default {
             this.tip('角色分配成功', 'success')
           })
           .catch(error => {
-            console.error(error)
+            console.log(error)
             this.tip('角色分配失败', 'error')
           })
       } else if (this.checkType === 'grounp') {
@@ -305,7 +305,7 @@ export default {
             this.tip('设备组分配成功', 'success')
           })
           .catch(error => {
-            console.error(error)
+            console.log(error)
             this.tip('设备组分配失败', 'error')
           })
       }

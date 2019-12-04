@@ -14,6 +14,8 @@
       <el-button type="success" v-hasBtn icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
       <el-button type="warning" v-hasBtn size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
       <el-button type="danger" v-hasBtn icon="el-icon-delete" size="mini" @click="deleteIds(groupList)">批量删除</el-button>
+      <el-button type="info" icon="el-icon-delete" size="mini" v-hasBtn>批量测试</el-button>
+      <el-button type="info" icon="el-icon-delete" size="mini" v-hasBtn>全部测试</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->
@@ -274,7 +276,7 @@ export default {
           }
         })
         .catch(error => {
-          console.error(error)
+          console.log(error)
         })
     },
 
@@ -355,7 +357,7 @@ export default {
           this.tip('设备批量分组成功', 'success')
         })
         .catch(err => {
-          console.error(err)
+          console.log(err)
           this.tip('设备批量分组失败', 'error')
         })
       this.groupOptions.popoverVisible = false

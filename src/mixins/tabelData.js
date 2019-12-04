@@ -180,7 +180,7 @@ export default {
           this.tip('删除成功', 'success')
         })
         .catch(error => {
-          console.error(error)
+          console.log(error)
           this.tip('删除失败', 'error')
         })
     },
@@ -282,7 +282,7 @@ export default {
             this.tip(`${msg}成功`, 'success')
           })
           .catch(error => {
-            console.error(error)
+            console.log(error)
             this.tip(`${msg}失败`, 'error')
           })
       } else {
@@ -294,7 +294,7 @@ export default {
             this.tip(`${msg}成功`, 'success')
           })
           .catch(error => {
-            console.error(error)
+            console.log(error)
             this.tip(`${msg}失败`, 'error')
           })
       }

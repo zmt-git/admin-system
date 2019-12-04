@@ -12,8 +12,8 @@
         <!-- 状态 开始-->
         <!-- 状态 结束-->
         <div class="statusBox">
-          <i class="iconfont icon-zhuangtai1" :class='status === 0 ? "iconOn":"iconOFF"'></i>
-          <span :class='status === 0 ? "fontStyleOn":"fontStyleOFF"'>{{isConnect}}</span>
+          <i class="iconfont icon-zhuangtai1 iconStyle" :class='deviceType[status].iconClass'></i>
+          <span class="fontStyle" :class='deviceType[status].textClass'>{{deviceType[status].title}}</span>
         </div>
         <ul class="controlList">
           <li class="controlitem">
@@ -40,6 +40,9 @@
               <el-button style="width: 80px;" plain type="primary" size="mini" @click="syncTime()">同步</el-button>
             </div>
             <!-- 同步时间 结束 -->
+             <!-- 调试按钮 开始 -->
+              <el-button type="primary" class="debugging" v-hasBtn plain size="small">调试</el-button>
+            <!-- 调试按钮 开始 -->
           </li>
 
           <li class="controlitem controlitembg">
@@ -185,7 +188,12 @@ export default {
       loading: true,
       custom: '', // 自定义指令
       status: 1,
-      isConnect: '设备离线',
+      deviceType: {
+        0: { value: 0, title: '设备正常', iconClass: 'iconsuccess', textClass: 'success' },
+        1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
+        2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
+        3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
+      },
       dialogVisible: false,
       handOff: null, // 手动开关
       playModel: '', // 播放模式

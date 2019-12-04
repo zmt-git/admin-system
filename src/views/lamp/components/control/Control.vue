@@ -13,8 +13,8 @@
         @close="closeDialog">
         <!-- 控制表单 开始 -->
       <div class="statusBox">
-        <i class="iconfont icon-zhuangtai1" :class='status === 0 ? "iconOn":"iconOFF"'></i>
-        <span :class='status === 0 ? "fontStyleOn":"fontStyleOFF"'>{{isConnect}}</span>
+        <i class="iconfont icon-zhuangtai1 iconStyle" :class='deviceType[status].iconClass'></i>
+        <span class="fontStyle" :class='deviceType[status].textClass'>{{deviceType[status].title}}</span>
       </div>
         <ul class="controlList">
           <li class="controlitem">
@@ -26,6 +26,7 @@
               </span>
               <i class="iconfont icon icon-shengyinyinliangxianxing"></i>
               <el-switch
+                class="controlInput"
                 v-model="dataForm.voice"
                 active-text="开启"
                 inactive-text="关闭"
@@ -46,6 +47,7 @@
               </span>
               <i class="iconfont icon icon-yejian"></i>
               <el-switch
+                class="controlInput"
                 v-model="dataForm.atNight"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
@@ -59,6 +61,10 @@
             </div>
             <!-- 夜间状态 结束 -->
 
+            <!-- 调试按钮 开始 -->
+              <el-button type="primary" class="debugging" v-hasBtn plain size="small">调试</el-button>
+            <!-- 调试按钮 开始 -->
+
           </li>
           <li class="controlitem controlitembg">
 
@@ -70,7 +76,7 @@
               <i class="iconfont icon icon-dingwei"></i>
               <el-switch
                 v-model="dataForm.wake"
-                style="vertical-align: middle;"
+                class="controlInput"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
                 active-text="开启"
@@ -91,6 +97,7 @@
               <i class="iconfont icon icon-zidong"></i>
               <el-switch
                 v-model="controlModel"
+                class="controlInput"
                 active-text="自动"
                 inactive-text="手动"
                 active-color="#13ce66"
@@ -214,7 +221,12 @@ export default {
       },
       masterInfo: {},
       status: 1,
-      isConnect: '设备离线'
+      deviceType: {
+        0: { value: 0, title: '设备正常', iconClass: 'iconsuccess', textClass: 'success' },
+        1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
+        2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
+        3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
+      }
     }
   },
   methods: {
@@ -340,7 +352,7 @@ export default {
   box-sizing: border-box;
 }
 .controlitem{
-  height: 68px;
+  height: 60px;
   width: 100%;
   overflow: hidden;
   background: #ffffff;
@@ -349,9 +361,9 @@ export default {
   background: #eeeeee;
 }
 .controlele{
-  width: 50%;
+  width: 43%;
   float: left;
-  line-height: 68px;
+  line-height: 60px;
   box-sizing: border-box;
 }
 .contolItem{
@@ -360,7 +372,7 @@ export default {
   text-align: center;
   font-size: 14px;
   color:#000000;
-  line-height: 68px;
+  line-height: 60px;
 }
 
 .icon{
@@ -373,8 +385,8 @@ export default {
   float: left;
 }
 .mySlider{
-  width: 300px;
-  padding-top:16px;
+  width: 323px;
+  padding-top:10px;
   float: left;
 }
 .showNumber{
@@ -383,7 +395,10 @@ export default {
   float: left;
 }
 .showNumber{
-  line-height: 68px;
+  line-height: 60px;
   margin-left: 19px;
+}
+.controlInput{
+  margin-bottom: 4px;
 }
 </style>

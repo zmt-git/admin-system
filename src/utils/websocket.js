@@ -135,7 +135,7 @@ export default class WebSocketWrapper {
         return true
       })
       .catch(() => {
-        MessageBox.confirm('导致报警功能，设备实时状态无法更新， 是否继续', '提示', {
+        MessageBox.confirm('导致告警功能，设备实时状态无法更新， 是否继续', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
