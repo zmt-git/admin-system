@@ -103,6 +103,7 @@
                       type="textarea"
                       @change="item.change ? item.change(item.model, dataForm) : change(item.model, dataForm)"
                       @blur="item.change ? item.blur(item.model, dataForm) : blur(item.model, dataForm)"
+                      @focus="item.change ? item.focus(item.model, dataForm) : focus(item.model, dataForm)"
                       autocomplete="off"></el-input>
                   </el-form-item>
                 </el-col>
@@ -183,6 +184,7 @@
                       :style="item.width ? {width: item.width + 'px'} : 'width: 200px'"
                       @change="item.change ? item.change(item.model, dataForm) : change(item.model, dataForm)"
                       @blur="item.blur ? item.blur(item.model, dataForm) : blur(item.model, dataForm)"
+                      @focus="item.focus ? item.focus(item.model, dataForm) : focus(item.model, dataForm)"
                       autocomplete="off" ></el-input>
                   </el-form-item>
                 </el-col>
@@ -273,6 +275,10 @@ export default {
     // 输入框的blur事件
     blur (key, val) {
       this.$emit('blur', key, val)
+    },
+    // 输入框的focus事件
+    focus (key, val) {
+      this.$emit('focus', key, val)
     },
 
     // 重置表单数据、

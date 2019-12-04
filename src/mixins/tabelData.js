@@ -343,6 +343,15 @@ export default {
       // do something
       // console.log(key, val)
     },
+    /**
+     * @function 输入框的focus事件
+     * @param {*} key绑定值的key
+     * @param {*} val绑定值的value
+     */
+    focus (key, val) {
+      // do something
+      // console.log(key, val)
+    },
 
     /**
      * @function 批量删除
