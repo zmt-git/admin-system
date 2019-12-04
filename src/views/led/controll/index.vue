@@ -80,7 +80,7 @@ import DialogForm from '@/components/DialogForm/DialogForm'
 import Control from '../components/Control/Control'
 import Group from '@/components/Group/Group'
 // API
-import { getMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/led/controller'
+import { getMainControl, saveOrUpdate, deleteByIds, isCode, getLaserStatus } from '@/api/led/controller'
 import { getDeviceGroup } from '@/api/system/system'
 import { assignDevice } from '@/api/group/group'
 // 方法
@@ -139,10 +139,14 @@ export default {
       // 激光灯状态表格
       listState: [], // 数据
       columnsState: [
-        { prop: 'location', label: '安装位置', align: 'center' },
         { prop: 'code', label: '灯组编号', align: 'center' },
-        { prop: 'lampNum', label: '激光灯数量（个）', align: 'center' },
-        { prop: 'createTime', label: '安装时间', align: 'center', formatter: this.timestampToTimes }
+        { prop: 'version', label: '版本号', align: 'center' },
+        { prop: 'fanStatus', label: '风扇状态', align: 'center' },
+        { prop: 'fanAuto', label: '风扇自动调速状态', align: 'center' },
+        { prop: 'fanSpeed', label: '风扇转速', align: 'center' },
+        { prop: 'flicker', label: '闪烁开关', align: 'center' },
+        { prop: 'flickerMode', label: '闪烁方案', align: 'center' },
+        { prop: 'cpuTemperature', label: 'CPU温度', align: 'center' }
       ],
       optionsState: {
         stripe: false, // 是否为斑马纹 table
@@ -265,6 +269,13 @@ export default {
     controlState (key, val) {
       this.code = val.code
       this.dialogState = true
+      getLaserStatus({ code: val.code })
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
     // 时间转化
     timestampToTimes (val, key) {
