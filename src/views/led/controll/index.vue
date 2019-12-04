@@ -123,6 +123,8 @@ export default {
         { prop: 'code', label: '灯组编号' },
         { prop: 'lampNum', label: '激光灯数量（个）' },
         { prop: 'model', label: '型号' },
+        { prop: 'longitude', label: '经度' },
+        { prop: 'latitude', label: '纬度' },
         { prop: 'createTime', label: '安装时间', formatter: this.timestampToTimes },
         { prop: 'note', label: '备注' },
         { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true, empty: false }
@@ -197,7 +199,7 @@ export default {
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
         { model: 'location', label: '安装位置', placeholder: '请输入安装位置' },
-        { model: 'code', label: '灯组编码', placeholder: '请输入灯组编码', blur: this.onlyCode },
+        { model: 'code', label: '灯组编码', placeholder: '请输入灯组编码', blur: this.onlyCode, focus: this.setHeader },
         { model: 'lampNum', label: '数量', placeholder: '请输入激光灯数量' },
         { model: 'model', label: '型号', placeholder: '请输入型号' },
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
@@ -267,6 +269,9 @@ export default {
     this.getTabelData(this.initDataFn)
   },
   methods: {
+    setHeader () {
+      this.dataForm.code = 'NX_LASER_'
+    },
     // 显示控制弹窗
     controlState (key, val) {
       this.code = val.code
