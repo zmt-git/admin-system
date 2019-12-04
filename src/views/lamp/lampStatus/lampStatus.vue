@@ -138,7 +138,7 @@ export default {
     findAllMainControl()
       .then(res => {
         this.masterOptions = res.result
-        this.masterForm.masterControl = res.result[0].id
+        this.masterForm.masterControl = res.result[0].code
         this.getLampList(this.masterForm.masterControl)
       })
       .catch(err => console.log(err))

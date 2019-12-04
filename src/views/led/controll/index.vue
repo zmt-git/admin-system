@@ -121,6 +121,8 @@ export default {
         { prop: 'code', label: '灯组编号' },
         { prop: 'lampNum', label: '激光灯数量（个）' },
         { prop: 'model', label: '型号' },
+        { prop: 'longitude', label: '经度' },
+        { prop: 'latitude', label: '纬度' },
         { prop: 'createTime', label: '安装时间', formatter: this.timestampToTimes },
         { prop: 'note', label: '备注' },
         { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true, empty: false }
