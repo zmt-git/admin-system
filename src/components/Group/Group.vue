@@ -2,6 +2,7 @@
   <div>
     <el-dialog
       :title="options.title"
+      :close-on-click-modal='false'
       :visible.sync="options.popoverVisible"
       :width="options.width ? options.width : '610px'">
       <span>

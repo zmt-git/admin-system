@@ -81,6 +81,17 @@ export default {
     this.getTabelData(this.initDataFn)
   },
   data () {
+    let nameRule1 = async (rule, value, callback) => {
+      let regExp = /^[\u4e00-\u9fa5]{1,8}[0-9A-Za-z]{0,9}$/i
+      if (regExp.test(value) === false) {
+        callback(new Error('编码示例：“西安组”'))
+      } else {
+        let result = await this.isOnlyCode(value)
+        if (result) {
+          callback(new Error('编码重复'))
+        }
+      }
+    }
     return {
       // 获取表格数据函数 initDataFn
       initDataFn: pageGroup,
@@ -141,7 +152,7 @@ export default {
 
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
-        { model: 'name', label: '组名', placeholder: '请输入用户名', blur: this.isOnlyCode },
+        { model: 'name', label: '组名', placeholder: '请输入用户名' },
         { model: 'synopsis', label: '备注', placeholder: '请输入备注' }
       ],
 
@@ -149,7 +160,8 @@ export default {
       formAttr: {
         rules: {
           name: [
-            { required: true, message: '请输入组名', trigger: 'blur' }
+            { required: true, message: '请输入组名', trigger: 'blur' },
+            { validator: nameRule1, trigger: 'blur' }
           ]
         },
         labelWidth: null
@@ -177,8 +189,8 @@ export default {
     },
 
     // 判断分组重复是否唯一
-    isOnlyCode (key, val) {
-      isGroup({ name: val[key] })
+    isOnlyCode (val) {
+      return isGroup({ name: val })
         .then(res => {
           if (res.result === true) {
             // 提示分组重复重复
@@ -186,6 +198,7 @@ export default {
               type: 'warning',
               message: '分组重复'
             })
+            return true
           }
         })
         .catch(error => {

@@ -8,6 +8,7 @@
         width="610px"
         custom-class="myDialogbtn"
         :modal="true"
+        :close-on-click-modal='false'
         :modal-append-to-body="true"
         @open="openDialog"
         @close="closeDialog">

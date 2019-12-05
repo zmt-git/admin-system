@@ -53,6 +53,7 @@
   <el-dialog
     title="激光灯状态"
     :visible.sync="dialogState"
+    :close-on-click-modal='false'
     width="610px"
   >
     <EleTable

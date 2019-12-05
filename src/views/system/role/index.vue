@@ -52,6 +52,7 @@
     <!-- 角色资源授权 开始 -->
     <el-dialog
       :visible.sync="resvisible"
+      :close-on-click-modal='false'
       title="资源授权"
       width="600px"
       label-width="80px">

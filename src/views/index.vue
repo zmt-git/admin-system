@@ -1,5 +1,6 @@
 <template>
   <div class="textAlginLeft">
+    xxx
   </div>
 </template>
 <script>
@@ -7,7 +8,6 @@ export default {
   name: 'resource',
   data () {
     return {
-      btn: { name: '主页' }
     }
   }
 }

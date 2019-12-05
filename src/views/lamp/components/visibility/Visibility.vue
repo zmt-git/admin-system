@@ -5,6 +5,7 @@
       title="能见度信息"
       :append-to-body='true'
       width="610px"
+      :close-on-click-modal='false'
       :visible.sync="dialogVisible"
       @open="open"
     >

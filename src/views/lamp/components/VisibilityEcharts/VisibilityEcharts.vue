@@ -5,6 +5,7 @@
       title="主控能见度检测仪数据折线图"
       width="610px"
       @open='open'
+      :close-on-click-modal='false'
       @close='close'
       :append-to-body='true'
       :visible.sync="dialogVisibleEcharts"

@@ -13,7 +13,10 @@ const permission = {
   },
   actions: {
     GenerateRoutes ({ commit }, asyncRouter) {
-      commit('SET_ROUTERS', asyncRouter)
+      return new Promise((resolve, reject) => {
+        commit('SET_ROUTERS', asyncRouter)
+        resolve()
+      })
     }
   }
 }

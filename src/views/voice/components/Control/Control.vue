@@ -2,6 +2,7 @@
   <div class="control">
      <el-dialog
         title="主控设备控制"
+        :close-on-click-modal='false'
         width="610px"
         custom-class="myDialogbtn"
         :visible.sync="dialogVisible"

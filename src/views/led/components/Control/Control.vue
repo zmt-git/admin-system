@@ -3,6 +3,7 @@
     <el-dialog
       title="激光灯控制"
       :visible.sync="dialogVisible"
+      :close-on-click-modal='false'
       @open='open'
       @close='close'
       width="610px">

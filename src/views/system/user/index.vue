@@ -52,6 +52,7 @@
 
     <!-- 角色分配复选框 开始 -->
     <el-dialog
+      :close-on-click-modal='false'
       :title="dialogTitle"
       :visible.sync="popoverVisible"
       :width="checkType === 'grounp' ? '500px' : '300px'">

@@ -1,5 +1,7 @@
 <template>
-  <el-dialog :title="title" :closeOnClickModal="false" :visible.sync="visible" width="550px">
+  <el-dialog :title="title"
+    :close-on-click-modal='false'
+   :closeOnClickModal="false" :visible.sync="visible" width="550px">
     <el-form ref="form" :model="dataForm" :rules="rules" size="small" label-position="right" label-width="130px" style="padding: 0;margin: 0">
       <el-form-item label="父节点名称" v-show="showparent">
         <el-input v-model="dataForm.parentName" required="true" disabled="disabled" autocomplete="off" ></el-input>

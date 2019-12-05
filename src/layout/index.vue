@@ -81,6 +81,7 @@
     <el-dialog
       width="610px"
       title="告警提示"
+      :close-on-click-modal='false'
       custom-class='alarm'
       :append-to-body='true'
       :visible.sync="alarmDialogVisible"
