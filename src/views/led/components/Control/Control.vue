@@ -156,6 +156,7 @@ export default {
       twinkleNum: null, // 闪烁方式1-10
       userName: [],
       dialogVisible: false, // 激光灯控制弹出框
+      // innerVisible: false, // 内层弹出框
       brightVal: [
         {
           value: 0,

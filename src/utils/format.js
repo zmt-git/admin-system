@@ -108,10 +108,10 @@ export function timestampToTime (timestamp, type) {
   let s = date.getSeconds().toString().padStart(2, '0')
   if (type === undefined) {
     return Y + M + D + h + m + s
-  } else if (type === 'hh:mm') {
+  } else if (type.toLowerCase() === 'hh:mm') {
     m = m.slice(0, -1)
     return h + m
-  } else if (type === 'hh:mm:ss') {
+  } else if (type.toLowerCase() === 'hh:mm:ss') {
     return h + m + s
   } else {
     return Y + M + D + h + m + s

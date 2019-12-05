@@ -386,6 +386,10 @@ export default {
         })
       })
     },
+    /**
+     * @function 批量测试
+     * @param {*} list表格选中数据
+     */
 
     /**
      * @function 解决select下拉框vuex监听不到属性变化

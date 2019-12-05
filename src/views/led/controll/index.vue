@@ -11,8 +11,8 @@
     <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
     <el-button type="warning" size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
     <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(ledList)">批量删除</el-button>
-    <el-button type="info" icon="el-icon-delete" size="mini" v-hasBtn>批量测试</el-button>
-    <el-button type="info" icon="el-icon-delete" size="mini" v-hasBtn>全部测试</el-button>
+    <el-button type="info" icon="el-icon-finished" size="mini" isend @click="testIds(ledList)" v-hasBtn>{{testName}}</el-button>
+    <el-button type="info" icon="el-icon-film" size="mini" v-hasBtn>全部测试</el-button>
   </el-button-group>
   <!-- 添加按钮结束 -->
 
@@ -88,6 +88,8 @@ import { assignDevice } from '@/api/group/group'
 // 方法
 import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
+// 测试
+import { testStart } from './ledTest'
 export default {
   components: {
     EleTable,
@@ -102,6 +104,8 @@ export default {
   mixins: [tabelData],
   data () {
     return {
+      isend: false,
+      testName: '批量测试',
       // 查看分组
       getDeviceGroupFn: getDeviceGroup,
 
@@ -269,6 +273,26 @@ export default {
     this.getTabelData(this.initDataFn)
   },
   methods: {
+    testIds (list) {
+      if (list.length <= 0) {
+        this.tip('至少选择一组设备，进行批量测试', 'warning')
+      } else {
+        if (!this.isend) {
+          this.testName = '暂停测试'
+          this.isend = true
+          const code = [] // 设备code
+          list.forEach(item => {
+            code.push(item.code)
+          })
+          testStart(code)
+        } else {
+          this.testName = '开始测试'
+          this.isend = false
+          console.log('暂停')
+        }
+      }
+    },
+    // 焦点事件
     setHeader () {
       this.dataForm.code = 'NX_LASER_'
     },
