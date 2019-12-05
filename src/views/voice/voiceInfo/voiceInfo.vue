@@ -99,6 +99,8 @@ export default {
   created () {
     // 获取用户
     this.getTabelData(this.initDataFn)
+    this.setSelectOptions(this.formLists, 'groupIds', this.allGroups)
+    this.setSelectOptions(this.searchOptions.type, 'groupId', this.allGroups, 'queryname', 'options')
   },
   data () {
     return {

@@ -61,11 +61,14 @@
           <!-- 用户信息 结束 -->
 
         </div>
+
         <el-main>
-
-          <!-- 二级路由跳转 -->
-          <router-view style="margin-top:5px;"/>
-
+          <div style="width:100%;height:100%;position:relative">
+            <transition name="el-fade-in-linear">
+              <!-- 二级路由跳转 -->
+              <router-view style="margin-top:5px;"/>
+            </transition>
+          </div>
         </el-main>
         <!-- 底部 -->
         <el-footer style="background-color: #2d3a4b; line-height: 50px;height: 50px;">
@@ -473,6 +476,7 @@ export default {
     border-left: 0;
     // margin-left: $sideBarWidth;
     height:calc(100vh - 100px);
+    position: relative;
   }
   .app_wapper .el-menu-item-group__title {
     padding: 0 0 1px 20px;

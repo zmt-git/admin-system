@@ -114,14 +114,13 @@ export default {
   },
   mixins: [tabelData],
   computed: {
-    ...mapGetters(['allGroups']),
-    selectOptions () {
-      return this.allGroups
-    }
+    ...mapGetters(['allGroups'])
   },
   created () {
     // 获取用户
     this.getTabelData(this.initDataFn)
+    this.setSelectOptions(this.formLists, 'groupIds', this.allGroups)
+    this.setSelectOptions(this.searchOptions.type, 'groupId', this.allGroups, 'queryname', 'options')
   },
   data () {
     return {
@@ -182,7 +181,7 @@ export default {
             type: 'select', // 搜索框类型
             name: null, // 搜索label
             clearable: true,
-            options: this.selectOptions,
+            options: this.allGroups,
             optionskey: { label: 'name', value: 'id' },
             queryname: 'groupId', // 搜索字段
             query: null, // v-model值
@@ -212,7 +211,7 @@ export default {
         { model: 'location', label: '安装位置', placeholder: '请输入安装位置' },
         { model: 'model', label: '型号', placeholder: '请输入型号' },
         { model: 'note', label: '备注', placeholder: '请输入备注' },
-        { model: 'groupIds', label: '设备组', placeholder: '请选择设备组（可多选）', type: 'select', multiple: true, collapseTags: true, key: 'name', value: 'id', selectOptions: this.selectOptions },
+        { model: 'groupIds', label: '设备组', placeholder: '请选择设备组（可多选）', type: 'select', multiple: true, collapseTags: true, key: 'name', value: 'id', selectOptions: this.allGroups },
         { model: 'visibility', label: '能见度检测仪数量', placeholder: '请输入能见度检测仪数量' }
       ],
 
@@ -378,13 +377,13 @@ export default {
         })
       this.groupOptions.popoverVisible = false
     }
+  },
+  watch: {
+    allGroups (newval, oldval) {
+      this.setSelectOptions(this.formLists, 'groupIds', newval)
+      this.setSelectOptions(this.searchOptions.type, 'groupId', newval, 'queryname', 'options')
+    }
   }
-  // watch: {
-  //   allGroups (newval, oldval) {
-  //     this.setSelectOptions(this.formLists, 'groupIds', newval)
-  //     this.setSelectOptions(this.searchOptions.type, 'groupId', newval, 'queryname', 'options')
-  //   }
-  // }
 }
 </script>
 <style lang="scss" scoped>
