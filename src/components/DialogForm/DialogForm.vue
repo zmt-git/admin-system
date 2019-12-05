@@ -8,6 +8,7 @@
         :title="isAdd ? '添加' + options.title : '编辑' + options.title"
         :width="options.width ? options.width : '590px'"
         min-width='590px;'
+        :close-on-click-modal='false'
         :append-to-body='true'
         :visible.sync="options.dialogVisible">
 

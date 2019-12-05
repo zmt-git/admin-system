@@ -4,7 +4,7 @@
 
       <!-- system title start -->
       <div class="title-container">
-        <h3 class="title">设备管理系统</h3>
+        <h3 class="title">设备管控平台</h3>
       </div>
       <!-- system title end -->
 
@@ -79,8 +79,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'administrator',
-        password: 'naxing'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],

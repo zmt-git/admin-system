@@ -114,16 +114,26 @@ export default {
   },
   mixins: [tabelData],
   computed: {
-    ...mapGetters(['allGroups']),
-    selectOptions () {
-      return this.allGroups
-    }
+    ...mapGetters(['allGroups'])
   },
   created () {
     // 获取用户
     this.getTabelData(this.initDataFn)
+    this.setSelectOptions(this.formLists, 'groupIds', this.allGroups)
+    this.setSelectOptions(this.searchOptions.type, 'groupId', this.allGroups, 'queryname', 'options')
   },
   data () {
+    let nameRule1 = async (rule, value, callback) => {
+      let regExp = /^NXYDD_[A-Z]{2,8}_[0-9]{4}$/
+      if (regExp.test(value) === false) {
+        callback(new Error('编码示例：“NXYDD_XA_0001”'))
+      } else {
+        let result = await this.isOnlyCode(value)
+        if (result) {
+          callback(new Error('编码重复'))
+        }
+      }
+    }
     return {
       // 查看分组
       getDeviceGroupFn: getDeviceGroup,
@@ -182,7 +192,7 @@ export default {
             type: 'select', // 搜索框类型
             name: null, // 搜索label
             clearable: true,
-            options: this.selectOptions,
+            options: this.allGroups,
             optionskey: { label: 'name', value: 'id' },
             queryname: 'groupId', // 搜索字段
             query: null, // v-model值
@@ -205,14 +215,14 @@ export default {
 
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
-        { model: 'code', label: '编码', placeholder: '请输入用户名', blur: this.isOnlyCode },
+        { model: 'code', label: '编码', placeholder: '请输入用户名' },
         { model: 'lampNum', label: '灯数量', placeholder: '请输入灯数量' },
         { model: 'latitude', label: '纬度', placeholder: '请输入纬度' },
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
         { model: 'location', label: '安装位置', placeholder: '请输入安装位置' },
         { model: 'model', label: '型号', placeholder: '请输入型号' },
         { model: 'note', label: '备注', placeholder: '请输入备注' },
-        { model: 'groupIds', label: '设备组', placeholder: '请选择设备组（可多选）', type: 'select', multiple: true, collapseTags: true, key: 'name', value: 'id', selectOptions: this.selectOptions },
+        { model: 'groupIds', label: '设备组', placeholder: '请选择设备组（可多选）', type: 'select', multiple: true, collapseTags: true, key: 'name', value: 'id', selectOptions: this.allGroups },
         { model: 'visibility', label: '能见度检测仪数量', placeholder: '请输入能见度检测仪数量' }
       ],
 
@@ -226,7 +236,8 @@ export default {
       formAttr: {
         rules: {
           code: [
-            { required: true, message: '请输入组名', trigger: 'blur' }
+            { required: true, message: '请输入编码', trigger: 'blur' },
+            { validator: nameRule1, trigger: 'blur' }
           ],
           lampNum: [
             { required: true, message: '请输入引导灯数量', trigger: 'blur' }
@@ -292,8 +303,8 @@ export default {
     },
 
     // 判断分组重复是否唯一
-    isOnlyCode (key, val) {
-      isCode({ code: val[key] })
+    isOnlyCode (val) {
+      return isCode({ code: val })
         .then(res => {
           if (res.result === true) {
             // 提示分组重复重复
@@ -301,6 +312,7 @@ export default {
               type: 'warning',
               message: '编码重复'
             })
+            return true
           }
         })
         .catch(error => {
@@ -378,13 +390,13 @@ export default {
         })
       this.groupOptions.popoverVisible = false
     }
+  },
+  watch: {
+    allGroups (newval, oldval) {
+      this.setSelectOptions(this.formLists, 'groupIds', newval)
+      this.setSelectOptions(this.searchOptions.type, 'groupId', newval, 'queryname', 'options')
+    }
   }
-  // watch: {
-  //   allGroups (newval, oldval) {
-  //     this.setSelectOptions(this.formLists, 'groupIds', newval)
-  //     this.setSelectOptions(this.searchOptions.type, 'groupId', newval, 'queryname', 'options')
-  //   }
-  // }
 }
 </script>
 <style lang="scss" scoped>

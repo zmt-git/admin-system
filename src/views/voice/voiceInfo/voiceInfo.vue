@@ -99,8 +99,21 @@ export default {
   created () {
     // 获取用户
     this.getTabelData(this.initDataFn)
+    this.setSelectOptions(this.formLists, 'groupIds', this.allGroups)
+    this.setSelectOptions(this.searchOptions.type, 'groupId', this.allGroups, 'queryname', 'options')
   },
   data () {
+    let nameRule1 = async (rule, value, callback) => {
+      let regExp = /^NXDS_[A-Z]{2,8}_[0-9]{4}$/
+      if (regExp.test(value) === false) {
+        callback(new Error('编码示例：“NXDS_XA_0001”'))
+      } else {
+        let result = await this.isOnlyCode(value)
+        if (result) {
+          callback(new Error('编码重复'))
+        }
+      }
+    }
     return {
       // 查看分组
       getDeviceGroupFn: getDeviceGroup,
@@ -180,7 +193,7 @@ export default {
 
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象=
       formLists: [
-        { model: 'code', label: '编码', placeholder: '请输入编码', blur: this.isOnlyCode },
+        { model: 'code', label: '编码', placeholder: '请输入编码' },
         { model: 'num', label: '数量', placeholder: '请输入数量' },
         { model: 'latitude', label: '纬度', placeholder: '请输入纬度' },
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
@@ -194,13 +207,14 @@ export default {
       formAttr: {
         rules: {
           code: [
-            { required: true, message: '请输入编码', trigger: 'blur' }
+            { required: true, message: '请输入编码', trigger: 'blur' },
+            { validator: nameRule1, trigger: 'blur' }
           ],
           num: [
-            { required: true, message: '请输入数量', trigger: 'change' }
+            { required: true, message: '请输入数量', trigger: 'blur' }
           ],
           location: [
-            { required: true, message: '请输入安装位置', trigger: 'change' }
+            { required: true, message: '请输入安装位置', trigger: 'blur' }
           ]
         },
         labelWidth: null
@@ -264,8 +278,8 @@ export default {
     },
 
     // 判断分组重复是否唯一
-    isOnlyCode (key, val) {
-      isCode({ code: val[key] })
+    isOnlyCode (val) {
+      return isCode({ code: val })
         .then(res => {
           if (res.result === true) {
             // 提示重复
@@ -273,6 +287,7 @@ export default {
               type: 'warning',
               message: '编码重复'
             })
+            return true
           }
         })
         .catch(error => {

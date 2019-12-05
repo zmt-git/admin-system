@@ -236,7 +236,7 @@ export default {
     showAddDialog () {
       this.isAdd = true
       this.Dialogoptions.dialogVisible = true
-      this.resetDataForm()
+      // this.resetDataForm()
       this.$nextTick(() => {
         this.$refs.DialogForm.resetFields()
       })
@@ -250,12 +250,23 @@ export default {
     tabeledit (key, val) {
       this.isAdd = false
       this.Dialogoptions.dialogVisible = true
-      this.$nextTick(() => {
+      this.$nextTick(async () => {
         this.$refs.DialogForm.resetFields()
         let arr = Object.keys(this.dataForm)
-        arr.forEach((item) => {
-          this.dataForm[item] = val[item]
-        })
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i] === 'groupIds') {
+            await this.getDeviceGroupFn({ code: val['code'] })
+              .then(res => {
+                this.dataForm[arr[i]] = []
+                res.result.forEach(item => {
+                  this.dataForm[arr[i]].push(item.id)
+                })
+              })
+            continue
+          } else {
+            this.dataForm[arr[i]] = val[arr[i]]
+          }
+        }
         this.editDataForm = val
       })
     },

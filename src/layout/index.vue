@@ -2,28 +2,29 @@
   <div class="app_wapper" ref="app_wapper">
     <el-container>
       <!-- 侧边栏 开始 -->
-      <el-aside>
+      <el-aside ref="el_aside" :width='width'>
         <el-menu
           mode="vertical"
           style="border-right:none;"
           :collapse="isCollapse"
           unique-opened
-          :default-active="$route.path"
+          class="el-menu-vertical-demo"
+          :default-active="activeLink"
           background-color="#2d3a4b"
-          text-color="#fff"
+          text-color='#fff'
           active-text-color="#409EFF;">
           <!-- 菜单组件 -->
-          <div class="devName"><i class="iconfont">&#xe602;</i><span class="title">设备控制</span></div>
+          <div class="devName"><i class="iconfont icon-pingtai"></i><span :class="platformname ? 'title' : 'noTitle'">设备管控</span></div>
           <side-menus :routes="routers"></side-menus>
         </el-menu>
       </el-aside>
       <!-- 侧边栏 结束 -->
 
       <!-- 展示信息 开始 -->
-      <el-container>
+      <el-container ref="el_container" style="margin-left:220px">
         <div class="navbar">
           <!-- 隐藏显示侧边栏 开始 -->
-          <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+          <hamburger id="hamburger-container"  class="hamburger-container" @toggleClick="toggleSideBar" />
           <!-- 隐藏显示侧边栏 结束 -->
 
           <!-- 面包屑 开始 -->
@@ -34,9 +35,9 @@
           <div class="right-menu">
             <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
               <div class="avatar-wrapper">
-                <el-badge is-dot>
+                <!-- <el-badge is-dot> -->
                   <svgIcon :className="'userIcon'" :iconClass='userIcon'></svgIcon>
-                </el-badge>
+                <!-- </el-badge> -->
               </div>
               <el-dropdown-menu slot="dropdown">
                 <router-link to="/index">
@@ -44,13 +45,13 @@
                     <i class="iconfont icon-yemian-copy-copy" aria-hidden="true"></i>首页
                   </el-dropdown-item>
                 </router-link>
-                <router-link to="/deviceLog/alarm">
+                <!-- <router-link to="/deviceLog/alarm">
                   <el-dropdown-item divided>
                     <el-badge :value="120" :max="99" class="item">
                       <span style="display:block;"><i class="iconfont icon-xiaoxi-"></i>消息</span>
                     </el-badge>
                   </el-dropdown-item>
-                </router-link>
+                </router-link> -->
                 <el-dropdown-item divided>
                   <span style="display:block;" @click="logout"><i class="iconfont icon-tuichu"></i>退出</span>
                 </el-dropdown-item>
@@ -60,11 +61,14 @@
           <!-- 用户信息 结束 -->
 
         </div>
+
         <el-main>
-
-          <!-- 二级路由跳转 -->
-          <router-view style="margin-top:5px;"/>
-
+          <div style="width:100%;height:100%;position:relative">
+            <transition name="el-fade-in-linear">
+              <!-- 二级路由跳转 -->
+              <router-view style="margin-top:5px;"/>
+            </transition>
+          </div>
         </el-main>
         <!-- 底部 -->
         <el-footer style="background-color: #2d3a4b; line-height: 50px;height: 50px;">
@@ -77,6 +81,7 @@
     <el-dialog
       width="610px"
       title="告警提示"
+      :close-on-click-modal='false'
       custom-class='alarm'
       :append-to-body='true'
       :visible.sync="alarmDialogVisible"
@@ -146,7 +151,10 @@ import svgIcon from '@/components/SvgIcon/index'
 
 export default {
   computed: {
-    ...mapGetters(['sidebar', 'routers', 'token'])
+    ...mapGetters(['sidebar', 'routers', 'token']),
+    userIcon () {
+      return 'icon-chaojiguanliyuan1'
+    }
   },
   components: {
     sideMenus,
@@ -156,9 +164,9 @@ export default {
   },
   data () {
     return {
+      activeLink: null,
       userRole: 'Topest',
       isCollapse: false,
-      userIcon: 'icon-chaojiguanliyuan',
       socket: null,
       ws_params: {
         versionNumber: 1.0, // 协议版本号
@@ -167,7 +175,7 @@ export default {
         token: getToken(), // 携带token
         data: {}// 携带数据
       },
-      alarmDialogVisible: true,
+      alarmDialogVisible: false,
       alarm: {
         code: 'NXYDD_XZ_0004',
         deviceType: 'led',
@@ -195,7 +203,9 @@ export default {
       maintian: {
         0: { value: 0, 'info': '未维护', className: 'offline' },
         1: { value: 1, 'info': '已维护', className: 'normal' }
-      }
+      },
+      width: '220px',
+      platformname: true
     }
   },
   methods: {
@@ -203,6 +213,21 @@ export default {
     toggleSideBar () {
       // this.$store.dispatch('toggleSideBar')
       this.isCollapse = !this.isCollapse
+      if (this.isCollapse) {
+        this.width = '70px'
+        this.platformname = false
+        this.$refs.el_container.$el.style.cssText = `
+          margin-left: 70px;
+          transition: all .28s;
+        `
+      } else {
+        this.width = '220px'
+        this.platformname = true
+        this.$refs.el_container.$el.style.cssText = `
+          margin-left: 220px;
+          transition: all .28s;
+        `
+      }
     },
 
     // 登出
@@ -331,6 +356,7 @@ export default {
     }
   },
   created () {
+    this.activeLink = this.$route.path
     // 获取角色
     this.$store.dispatch('getAllRoles')
 
@@ -342,7 +368,6 @@ export default {
 
     // 创建监听
     eventBus.$on('ws_connection', (code, type) => {
-      console.log('start' + code)
       this.ws_params.module = type
       this.ws_params.data = { code: code }
       let obj = JSON.parse(JSON.stringify(this.ws_params))
@@ -350,7 +375,6 @@ export default {
       this.socket.websock.send(obj)
     })
     eventBus.$on('ws_close', (code, type) => {
-      console.log('close' + code)
       this.ws_params.module = type
       this.ws_params.data = { code: code }
       let obj = JSON.parse(JSON.stringify(this.ws_params))
@@ -378,19 +402,31 @@ export default {
     this.socket.websock.close()
     eventBus.$off('ws_connection')
     eventBus.$off('ws_close')
+    let arr = Object.keys(type)
+    arr.forEach(item => {
+      eventBus.$off(type[item])
+    })
+  },
+  watch: {
+    $route (to, from) {
+      this.activeLink = to.path
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
-  $sideBarWidth: 220px;
+  // $sideBarWidth: 220px;
   .title{
     padding-left: 5px;
+  }
+  .noTitle{
+    display: none;
   }
   .devName{
     line-height: 50px;
     height: 50px;
-    color:#fff;
-    font-size:18px;
+    color:rgb(255, 220, 64);
+    font-size: 16px;
     text-align:left;
     background-color: #2d3a4b;
     border: 1px solid #2d3a4b;
@@ -422,12 +458,14 @@ export default {
     padding: 0px;
     color: #333;
     transition: width .28s;
-    width: $sideBarWidth !important;
+    // width: $sideBarWidth !important;
     height: 100%;
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
     z-index: 1001;
     background-color: #2d3a4b;
   }
@@ -439,6 +477,7 @@ export default {
     flex: 1;
     -ms-flex-preferred-size: auto;
     flex-basis: auto;
+    transition: width .28s;
     overflow: auto;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -447,8 +486,9 @@ export default {
     border: 1px solid #C2C2C2;
     background: #fafafa;
     border-left: 0;
-    margin-left: $sideBarWidth;
+    // margin-left: $sideBarWidth;
     height:calc(100vh - 100px);
+    position: relative;
   }
   .app_wapper .el-menu-item-group__title {
     padding: 0 0 1px 20px;
@@ -477,7 +517,7 @@ export default {
     position: relative;
     background: #fff;
     box-shadow: 0 1px 4px rgba(0,21,41,.08);
-    margin-left: $sideBarWidth;
+    // margin-left: $sideBarWidth;
     .hamburger-container {
       line-height: 46px;
       height: 100%;
@@ -521,7 +561,7 @@ export default {
           transition: background .3s;
 
           &:hover {
-            background: rgba(0, 0, 0, .025)
+            background: rgba(0, 0, 0, .1)
           }
         }
       }
@@ -530,8 +570,8 @@ export default {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: #ccc;
         margin-top: 5px;
+        background: rgba(0, 0, 0, .05);
         margin-right: 10px;
         padding: 0px;
 
@@ -714,5 +754,15 @@ export default {
 .tip .el-checkbox__label{
   font-size: 12px;
   font-weight: 900;
+}
+.el-menu--collapse>.SideMenus>.el-menu-item span, .el-menu--collapse>.SideMenus>.el-submenu>.el-submenu__title span {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    visibility: hidden;
+    display: inline-block;
+}
+.el-menu--collapse>.SideMenus>.el-menu-item .el-submenu__icon-arrow, .el-menu--collapse>.SideMenus>.el-submenu>.el-submenu__title .el-submenu__icon-arrow {
+    display: none;
 }
 </style>

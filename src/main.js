@@ -11,7 +11,7 @@ import '@/styles/resetElement.scss' // 全局样式
 
 import '@/assets/iconfont/iconfont.css' // iconfont样式
 
-import '@/assets/iconfont/iconfont.js' // iconfont样式
+// import '@/assets/iconfont/iconfont.js' // iconfont样式
 
 import '@/utils/global'// 全局变量
 
