@@ -368,7 +368,6 @@ export default {
 
     // 创建监听
     eventBus.$on('ws_connection', (code, type) => {
-      console.log('start' + code)
       this.ws_params.module = type
       this.ws_params.data = { code: code }
       let obj = JSON.parse(JSON.stringify(this.ws_params))
@@ -376,7 +375,6 @@ export default {
       this.socket.websock.send(obj)
     })
     eventBus.$on('ws_close', (code, type) => {
-      console.log('close' + code)
       this.ws_params.module = type
       this.ws_params.data = { code: code }
       let obj = JSON.parse(JSON.stringify(this.ws_params))
@@ -404,6 +402,10 @@ export default {
     this.socket.websock.close()
     eventBus.$off('ws_connection')
     eventBus.$off('ws_close')
+    let arr = Object.keys(type)
+    arr.forEach(item => {
+      eventBus.$off(type[item])
+    })
   },
   watch: {
     $route (to, from) {

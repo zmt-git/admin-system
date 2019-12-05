@@ -42,7 +42,7 @@
             </div>
             <!-- 同步时间 结束 -->
              <!-- 调试按钮 开始 -->
-              <el-button type="primary" class="debugging" v-hasBtn plain size="small">调试</el-button>
+              <el-button :type="debugType" class="debugging" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
           </li>
 
@@ -166,6 +166,8 @@
           </div>
 
           <!-- 设置播放方案 结束 -->
+          <li v-show='debugShow' class="controlitem debugBox">调试</li>
+
         </ul>
         <div class="mask" v-show="loading">
           <i style="font-size:60px" class="el-icon-loading"></i>
@@ -186,6 +188,9 @@ export default {
   },
   data () {
     return {
+      debugType: 'primary',
+      debugTitle: '调试',
+      debugShow: false,
       loading: true,
       custom: '', // 自定义指令
       status: 1,
@@ -253,6 +258,7 @@ export default {
           value: 10,
           label: '10次'
         }],
+      debugMsg: null,
       valueNmb: '', // 播放次数
       valueContent: '', // 播放内容
       optionsContent: [
@@ -443,6 +449,9 @@ export default {
         this.masterStatus = data
         this.getMainStatusInit()
       })
+      eventBus.$on('WS_debugging', (data) => {
+        this.debugMsg = data
+      })
       this.$nextTick(async () => {
         this.code = this.code
         await this.getMainStatu()
@@ -453,6 +462,24 @@ export default {
     closeDialog () {
       eventBus.$emit('ws_close', this.code, module.END)
       this.custom = ''
+      this.debugType = 'primary'
+      this.debugTitle = '调试'
+      this.debugShow = false
+      eventBus.$emit('ws_close', this.code, module.DEBUG)
+    },
+
+    // 调试 TODO
+    debugging () {
+      this.debugShow = !this.debugShow
+      if (this.debugShow) {
+        this.debugType = 'danger'
+        this.debugTitle = '暂停调试'
+        eventBus.$emit('ws_connection', this.code, module.DEBUG)
+      } else {
+        this.debugType = 'primary'
+        this.debugTitle = '调试'
+        eventBus.$emit('ws_close', this.code, module.DEBUG)
+      }
     }
   }
 }
@@ -585,5 +612,12 @@ export default {
   right: 5px;
   top: 15px;
   line-height: 72px;
+}
+.debugBox{
+  background: #000000;
+  color: #fff;
+  font-size: 12px;
+  padding: 0 10px;
+  overflow: auto;
 }
 </style>

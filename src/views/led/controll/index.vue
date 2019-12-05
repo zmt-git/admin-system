@@ -102,6 +102,17 @@ export default {
   },
   mixins: [tabelData],
   data () {
+    let nameRule1 = async (rule, value, callback) => {
+      let regExp = /^NX_LASER_[0-9]{4}/
+      if (regExp.test(value) === false) {
+        callback(new Error('编码示例：“NX_LASER_0001”'))
+      } else {
+        let result = await this.isOnlyCode(value)
+        if (result) {
+          callback(new Error('编码重复'))
+        }
+      }
+    }
     return {
       // 查看分组
       getDeviceGroupFn: getDeviceGroup,
@@ -199,8 +210,8 @@ export default {
       },
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
+        { model: 'code', label: '灯组编码', placeholder: '请输入灯组编码', focus: this.setHeader },
         { model: 'location', label: '安装位置', placeholder: '请输入安装位置' },
-        { model: 'code', label: '灯组编码', placeholder: '请输入灯组编码', blur: this.onlyCode, focus: this.setHeader },
         { model: 'lampNum', label: '数量', placeholder: '请输入激光灯数量' },
         { model: 'model', label: '型号', placeholder: '请输入型号' },
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
@@ -216,7 +227,7 @@ export default {
           ],
           code: [
             { required: true, message: '请输入灯组编码', trigger: 'blur' },
-            { pattern: /^NX_LASER_[0-9]{4}/, message: '编码规则为NX_LASER_xxxx' }
+            { validator: nameRule1, trigger: 'blur' }
           ],
           lampNum: [
             { required: true, message: '请输入数量', trigger: 'blur' },
@@ -296,15 +307,12 @@ export default {
       this.ledList = val
     },
     // 判断主控是否唯一
-    onlyCode (key, value) {
-      console.log(value[key])
-      isCode({ code: value[key] })
+    isOnlyCode (value) {
+      return isCode({ code: value })
         .then((res) => {
-          console.log(res)
           if (res.result) {
             this.tip('编码重复', 'warning')
-          } else {
-
+            return true
           }
         }).catch((err) => {
           console.log(err)

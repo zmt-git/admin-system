@@ -84,11 +84,11 @@ export default {
     let nameRule1 = async (rule, value, callback) => {
       let regExp = /^[\u4e00-\u9fa5]{1,8}[0-9A-Za-z]{0,9}$/i
       if (regExp.test(value) === false) {
-        callback(new Error('编码示例：“西安组”'))
+        callback(new Error('分组示例：“西安组11”'))
       } else {
         let result = await this.isOnlyCode(value)
         if (result) {
-          callback(new Error('编码重复'))
+          callback(new Error('分组名重复'))
         }
       }
     }

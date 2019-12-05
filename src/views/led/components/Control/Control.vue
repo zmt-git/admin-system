@@ -60,7 +60,7 @@
             <el-button type="primary" plain size="mini" style="width: 110px;height: 32px;" @click="syncTime()">同步</el-button>
           </div>
            <!-- 调试按钮 开始 -->
-              <el-button type="primary" class="debugging" v-hasBtn plain size="small">调试</el-button>
+              <el-button :type="debugType" class="debugging" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
         </li>
         <li class="lamp">
@@ -118,6 +118,7 @@
           </div>
           <span class="fanNumberClass">{{`${fanNumber}%`}}</span>
         </li>
+        <li v-show='debugShow' class="controlitem debugBox">调试</li>
       </ul>
   </el-dialog>
   </div>
@@ -135,6 +136,9 @@ export default {
   },
   data () {
     return {
+      debugType: 'primary',
+      debugTitle: '调试',
+      debugShow: false,
       mainControlStatus: {}, // 存储当前状态
       lampOn: null,
       lampOff: null,
@@ -231,7 +235,8 @@ export default {
         1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
         2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
         3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
-      }
+      },
+      debugMsg: null
     }
   },
   methods: {
@@ -247,12 +252,33 @@ export default {
         this.mainControlStatus = data
         this.foramtBtn()
       })
+      eventBus.$on('WS_debugging', (data) => {
+        this.debugMsg = data
+      })
       this.getStatus()
     },
 
     // 弹框关闭回调
     close () {
       eventBus.$emit('ws_close', this.code, module.END)
+      this.debugType = 'primary'
+      this.debugShow = false
+      this.debugTitle = '调试'
+      eventBus.$emit('ws_close', this.code, module.DEBUG)
+    },
+
+    // 调试 TODO
+    debugging () {
+      this.debugShow = !this.debugShow
+      if (this.debugShow) {
+        this.debugType = 'danger'
+        this.debugTitle = '暂停调试'
+        eventBus.$emit('ws_connection', this.code, module.DEBUG)
+      } else {
+        this.debugType = 'primary'
+        this.debugTitle = '调试'
+        eventBus.$emit('ws_close', this.code, module.DEBUG)
+      }
     },
 
     // 获取当前状态
@@ -495,5 +521,12 @@ export default {
 }
 .fanNumberClass{
   margin-left: 5px;
+}
+.debugBox{
+  background: #000000;
+  color: #fff;
+  font-size: 12px;
+  padding: 0 10px;
+  overflow: auto;
 }
 </style>

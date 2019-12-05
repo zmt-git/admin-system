@@ -63,7 +63,7 @@
             <!-- 夜间状态 结束 -->
 
             <!-- 调试按钮 开始 -->
-              <el-button type="primary" class="debugging" v-hasBtn plain size="small">调试</el-button>
+              <el-button :type="debugType" class="debugging" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
 
           </li>
@@ -165,6 +165,7 @@
             <!-- 频率 结束 -->
 
           </li>
+          <li v-show='debugShow' class="controlitem debugBox">调试</li>
         </ul>
         <!-- 控制表单 结束 -->
 
@@ -202,6 +203,9 @@ export default {
   },
   data () {
     return {
+      debugType: 'primary',
+      debugTitle: '调试',
+      debugShow: false,
       dialogVisible: false,
       dataForm: {
         code: null,
@@ -227,7 +231,8 @@ export default {
         1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
         2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
         3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
-      }
+      },
+      debugMsg: null
     }
   },
   methods: {
@@ -312,6 +317,9 @@ export default {
         this.masterInfo = data
         this.showFormat()
       })
+      eventBus.$on('WS_debugging', (data) => {
+        this.debugMsg = data
+      })
       this.$nextTick(() => {
         this.getMainStatu()
       })
@@ -320,6 +328,11 @@ export default {
     // 弹框关闭回调
     closeDialog () {
       this.reset()
+      this.debugType = 'primary'
+
+      this.debugShow = false
+      this.debugTitle = '调试'
+      eventBus.$emit('ws_close', this.code, module.DEBUG)
       eventBus.$emit('ws_close', this.code, module.END)
     },
 
@@ -342,6 +355,20 @@ export default {
         message: msg,
         type: type
       })
+    },
+
+    // 调试 TODO
+    debugging () {
+      this.debugShow = !this.debugShow
+      if (this.debugShow) {
+        this.debugType = 'danger'
+        this.debugTitle = '暂停调试'
+        eventBus.$emit('ws_connection', this.code, module.DEBUG)
+      } else {
+        this.debugType = 'primary'
+        this.debugTitle = '调试'
+        eventBus.$emit('ws_close', this.code, module.DEBUG)
+      }
     }
   }
 }
@@ -401,5 +428,12 @@ export default {
 }
 .controlInput{
   margin-bottom: 4px;
+}
+.debugBox{
+  background: #000000;
+  color: #fff;
+  font-size: 12px;
+  padding: 0 10px;
+  overflow: auto;
 }
 </style>
