@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="SideMenus">
     <!-- 遍历路由表，生成左侧菜单 -->
     <template v-for="(item, index) in menus">
       <template v-if="!item.hidden">

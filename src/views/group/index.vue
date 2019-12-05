@@ -11,8 +11,8 @@
 
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(groupList)">批量删除</el-button>
+      <el-button type="success" icon="el-icon-plus" size="mini" v-hasBtn @click="showAddDialog">添加</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" v-hasBtn @click="deleteIds(groupList)">批量删除</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->

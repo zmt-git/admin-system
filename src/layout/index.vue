@@ -2,28 +2,29 @@
   <div class="app_wapper" ref="app_wapper">
     <el-container>
       <!-- 侧边栏 开始 -->
-      <el-aside>
+      <el-aside ref="el_aside" :width='width'>
         <el-menu
           mode="vertical"
           style="border-right:none;"
           :collapse="isCollapse"
           unique-opened
+          class="el-menu-vertical-demo"
           :default-active="$route.path"
           background-color="#2d3a4b"
           text-color="#fff"
           active-text-color="#409EFF;">
           <!-- 菜单组件 -->
-          <div class="devName"><i class="iconfont">&#xe602;</i><span class="title">设备控制</span></div>
+          <div class="devName"><i class="iconfont">&#xe602;</i><span :class="platformname ? 'title' : 'noTitle'">设备控制</span></div>
           <side-menus :routes="routers"></side-menus>
         </el-menu>
       </el-aside>
       <!-- 侧边栏 结束 -->
 
       <!-- 展示信息 开始 -->
-      <el-container>
+      <el-container ref="el_container" style="margin-left:220px">
         <div class="navbar">
           <!-- 隐藏显示侧边栏 开始 -->
-          <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+          <hamburger id="hamburger-container"  class="hamburger-container" @toggleClick="toggleSideBar" />
           <!-- 隐藏显示侧边栏 结束 -->
 
           <!-- 面包屑 开始 -->
@@ -167,7 +168,7 @@ export default {
         token: getToken(), // 携带token
         data: {}// 携带数据
       },
-      alarmDialogVisible: true,
+      alarmDialogVisible: false,
       alarm: {
         code: 'NXYDD_XZ_0004',
         deviceType: 'led',
@@ -195,7 +196,9 @@ export default {
       maintian: {
         0: { value: 0, 'info': '未维护', className: 'offline' },
         1: { value: 1, 'info': '已维护', className: 'normal' }
-      }
+      },
+      width: '220px',
+      platformname: true
     }
   },
   methods: {
@@ -203,6 +206,21 @@ export default {
     toggleSideBar () {
       // this.$store.dispatch('toggleSideBar')
       this.isCollapse = !this.isCollapse
+      if (this.isCollapse) {
+        this.width = '70px'
+        this.platformname = false
+        this.$refs.el_container.$el.style.cssText = `
+          margin-left: 70px;
+          transition: all .28s;
+        `
+      } else {
+        this.width = '220px'
+        this.platformname = true
+        this.$refs.el_container.$el.style.cssText = `
+          margin-left: 220px;
+          transition: all .28s;
+        `
+      }
     },
 
     // 登出
@@ -382,9 +400,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  $sideBarWidth: 220px;
+  // $sideBarWidth: 220px;
   .title{
     padding-left: 5px;
+  }
+  .noTitle{
+    display: none;
   }
   .devName{
     line-height: 50px;
@@ -422,12 +443,14 @@ export default {
     padding: 0px;
     color: #333;
     transition: width .28s;
-    width: $sideBarWidth !important;
+    // width: $sideBarWidth !important;
     height: 100%;
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
     z-index: 1001;
     background-color: #2d3a4b;
   }
@@ -439,6 +462,7 @@ export default {
     flex: 1;
     -ms-flex-preferred-size: auto;
     flex-basis: auto;
+    transition: width .28s;
     overflow: auto;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -447,7 +471,7 @@ export default {
     border: 1px solid #C2C2C2;
     background: #fafafa;
     border-left: 0;
-    margin-left: $sideBarWidth;
+    // margin-left: $sideBarWidth;
     height:calc(100vh - 100px);
   }
   .app_wapper .el-menu-item-group__title {
@@ -477,7 +501,7 @@ export default {
     position: relative;
     background: #fff;
     box-shadow: 0 1px 4px rgba(0,21,41,.08);
-    margin-left: $sideBarWidth;
+    // margin-left: $sideBarWidth;
     .hamburger-container {
       line-height: 46px;
       height: 100%;
@@ -714,5 +738,15 @@ export default {
 .tip .el-checkbox__label{
   font-size: 12px;
   font-weight: 900;
+}
+.el-menu--collapse>.SideMenus>.el-menu-item span, .el-menu--collapse>.SideMenus>.el-submenu>.el-submenu__title span {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    visibility: hidden;
+    display: inline-block;
+}
+.el-menu--collapse>.SideMenus>.el-menu-item .el-submenu__icon-arrow, .el-menu--collapse>.SideMenus>.el-submenu>.el-submenu__title .el-submenu__icon-arrow {
+    display: none;
 }
 </style>

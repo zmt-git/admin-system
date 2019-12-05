@@ -223,7 +223,9 @@ export default {
       zNodes: [],
       clickId: '',
       treeNode: {},
-      tree: {}
+      tree: {},
+      treeArr: [],
+      tree2Arr: []
     }
   },
   methods: {
@@ -297,16 +299,15 @@ export default {
     },
 
     // 比较树形结构差异
-    compareDiffForTree (tree2 = [], zTree) {
+    compareDiffForTree (tree2 = [], zTree, arr = []) {
       let that = this
       tree2.forEach(ele => {
+        arr.push(ele.id)
         if (!!ele.children && ele.children.length > 0) {
           ele.children.forEach((item, index) => {
-            let node = zTree.getNodeByParam('id', item.id)
-            zTree.checkNode(node, true, true)
-            zTree.updateNode(node)
+            arr.push(item.id)
             if (!!item.children && item.children.length > 0) {
-              that.compareDiffForTree(item.children, zTree)
+              that.compareDiffForTree(item.children, zTree, arr)
             }
           })
         }
@@ -316,6 +317,8 @@ export default {
     // 初始化树形结构
     async init () {
       let that = this
+      this.treeArr = []
+      this.tree2Arr = []
       let arr = []
       await getTreeResource()
         .then(res => {
@@ -330,13 +333,24 @@ export default {
       this.tree = $.fn.zTree.init($('#res-tree'), that.setting, that.zNodes)
       let node = this.tree.getNodeByParam('id', 0)
       this.tree.expandNode(node, true, false, false)
+      let nodes = this.tree.getNodes()
+      this.compareDiffForTree(nodes, this.tree, this.treeArr)
       await getTreeResourceByRole({ roleId: this.roleId })
         .then(res => {
-          this.compareDiffForTree(res.result, this.tree)
+          this.compareDiffForTree(res.result, this.tree, this.tree2Arr)
         }).catch(err => {
           console.log('error:' + err)
           console.log(err)
         })
+      this.treeArr.forEach(item => {
+        let node = this.tree.getNodeByParam('id', item)
+        if (this.tree2Arr.includes(item)) {
+          this.tree.checkNode(node, true, true, false)
+        } else {
+          this.tree.checkNode(node, false, true, false)
+        }
+        this.tree.updateNode(node)
+      })
     },
 
     // 树形结构点击事件
