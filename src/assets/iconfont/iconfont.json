@@ -20,11 +20,25 @@
       "unicode_decimal": 59558
     },
     {
+      "icon_id": "1014010",
+      "name": "平台",
+      "font_class": "pingtai",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
       "icon_id": "1327260",
       "name": "主控",
       "font_class": "zhukong",
       "unicode": "e60d",
       "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "1596180",
+      "name": "管理员",
+      "font_class": "guanliyuan",
+      "unicode": "e6cc",
+      "unicode_decimal": 59084
     },
     {
       "icon_id": "1646528",
@@ -39,6 +53,13 @@
       "font_class": "yejian",
       "unicode": "e7b2",
       "unicode_decimal": 59314
+    },
+    {
+      "icon_id": "1726754",
+      "name": "超级管理员",
+      "font_class": "chaojiguanliyuan1",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
     },
     {
       "icon_id": "1952033",
@@ -83,6 +104,13 @@
       "unicode_decimal": 58898
     },
     {
+      "icon_id": "2591918",
+      "name": "报警信息",
+      "font_class": "baojingxinxi",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
       "icon_id": "2899298",
       "name": "设备控制",
       "font_class": "shebeikongzhi",
@@ -104,6 +132,20 @@
       "unicode_decimal": 58886
     },
     {
+      "icon_id": "3185917",
+      "name": "调试",
+      "font_class": "tiaoshi",
+      "unicode": "e665",
+      "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "3255934",
+      "name": "系统日志",
+      "font_class": "xitongrizhi",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
       "icon_id": "3564903",
       "name": "02-新模块添加",
       "font_class": "-xinmokuaitianjia",
@@ -116,6 +158,13 @@
       "font_class": "ziyuanshouquan_icon",
       "unicode": "e621",
       "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "3895524",
+      "name": "维护",
+      "font_class": "techreport-",
+      "unicode": "e632",
+      "unicode_decimal": 58930
     },
     {
       "icon_id": "3965918",
@@ -144,6 +193,13 @@
       "font_class": "mima",
       "unicode": "e610",
       "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "4182367",
+      "name": "AK-MN声音",
+      "font_class": "mn_shengyin",
+      "unicode": "e619",
+      "unicode_decimal": 58905
     },
     {
       "icon_id": "4723884",
@@ -209,6 +265,13 @@
       "unicode_decimal": 58884
     },
     {
+      "icon_id": "7090086",
+      "name": "站内信（已读）",
+      "font_class": "zhanneixinyidu",
+      "unicode": "e71b",
+      "unicode_decimal": 59163
+    },
+    {
       "icon_id": "7505175",
       "name": "退出",
       "font_class": "tuichu",
@@ -235,6 +298,13 @@
       "font_class": "zidong",
       "unicode": "e707",
       "unicode_decimal": 59143
+    },
+    {
+      "icon_id": "9114392",
+      "name": "43静音",
+      "font_class": "jingyin1",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
     },
     {
       "icon_id": "9367809",
@@ -284,6 +354,20 @@
       "font_class": "main_dingshikaiguanji",
       "unicode": "e64b",
       "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "11752390",
+      "name": "消 息1-01",
+      "font_class": "xiaoxi-",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "11876448",
+      "name": "设备测试",
+      "font_class": "shebeiceshi",
+      "unicode": "e613",
+      "unicode_decimal": 58899
     },
     {
       "icon_id": "11994036",

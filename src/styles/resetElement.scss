@@ -44,8 +44,8 @@
 }
 .el-dialog__title {
   line-height: 24px;
-  font-size: 18px;
-  color: #fff;
+  font-size: 16px;
+  color:rgb(255, 220, 64);
 }
 .el-date-editor .el-range-separator{
   padding: 0;
@@ -64,5 +64,5 @@
   font-weight: 900;
 }
 .el-menu-item.is-active{
-  color: #409EFF!important;
+  color: rgb(255, 220, 64)!important;
 }

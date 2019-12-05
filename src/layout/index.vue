@@ -14,7 +14,7 @@
           text-color='#fff'
           active-text-color="#409EFF;">
           <!-- 菜单组件 -->
-          <div class="devName"><i class="iconfont">&#xe602;</i><span :class="platformname ? 'title' : 'noTitle'">设备控制</span></div>
+          <div class="devName"><i class="iconfont icon-pingtai"></i><span :class="platformname ? 'title' : 'noTitle'">设备管控</span></div>
           <side-menus :routes="routers"></side-menus>
         </el-menu>
       </el-aside>
@@ -35,9 +35,9 @@
           <div class="right-menu">
             <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
               <div class="avatar-wrapper">
-                <el-badge is-dot>
+                <!-- <el-badge is-dot> -->
                   <svgIcon :className="'userIcon'" :iconClass='userIcon'></svgIcon>
-                </el-badge>
+                <!-- </el-badge> -->
               </div>
               <el-dropdown-menu slot="dropdown">
                 <router-link to="/index">
@@ -45,13 +45,13 @@
                     <i class="iconfont icon-yemian-copy-copy" aria-hidden="true"></i>首页
                   </el-dropdown-item>
                 </router-link>
-                <router-link to="/deviceLog/alarm">
+                <!-- <router-link to="/deviceLog/alarm">
                   <el-dropdown-item divided>
                     <el-badge :value="120" :max="99" class="item">
                       <span style="display:block;"><i class="iconfont icon-xiaoxi-"></i>消息</span>
                     </el-badge>
                   </el-dropdown-item>
-                </router-link>
+                </router-link> -->
                 <el-dropdown-item divided>
                   <span style="display:block;" @click="logout"><i class="iconfont icon-tuichu"></i>退出</span>
                 </el-dropdown-item>
@@ -150,7 +150,10 @@ import svgIcon from '@/components/SvgIcon/index'
 
 export default {
   computed: {
-    ...mapGetters(['sidebar', 'routers', 'token'])
+    ...mapGetters(['sidebar', 'routers', 'token']),
+    userIcon () {
+      return 'icon-chaojiguanliyuan1'
+    }
   },
   components: {
     sideMenus,
@@ -163,7 +166,6 @@ export default {
       activeLink: null,
       userRole: 'Topest',
       isCollapse: false,
-      userIcon: 'icon-chaojiguanliyuan',
       socket: null,
       ws_params: {
         versionNumber: 1.0, // 协议版本号
@@ -405,7 +407,6 @@ export default {
   watch: {
     $route (to, from) {
       this.activeLink = to.path
-      console.log(this.activeLink)
     }
   }
 }
@@ -421,8 +422,8 @@ export default {
   .devName{
     line-height: 50px;
     height: 50px;
-    color:#fff;
-    font-size:18px;
+    color:rgb(255, 220, 64);
+    font-size: 16px;
     text-align:left;
     background-color: #2d3a4b;
     border: 1px solid #2d3a4b;
@@ -557,7 +558,7 @@ export default {
           transition: background .3s;
 
           &:hover {
-            background: rgba(0, 0, 0, .025)
+            background: rgba(0, 0, 0, .1)
           }
         }
       }
@@ -566,8 +567,8 @@ export default {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: #ccc;
         margin-top: 5px;
+        background: rgba(0, 0, 0, .05);
         margin-right: 10px;
         padding: 0px;
 
