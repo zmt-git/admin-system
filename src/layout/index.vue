@@ -9,9 +9,9 @@
           :collapse="isCollapse"
           unique-opened
           class="el-menu-vertical-demo"
-          :default-active="$route.path"
+          :default-active="activeLink"
           background-color="#2d3a4b"
-          text-color="#fff"
+          text-color='#fff'
           active-text-color="#409EFF;">
           <!-- 菜单组件 -->
           <div class="devName"><i class="iconfont">&#xe602;</i><span :class="platformname ? 'title' : 'noTitle'">设备控制</span></div>
@@ -160,6 +160,7 @@ export default {
   },
   data () {
     return {
+      activeLink: null,
       userRole: 'Topest',
       isCollapse: false,
       userIcon: 'icon-chaojiguanliyuan',
@@ -352,6 +353,7 @@ export default {
     }
   },
   created () {
+    this.activeLink = this.$route.path
     // 获取角色
     this.$store.dispatch('getAllRoles')
 
@@ -399,6 +401,12 @@ export default {
     this.socket.websock.close()
     eventBus.$off('ws_connection')
     eventBus.$off('ws_close')
+  },
+  watch: {
+    $route (to, from) {
+      this.activeLink = to.path
+      console.log(this.activeLink)
+    }
   }
 }
 </script>
