@@ -18,4 +18,15 @@ export default () => {
       }
     }
   })
+  Vue.directive('isADmin', {
+    inserted (el, binding, vnode) {
+      let _value = binding.value
+      if (_value instanceof String) {
+        _value = _value.toLowerCase()
+      }
+      if (_value === 'administrator') {
+        el.parentNode && el.parentNode.removeChild(el)
+      }
+    }
+  })
 }

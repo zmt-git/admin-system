@@ -5,6 +5,7 @@
       v-loading.iTable="options.loading"
       :size="options.small ? options.small: 'small'"
       :data="list"
+      max-height='730px'
       :stripe="options.stripe"
       header-row-class-name='headStyle'
       :header-row-style="{height: options.height, padding: options.padding}"
@@ -14,7 +15,7 @@
       @selection-change="handleSelectionChange"
     >
       <!--选择框-->
-      <el-table-column v-if="options.mutiSelect" type="selection" style="width: 55px;"></el-table-column>
+      <el-table-column v-if="options.mutiSelect" :selectable="checkSelectable" type="selection" style="width: 55px;"></el-table-column>
       <!--数据列-->
       <template v-for="(column) in columns">
         <el-table-column
@@ -87,6 +88,7 @@
           <el-button-group>
             <template v-for="(btn, key, index) in operates.list">
               <el-button
+                v-isADmin='scope.row.enName'
                 v-hasBtn='btn.title'
                 v-if="btn.show"
                 :key="index"
@@ -182,6 +184,12 @@ export default {
     pageSize: {
       type: Number,
       default: 15
+    },
+    slcdTvList: {
+      type: Array,
+      default: () => {
+        return [{ key: 'enName', value: 'administrator' }]
+      }
     }
   },
   // 数据
@@ -205,6 +213,15 @@ export default {
     // 当前页
     handleCurrentChange (e) {
       this.$emit('handleCurrentChange', e)
+    },
+    checkSelectable (row, index) {
+      let flag = true
+      for (let i = 0; i < this.slcdTvList.length; i++) {
+        if (row[this.slcdTvList[i].key] === this.slcdTvList[i].value) {
+          flag = false
+        }
+      }
+      return flag
     }
   }
 }

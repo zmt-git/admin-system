@@ -137,11 +137,7 @@ export default {
         voice: '红外对射'
       },
       obj: [
-        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 0, maintain: 1, read: 1 },
-        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 1, maintain: 0, read: 0 },
-        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 2, maintain: 0, read: 0 },
-        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 3, maintain: 0, read: 0 },
-        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 2, maintain: 0, read: 0 }
+        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 0, maintain: 1, read: 1 }
       ]
     }
   },

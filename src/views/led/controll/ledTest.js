@@ -1,5 +1,5 @@
 // 方法
-import { timestampToTime } from '@/utils/format'
+// import { timestampToTime } from '@/utils/format'
 // API
 import { setTime, setFan, autoFan, setLaser, setFlanSh, setOnOrOffTime } from '@/api/led/controller'
 export function testStart (list) {
