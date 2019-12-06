@@ -17,7 +17,7 @@ export default class WebSocketWrapper {
     this.timeOut = null
     this.websock = null
     this.sid_ = this._options.sid ? this._options.sid_ : null
-    this.proxy = this._options.proxy ? this._options.proxy : `ws://192.168.2.172:5659`
+    this.proxy = this._options.proxy ? this._options.proxy : `ws://39.100.241.240:5661`
     this.onopen_ = this._options.onopen ? this._options.onopen : this.websocketonopen
     this.onerror_ = this._options.onerror ? this._options.onerror : this.websocketonerror
     this.onmessage_ = this._options.onmessage ? this._options.onmessage : this.websocketonmessage

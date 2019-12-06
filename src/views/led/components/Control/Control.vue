@@ -79,8 +79,8 @@
           <div class="half">
             <span class="title">闪烁控制</span>
             <el-radio-group v-model="radioTwinkle" size="small" @change="changeLed">
-              <el-radio-button :label="1">常亮</el-radio-button>
-              <el-radio-button :label="0">闪烁</el-radio-button>
+              <el-radio-button :label="0">常亮</el-radio-button>
+              <el-radio-button :label="1">闪烁</el-radio-button>
             </el-radio-group>
           </div>
         </li>

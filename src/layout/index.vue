@@ -250,6 +250,7 @@ export default {
 
     // websocket接受消息
     onmessage (data) {
+      console.log(data)
       if (isJSON(data.data)) {
         let message = JSON.parse(data.data)
         if (message.type === 'alarm') {
