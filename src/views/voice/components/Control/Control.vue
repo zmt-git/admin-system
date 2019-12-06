@@ -166,11 +166,12 @@
           </div>
 
           <!-- 设置播放方案 结束 -->
-          <li v-show='debugShow' class="controlitem debugBox">调试</li>
-
+          <li v-show='debugShow' class="controlitem debugBox">
+            <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
+          </li>
         </ul>
         <div class="mask" v-show="loading">
-          <i style="font-size:60px" class="el-icon-loading"></i>
+          <i style="font-size: 30px;color: #fff;" class="el-icon-loading"></i>
         </div>
     </el-dialog>
   </div>
@@ -190,8 +191,9 @@ export default {
     return {
       debugType: 'primary',
       debugTitle: '调试',
+      debugList: [],
       debugShow: false,
-      loading: true,
+      loading: false,
       custom: '', // 自定义指令
       status: 1,
       deviceType: {
@@ -290,7 +292,7 @@ export default {
     }
   },
   methods: {
-    // 获取主控状态
+    // 转换按钮状态
     getMainStatusInit () {
       this.handOff = this.masterStatus.workStatus + '' // 设备开关(转为字符串)
       this.playModel = this.masterStatus.playMode + '' // 播放模式(转为字符串)
@@ -309,11 +311,10 @@ export default {
     },
 
     // 设备开关
-    manual () {
+    async manual () {
       if (this.handOff === '1') {
-        manualSwitch({ code: this.code, powerSwitch: 1 })
+        await manualSwitch({ code: this.code, powerSwitch: 1 })
           .then(res => {
-            this.getMainStatu()
             this.$message({
               showClose: true,
               message: '设备已打开',
@@ -322,9 +323,8 @@ export default {
           })
           .catch(err => console.log(err))
       } else {
-        manualSwitch({ code: this.code, powerSwitch: 0 })
+        await manualSwitch({ code: this.code, powerSwitch: 0 })
           .then(res => {
-            this.getMainStatu()
             this.$message({
               showClose: true,
               message: '设备已关闭',
@@ -333,14 +333,14 @@ export default {
           })
           .catch(err => console.log(err))
       }
+      this.getMainStatu()
     },
 
     // 播放模式（0：对应车辆检测播放，1：连续自动播放）
-    play () {
+    async play () {
       if (this.playModel === '1') {
-        playMode({ code: this.code, playMode: 1 })
+        await playMode({ code: this.code, playMode: 1 })
           .then(res => {
-            this.getMainStatu()
             this.$message({
               showClose: true,
               message: '切换为自动连续播放',
@@ -349,9 +349,8 @@ export default {
           })
           .catch(err => console.log(err))
       } else {
-        playMode({ code: this.code, playMode: 0 })
+        await playMode({ code: this.code, playMode: 0 })
           .then(res => {
-            this.getMainStatu()
             this.$message({
               showClose: true,
               message: '切换为车辆检测播放',
@@ -360,13 +359,13 @@ export default {
           })
           .catch(err => console.log(err))
       }
+      this.getMainStatu()
     },
 
     // 同步成功
-    syncTime () {
-      setTime({ code: this.code })
+    async syncTime () {
+      await setTime({ code: this.code })
         .then(res => {
-          this.getMainStatu()
           this.$message({
             showClose: true,
             message: '同步成功',
@@ -374,14 +373,14 @@ export default {
           })
         })
         .catch(err => console.log(err))
+      this.getMainStatu()
     },
 
     // 设置开关机
-    determine () {
+    async determine () {
       if (this.offTime && this.onTime) {
-        setOnOrOffTime({ on: this.onTime, off: this.offTime, code: this.code })
+        await setOnOrOffTime({ on: this.onTime, off: this.offTime, code: this.code })
           .then(res => {
-            this.getMainStatu()
             this.$message({
               showClose: true,
               message: '设置成功',
@@ -389,6 +388,7 @@ export default {
             })
           })
           .catch(err => console.log(err))
+        this.getMainStatu()
       } else {
         this.$message({
           showClose: true,
@@ -398,11 +398,10 @@ export default {
     },
 
     // 播放内容
-    playNmb () {
+    async playNmb () {
       if (this.voice !== '' && this.valueNmb !== '' && this.volume !== '' && this.valueContent !== '') {
-        setFlanSh({ code: this.code, number: 1, voice: this.voice, num: this.valueNmb, volume: this.volume, content: this.valueContent })
+        await setFlanSh({ code: this.code, number: 1, voice: this.voice, num: this.valueNmb, volume: this.volume, content: this.valueContent })
           .then(res => {
-            this.getMainStatu()
             this.$message({
               showClose: true,
               message: '设置成功',
@@ -410,6 +409,7 @@ export default {
             })
           })
           .catch(err => console.log(err))
+        this.getMainStatu()
       } else {
         this.$message({
           showClose: true,
@@ -423,22 +423,22 @@ export default {
       this.dialogVisible = true
     },
 
-    // 设备状态
-    getMainStatu () {
-      return getMainStatus({ code: this.code })
+    // 获取设备状态
+    async getMainStatu () {
+      this.loading = true
+      await getMainStatus({ code: this.code })
         .then(res => {
-          this.loading = false
           this.masterStatus = res.result
           this.getMainStatusInit()
         })
         .catch(err => {
-          this.loading = false
           console.log(err)
           this.$message({
             message: '获取主控状态失败',
             type: 'error'
           })
         })
+      this.loading = false
     },
 
     // 弹框打开回调
@@ -450,11 +450,11 @@ export default {
         this.getMainStatusInit()
       })
       eventBus.$on('WS_debugging', (data) => {
-        this.debugMsg = data
+        this.debugList.unshift(data)
       })
-      this.$nextTick(async () => {
+      this.$nextTick(() => {
         this.code = this.code
-        await this.getMainStatu()
+        this.getMainStatu()
       })
     },
 
@@ -463,6 +463,7 @@ export default {
       eventBus.$emit('ws_close', this.code, module.END)
       this.custom = ''
       this.debugType = 'primary'
+      this.debugList = []
       this.debugTitle = '调试'
       this.debugShow = false
       eventBus.$emit('ws_close', this.code, module.DEBUG)
@@ -488,13 +489,13 @@ export default {
 .mask{
   position: absolute;
   left: 0;
-  top: 0;
+  bottom: 0;
   background: #000000;
   opacity: 0.3;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 44px);
   z-index: 9999;
-  line-height: 28;
+  line-height: 18;
   text-align: center;
 }
 .isConnect{
@@ -612,12 +613,5 @@ export default {
   right: 5px;
   top: 15px;
   line-height: 72px;
-}
-.debugBox{
-  background: #000000;
-  color: #fff;
-  font-size: 12px;
-  padding: 0 10px;
-  overflow: auto;
 }
 </style>

@@ -5,6 +5,7 @@
       v-loading.iTable="options.loading"
       :size="options.small ? options.small: 'small'"
       :data="list"
+      max-height='730px'
       :stripe="options.stripe"
       header-row-class-name='headStyle'
       :header-row-style="{height: options.height, padding: options.padding}"

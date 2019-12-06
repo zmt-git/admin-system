@@ -165,10 +165,14 @@
             <!-- 频率 结束 -->
 
           </li>
-          <li v-show='debugShow' class="controlitem debugBox">调试</li>
+          <li v-show='debugShow' class="controlitem debugBox">
+            <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
+          </li>
         </ul>
         <!-- 控制表单 结束 -->
-
+        <div class="mask" v-show="loading">
+          <i style="font-size: 30px;color: #fff;" class="el-icon-loading"></i>
+        </div>
     </el-dialog>
     <!-- 主控设备控制 结束 -->
 
@@ -203,6 +207,8 @@ export default {
   },
   data () {
     return {
+      loading: false,
+      debugList: [],
       debugType: 'primary',
       debugTitle: '调试',
       debugShow: false,
@@ -231,8 +237,7 @@ export default {
         1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
         2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
         3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
-      },
-      debugMsg: null
+      }
     }
   },
   methods: {
@@ -318,7 +323,7 @@ export default {
         this.showFormat()
       })
       eventBus.$on('WS_debugging', (data) => {
-        this.debugMsg = data
+        this.debugList.unshift(data)
       })
       this.$nextTick(() => {
         this.getMainStatu()
@@ -329,15 +334,16 @@ export default {
     closeDialog () {
       this.reset()
       this.debugType = 'primary'
-
+      this.debugList = []
       this.debugShow = false
       this.debugTitle = '调试'
       eventBus.$emit('ws_close', this.code, module.DEBUG)
       eventBus.$emit('ws_close', this.code, module.END)
     },
 
-    getMainStatu () {
-      getMainStatus({ code: this.code })
+    async getMainStatu () {
+      this.loading = true
+      await getMainStatus({ code: this.code })
         .then(res => {
           this.masterInfo = res.result
           this.showFormat()
@@ -346,6 +352,7 @@ export default {
           this.tip('获取主控状态失败', 'error')
           console.log(err)
         })
+      this.loading = false
     },
 
     // 提示函数
@@ -374,6 +381,18 @@ export default {
 }
 </script>
 <style scoped>
+.mask{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: #000000;
+  opacity: 0.3;
+  width: 100%;
+  height: calc(100% - 44px);
+  z-index: 9999;
+  line-height: 18;
+  text-align: center;
+}
 .tableBox{
   width: 100%;
   padding:10px;
@@ -428,12 +447,5 @@ export default {
 }
 .controlInput{
   margin-bottom: 4px;
-}
-.debugBox{
-  background: #000000;
-  color: #fff;
-  font-size: 12px;
-  padding: 0 10px;
-  overflow: auto;
 }
 </style>

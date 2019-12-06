@@ -88,6 +88,18 @@ html {
   position: absolute;
   width: 100%;
 }
+.debugBox{
+  background: #000000!important;
+  height: 150px!important;
+  color: #fff;
+  font-size: 12px;
+  padding: 0 10px;
+  overflow: auto!important;
+  border: 1px solid #fff;
+}
+.debugBox p {
+  white-space: nowrap;
+}
 .no-padding {
   padding: 0px !important;
 }

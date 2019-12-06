@@ -118,8 +118,13 @@
           </div>
           <span class="fanNumberClass">{{`${fanNumber}%`}}</span>
         </li>
-        <li v-show='debugShow' class="controlitem debugBox">调试</li>
+        <li v-show='debugShow' class="controlitem debugBox">
+          <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
+        </li>
       </ul>
+      <div class="mask" v-show="loading">
+        <i style="font-size: 30px;color: #fff;" class="el-icon-loading"></i>
+      </div>
   </el-dialog>
   </div>
 </template>
@@ -139,18 +144,19 @@ export default {
       debugType: 'primary',
       debugTitle: '调试',
       debugShow: false,
+      debugList: [],
       mainControlStatus: {}, // 存储当前状态
       lampOn: null,
       lampOff: null,
       onTime: null, // 开灯时间
       offTime: null, // 关灯时间
-      fanVal: false, // 风扇开关
+      fanVal: 0, // 风扇开关
       onOrOff: '', // 风扇开关状态
       speed: '', // 风扇转速
       radio1: null, // 风扇调速
       radioTwinkle: null, // 闪烁常亮
       autoFly: '', // 风扇自动/手动
-
+      loading: false,
       disabled: false, // 控制调速是否可用
       disMode: false, // 控制闪烁按钮是否可用
       radio: false, // 单选按钮
@@ -236,8 +242,7 @@ export default {
         1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
         2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
         3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
-      },
-      debugMsg: null
+      }
     }
   },
   methods: {
@@ -254,7 +259,7 @@ export default {
         this.foramtBtn()
       })
       eventBus.$on('WS_debugging', (data) => {
-        this.debugMsg = data
+        this.debugList.unshift(data)
       })
       this.getStatus()
     },
@@ -264,6 +269,7 @@ export default {
       eventBus.$emit('ws_close', this.code, module.END)
       this.debugType = 'primary'
       this.debugShow = false
+      this.debugList = []
       this.debugTitle = '调试'
       eventBus.$emit('ws_close', this.code, module.DEBUG)
     },
@@ -283,8 +289,9 @@ export default {
     },
 
     // 获取当前状态
-    getStatus () {
-      getLaserStatus({ code: this.code })
+    async getStatus () {
+      this.loading = true
+      await getLaserStatus({ code: this.code })
         .then((res) => {
           this.mainControlStatus = res.result.mainControlStatus
           this.foramtBtn()
@@ -296,6 +303,7 @@ export default {
             type: 'error'
           })
         })
+      this.loading = false
     },
 
     // 更新按钮
@@ -326,8 +334,8 @@ export default {
     },
 
     // 时间设置
-    setTime () {
-      setOnOrOffTime({ code: this.code, on: this.onTime, off: this.offTime })
+    async setTime () {
+      await setOnOrOffTime({ code: this.code, on: this.onTime, off: this.offTime })
         .then((res) => {
           this.tip('时间设置成功', 'success')
         })
@@ -335,11 +343,12 @@ export default {
           this.tip('时间设置失败', 'error')
           console.log(err)
         })
+      this.getStatus()
     },
 
     // 同步时间
-    syncTime () {
-      setTime({ code: this.code })
+    async syncTime () {
+      await setTime({ code: this.code })
         .then((res) => {
           this.tip('时间同步成功', 'success')
         })
@@ -347,22 +356,23 @@ export default {
           this.tip('时间同步失败', 'error')
           console.log(err)
         })
+      this.getStatus()
     },
 
     // 控制风扇
-    changeFan (data) {
+    async changeFan (data) {
       if (data) {
         this.onOrOff = 1 // 打开
         this.radio = false
         this.disabled = false
-        this.fanVal = true
+        this.fanVal = 1
       } else {
         this.onOrOff = 0
         this.radio = true
         this.disabled = true
-        this.fanVal = false
+        this.fanVal = 0
       }
-      setFan({ code: this.code, onOrOff: this.onOrOff, speed: 0 })
+      await setFan({ code: this.code, onOrOff: this.onOrOff, speed: 0 })
         .then((res) => {
           this.tip('风扇设置开关成功', 'success')
         })
@@ -370,10 +380,11 @@ export default {
           this.tip('风扇设置开关失败', 'error')
           console.log(err)
         })
+      this.getStatus()
     },
 
     // 风扇自动手动
-    changeAuto (data) {
+    async changeAuto (data) {
       if (data === '0') {
         this.autoFly = 1
         this.disabled = true
@@ -382,7 +393,7 @@ export default {
         this.disabled = false
       }
       // 自动
-      autoFan({ code: this.code, onOrOff: this.autoFly })
+      await autoFan({ code: this.code, onOrOff: this.autoFly })
         .then((res) => {
           this.tip('风扇控制模式设置成功', 'success')
         })
@@ -390,11 +401,12 @@ export default {
           this.tip('风扇控制模式设置失败', 'error')
           console.log(err)
         })
+      this.getStatus()
     },
 
     // 风扇调速方法
-    changeFanNumber () {
-      setFan({ code: this.code, onOrOff: 1, speed: this.fanNumber })
+    async changeFanNumber () {
+      await setFan({ code: this.code, onOrOff: 1, speed: this.fanNumber })
         .then((res) => {
           this.tip('风扇转速设置成功', 'success')
         })
@@ -402,12 +414,13 @@ export default {
           this.tip('风扇转速设置失败', 'error')
           console.log(err)
         })
+      this.getStatus()
     },
 
     // 激光灯亮度调节
-    changeBrigh (data) {
+    async changeBrigh (data) {
       this.ledNum = data
-      setLaser({ code: this.code, laser: this.ledNum })
+      await setLaser({ code: this.code, laser: this.ledNum })
         .then((res) => {
           this.tip('亮度设置成功', 'success')
         })
@@ -415,16 +428,17 @@ export default {
           this.tip('亮度设置失败', 'error')
           console.log(err)
         })
+      this.getStatus()
     },
 
     // 设置激光灯闪烁或者常亮
-    changeLed (data) {
+    async changeLed (data) {
       if (data === '1') {
         this.disMode = true
       } else {
         this.disMode = false
       }
-      setFlanSh({ code: this.code, onOrOff: 0, totalise: 1 })
+      await setFlanSh({ code: this.code, onOrOff: 0, totalise: 1 })
         .then((res) => {
           this.tip('常亮设置成功', 'success')
         })
@@ -432,12 +446,13 @@ export default {
           console.log(err)
           this.tip('常亮设置失败', 'error')
         })
+      this.getStatus()
     },
 
     // 控制模式
-    changeMode (data) {
+    async changeMode (data) {
       this.twinkleNum = data
-      setFlanSh({ code: this.code, onOrOff: 1, totalise: this.twinkleNum })
+      await setFlanSh({ code: this.code, onOrOff: 1, totalise: this.twinkleNum })
         .then((res) => {
           this.tip('闪烁方案设置成功', 'success')
         })
@@ -445,6 +460,7 @@ export default {
           console.log(err)
           this.tip('闪烁方案设置失败', 'error')
         })
+      this.getStatus()
     },
 
     tip (message, type) {
@@ -457,6 +473,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.mask{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: #000000;
+  opacity: 0.3;
+  width: 100%;
+  height: calc(100% - 44px);
+  z-index: 9999;
+  line-height: 18;
+  text-align: center;
+}
 .lampBox {
   width: 100%;
   overflow: hidden;
@@ -522,12 +550,5 @@ export default {
 }
 .fanNumberClass{
   margin-left: 5px;
-}
-.debugBox{
-  background: #000000;
-  color: #fff;
-  font-size: 12px;
-  padding: 0 10px;
-  overflow: auto;
 }
 </style>
