@@ -17,7 +17,7 @@ export default class WebSocketWrapper {
     this.timeOut = null
     this.websock = null
     this.sid_ = this._options.sid ? this._options.sid_ : null
-    this.proxy = this._options.proxy ? this._options.proxy : `ws://39.100.241.240:5661`
+    this.proxy = this._options.proxy ? this._options.proxy : `ws://192.168.2.172:5661`
     this.onopen_ = this._options.onopen ? this._options.onopen : this.websocketonopen
     this.onerror_ = this._options.onerror ? this._options.onerror : this.websocketonerror
     this.onmessage_ = this._options.onmessage ? this._options.onmessage : this.websocketonmessage
@@ -61,7 +61,6 @@ export default class WebSocketWrapper {
 
   // websocket连接发生错误
   websocketonerror (e) {
-    console.log(e)
     console.log('websocket连接发生错误')
     this.lockReconnect = false
     this.websocketReconnection()
@@ -111,7 +110,7 @@ export default class WebSocketWrapper {
         return
       }
       let obj = {
-        'versionNumber': 1.0, // 协议版本号
+        'versionNumber': '1.0', // 协议版本号
         'module': 'heart', // 命令号
         'token': getToken(), // 携带token
         'data': null// 携带数据
@@ -132,6 +131,7 @@ export default class WebSocketWrapper {
       .then(() => {
         store.dispatch('Logout')
         router.push('/login')
+        this.lockReconnect = false
         return true
       })
       .catch(() => {
@@ -146,6 +146,7 @@ export default class WebSocketWrapper {
           .catch(() => {
             store.dispatch('Logout')
             router.push('/login')
+            this.lockReconnect = false
             return true
           })
       })

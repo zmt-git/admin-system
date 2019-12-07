@@ -140,7 +140,7 @@ import { mapGetters } from 'vuex'
 
 // 方法
 import WebSocketWrapper from '@/utils/websocket'
-import eventBus, { type } from '@/utils/eventBus'
+import eventBus, { emitType } from '@/utils/eventBus'
 import { getToken, setAlarm, setVoice, getAlarm, getVoice } from '@/utils/auth'
 import { isJSON, timestampToTime } from '@/utils/format'
 // 组件
@@ -169,7 +169,7 @@ export default {
       isCollapse: false,
       socket: null,
       ws_params: {
-        versionNumber: 1.0, // 协议版本号
+        versionNumber: '1.0', // 协议版本号
         module: 'ledend', // 命令号
         // deviceType: null, // 设备类型（0-PC，1-手机）
         token: getToken(), // 携带token
@@ -253,7 +253,7 @@ export default {
       console.log(data)
       if (isJSON(data.data)) {
         let message = JSON.parse(data.data)
-        if (message.type === 'alarm') {
+        if (message.module === 'alarm') {
           if (this.checkedTip) {
             this.alarmDialogVisible = true
           }
@@ -261,8 +261,10 @@ export default {
             this.$refs.voice.play()
           }
           this.alarm = message.data
+        } else if (message.module === 'result') {
+          console.log('heart')
         } else {
-          eventBus.$emit(type[message.type], message.data)
+          eventBus.$emit(emitType[message.module], message.data)
         }
       }
     },
@@ -368,19 +370,23 @@ export default {
     this.$store.dispatch('findAllGroupS')
 
     // 创建监听
-    eventBus.$on('ws_connection', (code, type) => {
+    eventBus.$on('ws_connection', (infoObj, type) => {
       this.ws_params.module = type
-      this.ws_params.data = { code: code }
+      this.ws_params.data = infoObj
       let obj = JSON.parse(JSON.stringify(this.ws_params))
       obj = JSON.stringify(obj)
       this.socket.websock.send(obj)
+      console.log('消息已发送 连接')
+      console.log(obj)
     })
-    eventBus.$on('ws_close', (code, type) => {
+    eventBus.$on('ws_close', (infoObj, type) => {
       this.ws_params.module = type
-      this.ws_params.data = { code: code }
+      this.ws_params.data = infoObj
       let obj = JSON.parse(JSON.stringify(this.ws_params))
       obj = JSON.stringify(obj)
       this.socket.websock.send(obj)
+      console.log('消息已发送 断开')
+      console.log(obj)
     })
     // 初始化报警状态
     if (getVoice() === 'true') {
@@ -403,9 +409,9 @@ export default {
     this.socket.websock.close()
     eventBus.$off('ws_connection')
     eventBus.$off('ws_close')
-    let arr = Object.keys(type)
+    let arr = Object.keys(emitType)
     arr.forEach(item => {
-      eventBus.$off(type[item])
+      eventBus.$off(emitType[item])
     })
   },
   watch: {
