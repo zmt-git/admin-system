@@ -48,21 +48,6 @@
   <!-- 控制激光灯弹框  开始 -->
   <Control :code='code' ref="Control"></Control>
   <!-- 控制激光灯弹框  结束 -->
-
-  <!-- 激光灯状态弹框  开始 -->
-  <el-dialog
-    title="激光灯状态"
-    :visible.sync="dialogState"
-    :close-on-click-modal='false'
-    width="610px"
-  >
-    <EleTable
-    :list='listState'
-    :columns='columnsState'
-    :options='optionsState'
-  ></EleTable>
-  </el-dialog>
-  <!-- 激光灯状态弹框  结束 -->
   <!-- 分配分组 开始 -->
   <Group
     :options='groupOptions'
@@ -83,7 +68,7 @@ import DialogForm from '@/components/DialogForm/DialogForm'
 import Control from '../components/Control/Control'
 import Group from '@/components/Group/Group'
 // API
-import { getMainControl, saveOrUpdate, deleteByIds, isCode, getLaserStatus } from '@/api/led/controller'
+import { getMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/led/controller'
 import { getDeviceGroup } from '@/api/system/system'
 import { assignDevice } from '@/api/group/group'
 // 方法
@@ -152,33 +137,9 @@ export default {
         list: [
           { show: true, type: 'danger', title: '删除', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false },
           { show: true, type: 'info', title: '编辑', icon: 'el-icon-edit', method: this.tabeledit },
-          { show: true, type: 'success', title: '设备控制', icon: 'el-icon-setting', method: this.control },
-          { show: true, type: 'warning', title: '激光灯状态查看', icon: 'el-icon-view', method: this.controlState }
+          { show: true, type: 'success', title: '设备控制', icon: 'el-icon-setting', method: this.control }
         ]
       },
-      // 激光灯状态表格
-      listState: [], // 数据
-      columnsState: [
-        { prop: 'code', label: '灯组编号', align: 'center' },
-        { prop: 'version', label: '版本号', align: 'center' },
-        { prop: 'fanStatus', label: '风扇状态', align: 'center' },
-        { prop: 'fanAuto', label: '风扇自动调速状态', align: 'center' },
-        { prop: 'fanSpeed', label: '风扇转速', align: 'center' },
-        { prop: 'flicker', label: '闪烁开关', align: 'center' },
-        { prop: 'flickerMode', label: '闪烁方案', align: 'center' },
-        { prop: 'cpuTemperature', label: 'CPU温度', align: 'center' }
-      ],
-      optionsState: {
-        stripe: false, // 是否为斑马纹 table
-        highlightCurrentRow: false, // 是否要高亮当前行
-        loading: true, // 是否添加表格loading加载动画
-        mutiSelect: false, // 是否支持列表项选中功能
-        height: '20px',
-        border: true,
-        padding: '5px 0',
-        hasPagination: false
-      },
-      tableLoading: ['options', 'optionsState'],
       // 搜索配置
       searchOptions: { // 最低能见度统计
         type: [
@@ -263,7 +224,6 @@ export default {
         'note': null,
         'groupIds': null
       },
-      dialogState: false, // 激光灯状态
       code: '',
       ledList: [],
       // 设备分组选中array
@@ -309,18 +269,6 @@ export default {
     // 焦点事件
     setHeader () {
       this.dataForm.code = 'NX_LASER_'
-    },
-    // 显示控制弹窗
-    controlState (key, val) {
-      this.code = val.code
-      this.dialogState = true
-      getLaserStatus({ code: val.code })
-        .then((res) => {
-          console.log(res)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
     },
     // 时间转化
     timestampToTimes (val, key) {

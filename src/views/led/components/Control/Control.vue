@@ -116,6 +116,13 @@
           </div>
           <span class="fanNumberClass">{{`${fanNumber}%`}}</span>
         </li>
+        <li style="width:100%;">
+          <EleTable
+            :list='listState'
+            :columns='columnsState'
+            :options='optionsState'
+          ></EleTable>
+        </li>
         <li v-show='debugShow' class="controlitem debugBox">
           <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
         </li>
@@ -128,10 +135,19 @@
 </template>
 <script>
 import { setTime, setFan, autoFan, setLaser, setFlanSh, setOnOrOffTime, getLaserStatus } from '@/api/led/controller'
+// 组件
+import EleTable from '@/components/EleTable/table'
+// 混入
+import tabelData from '@/mixins/tabelData'
+// import eventBus from '@/utils/eventBus'
 import eventBus, { emitType } from '@/utils/eventBus'
 import wsModule, { sendType } from '@/config/ws_module'
 export default {
   name: 'LedControl',
+  components: {
+    EleTable
+  },
+  mixins: [tabelData],
   props: {
     code: {
       type: String,
@@ -241,7 +257,30 @@ export default {
         1: { value: 0, title: '设备离线', iconClass: 'icondanger', textClass: 'danger' },
         2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
         3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
-      }
+      },
+      // 激光灯状态表格
+      listState: [], // 数据
+      columnsState: [
+        { prop: 'code', label: '灯组编号', align: 'center' },
+        { prop: 'version', label: '版本号', align: 'center' },
+        { prop: 'fanStatus', label: '风扇状态', align: 'center' },
+        { prop: 'fanAuto', label: '风扇自动调速状态', align: 'center' },
+        { prop: 'fanSpeed', label: '风扇转速', align: 'center' },
+        { prop: 'flicker', label: '闪烁开关', align: 'center' },
+        { prop: 'flickerMode', label: '闪烁方案', align: 'center' },
+        { prop: 'cpuTemperature', label: 'CPU温度', align: 'center' }
+      ],
+      optionsState: {
+        stripe: false, // 是否为斑马纹 table
+        highlightCurrentRow: false, // 是否要高亮当前行
+        loading: true, // 是否添加表格loading加载动画
+        mutiSelect: false, // 是否支持列表项选中功能
+        height: '20px',
+        border: true,
+        padding: '5px 0',
+        hasPagination: false
+      },
+      tableLoading: ['options', 'optionsState']
     }
   },
   methods: {
