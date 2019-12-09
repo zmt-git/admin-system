@@ -29,18 +29,20 @@
             <el-date-picker
               class='time-select'
               v-model="form.start"
-              :type="inputType"
-              :format='format'
               value-format='yyyy-MM-dd HH:mm'
+              :format='format'
+              :picker-options="pickerOptions"
+              :type="inputType"
               placeholder="选择时间">
             </el-date-picker>
           </el-form-item>
           <el-form-item label='结束时间' prop="end">
             <el-date-picker
               class='time-select'
-              v-model="form.end"
-              :format='format'
               value-format='yyyy-MM-dd HH:mm'
+              v-model="form.end"
+              :picker-options="pickerOptionsEnd"
+              :format='format'
               :type="inputType"
               placeholder="选择时间">
             </el-date-picker>
@@ -75,6 +77,7 @@ export default {
     }
   },
   data () {
+    let that = this
     return {
       // 弹框 显示隐藏
       dialogVisibleEcharts: false,
@@ -91,7 +94,7 @@ export default {
         grid: {
           left: '3%',
           right: '8%',
-          top: '3%',
+          top: '15%',
           bottom: '0%',
           containLabel: true
         },
@@ -166,12 +169,37 @@ export default {
         { label: '年', value: 'year', format: 'yyyy', type: '"%Y-%m"' },
         { label: '月', value: 'month', format: 'yyyy-MM', type: '"%Y-%m-%d"' },
         { label: '日', value: 'date', format: 'yyyy-MM-dd', type: '"%Y-%m-%d %H"' },
-        { label: '时', value: 'datetime', format: 'HH:mm', type: '"%Y-%m-%d %H:%I"' }
+        { label: '时', value: 'datetime', format: 'HH:mm', type: '"%Y-%m-%d %H:%i"' }
       ],
 
       // input类型
       inputType: 'date',
-      format: 'yyyy-MM-dd'
+      format: 'yyyy-MM-dd',
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() > Date.now() - 8.64e6
+        }
+      },
+      pickerOptionsEnd: {
+        disabledDate (time) {
+          let startTime = new Date(that.form.start).getTime()
+          if (that.form.type === '"%Y-%m"') { // 年， 5年
+            let year = startTime + 5 * 365 * 24 * 3600 * 1000
+            return time.getTime() < startTime || time.getTime() > year || Date.now() - 8.64e6 < time.getTime()
+          } else if (that.form.type === '"%Y-%m-%d"') { // 月 6月
+            let month = startTime + 180 * 24 * 3600 * 1000
+            return Date.now() - 8.64e6 < time.getTime() || time.getTime() > month || time.getTime() < startTime
+          } else if (that.form.type === '"%Y-%m-%d %H"') { // 日 8日
+            let date = startTime + 8 * 24 * 3600 * 1000
+            return time.getTime() < startTime || time.getTime() > Date.now() - 8.64e6 || time.getTime() > date
+          } else if (that.form.type === '"%Y-%m-%d %H:%i"') { // 时 3小时
+            let hours = startTime + 3 * 3600 * 1000
+            return time.getTime() < startTime || time.getTime() > Date.now() - 8.64e6 || time.getTime() > hours
+          } else {
+            return null
+          }
+        }
+      }
     }
   },
   methods: {
@@ -213,42 +241,40 @@ export default {
     getMasterVisibility (obj) {
       return findVISStu(obj)
         .then(res => {
-          if (res.msg === '成功') {
-            this.option.series = []
-            if (res.result.length <= 0) return
-            for (let i = 0; i < res.result.length; i++) {
-              res.result[i].time = res.result[i].time.reverse()
-              if (res.result[i].vis.length <= 0 || res.result[i].time.length <= 0) {
-                setTimeout(() => { this.tip(res.result[i].name + '数据为空', 'warning') }, 500)
-              }
-              if (res.result[i].time <= 0) continue
-              for (let l = 0; l < res.result[i].time.length; l++) {
-                res.result[i].time[l] = timestampToTime(res.result[i].time[l], 'hh:mm')
-              }
-              this.option.xAxis.data = res.result[i].time
-              let obj = {
-                name: res.result[i].name,
-                type: 'line',
-                smooth: true,
-                // itemStyle: {normal: {label: {show: true}}},
-                data: res.result[i].vis,
-                markPoint: {
-                  data: [
-                    { type: 'max', name: '最大值' },
-                    { type: 'min', name: '最小值' }
-                  ]
-                },
-                markLine: {
-                  data: [
-                    { type: 'average', name: '平均值' }
-                  ]
-                }
-              }
-              this.option.legend.data.push(obj.name)
-              this.option.series.push(obj)
+          this.option.series = []
+          if (res.result.length <= 0) return
+          for (let i = 0; i < res.result.length; i++) {
+            // res.result[i].time = res.result[i].time.reverse()
+            if (res.result[i].vis.length <= 0 || res.result[i].time.length <= 0) {
+              setTimeout(() => { this.tip(res.result[i].name + '数据为空', 'warning') }, 500)
             }
-            this.myChart.setOption(this.option)
+            if (res.result[i].time <= 0) continue
+            for (let l = 0; l < res.result[i].time.length; l++) {
+              res.result[i].time[l] = timestampToTime(res.result[i].time[l])
+            }
+            this.option.xAxis.data = res.result[i].time
+            let obj = {
+              name: res.result[i].name,
+              type: 'line',
+              smooth: true,
+              // itemStyle: {normal: {label: {show: true}}},
+              data: res.result[i].vis,
+              markPoint: {
+                data: [
+                  { type: 'max', name: '最大值' },
+                  { type: 'min', name: '最小值' }
+                ]
+              },
+              markLine: {
+                data: [
+                  { type: 'average', name: '平均值' }
+                ]
+              }
+            }
+            this.option.legend.data.push(obj.name)
+            this.option.series.push(obj)
           }
+          this.myChart.setOption(this.option)
         })
         .catch(err => {
           console.log(err)
@@ -260,7 +286,6 @@ export default {
       console.log(this.form)
       this.$refs.form.validate((valid) => {
         if (valid) {
-          console.log(this.form)
           let obj = JSON.parse(JSON.stringify(this.form))
           obj.start = new Date(obj.start).getTime()
           obj.end = new Date(obj.end).getTime()
