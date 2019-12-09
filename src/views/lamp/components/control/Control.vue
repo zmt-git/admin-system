@@ -185,9 +185,9 @@ import { updateLead, manualAuto, getMainStatus } from '@/api/lamp/lampInfo'
 // 配置
 import brightnessF from '../../config/brightness'
 import { Message } from 'element-ui'
-import module from '@/config/ws_module'
+import wsModule, { sendType } from '@/config/ws_module'
 // 中转
-import eventBus from '@/utils/eventBus'
+import eventBus, { emitType } from '@/utils/eventBus'
 
 export default {
   props: {
@@ -317,12 +317,12 @@ export default {
 
     // 弹框显示回调
     openDialog () {
-      eventBus.$emit('ws_connection', this.code, module.START)
-      eventBus.$on('updatalampStatus', (data) => {
+      eventBus.$emit('ws_connection', { code: this.code, type: sendType.LAMPMAIN }, wsModule.START)
+      eventBus.$on(emitType.lampMain, (data) => {
         this.masterInfo = data
         this.showFormat()
       })
-      eventBus.$on('WS_debugging', (data) => {
+      eventBus.$on(emitType.debug, (data) => {
         this.debugList.unshift(data)
       })
       this.$nextTick(() => {
@@ -337,8 +337,8 @@ export default {
       this.debugList = []
       this.debugShow = false
       this.debugTitle = '调试'
-      eventBus.$emit('ws_close', this.code, module.DEBUG)
-      eventBus.$emit('ws_close', this.code, module.END)
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.LAMPMAIN }, wsModule.END)
     },
 
     async getMainStatu () {
@@ -366,15 +366,15 @@ export default {
 
     // 调试 TODO
     debugging () {
-      this.debugShow = !this.debugShow
-      if (this.debugShow) {
+      this.debugShow = true
+      if (this.debugTitle === '调试') {
         this.debugType = 'danger'
         this.debugTitle = '暂停调试'
-        eventBus.$emit('ws_connection', this.code, module.DEBUG)
+        eventBus.$emit('ws_connection', { code: this.code, type: sendType.DEBUG }, wsModule.START)
       } else {
         this.debugType = 'primary'
         this.debugTitle = '调试'
-        eventBus.$emit('ws_close', this.code, module.DEBUG)
+        eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
       }
     }
   }

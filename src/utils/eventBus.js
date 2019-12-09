@@ -1,10 +1,12 @@
 import Vue from 'vue'
 export default new Vue()
-export const type = {
-  led: 'updataledStatus',
-  lamp: 'updatalampStatus',
-  debugging: 'WS_debugging',
-  voice: 'updatavoiceStatus',
-  visibilityLamp: 'visibilityLamp',
-  visibilityLampTabel: 'visibilityLampTabel'
+export const emitType = {
+  ledMain: 'WS_updataledStatus',
+  ledLight: 'WS_updataledStatus',
+  lampMain: 'WS_updatalampStatus',
+  lampLight: 'WS_updatalampStatus',
+  debug: 'WS_debugging',
+  voiceMain: 'WS_updatavoiceStatus',
+  visibilityLamp: 'WS_visibilityLamp',
+  visibilityLampTable: 'WS_visibilityLampTable'
 }

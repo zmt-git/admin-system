@@ -22,7 +22,6 @@
               format="HH:mm"
               value-format="HH:mm"
               v-model="lampOn"
-              @change="changeOn"
               placeholder="开灯时间">
               </el-time-picker>
           </div>
@@ -34,7 +33,6 @@
               format="HH:mm"
               value-format="HH:mm"
               v-model="lampOff"
-              @change="changeOff"
               placeholder="关灯时间">
             </el-time-picker>
           </div>
@@ -78,9 +76,9 @@
           </div>
           <div class="half">
             <span class="title">闪烁控制</span>
-            <el-radio-group v-model="radioTwinkle" size="small" @change="changeLed">
-              <el-radio-button :label="1">常亮</el-radio-button>
-              <el-radio-button :label="0">闪烁</el-radio-button>
+            <el-radio-group v-model="radioTwinkle" size="small" @change="changeLed(radioTwinkle)">
+              <el-radio-button :label="0">常亮</el-radio-button>
+              <el-radio-button :label="1">闪烁</el-radio-button>
             </el-radio-group>
           </div>
         </li>
@@ -96,7 +94,7 @@
               inactive-color="#ff4949"
               :active-value='1'
               :inactive-value='0'
-              @change="changeFan"
+              @change="changeFan(fanVal)"
               active-text="开"
               inactive-text="关">
             </el-switch>
@@ -104,9 +102,9 @@
           <!-- 风扇自动/手动 -->
           <div class="half">
             <span class="title">风扇模式</span>
-            <el-radio-group v-model="radio1" size="small" @change="changeAuto">
-              <el-radio-button :disabled='this.radio' :label="0">自动</el-radio-button>
-              <el-radio-button :disabled='this.radio' :label="1">手动</el-radio-button>
+            <el-radio-group v-model="radio1" :disabled='radio' size="small" @change="changeAuto(radio1)">
+              <el-radio-button :label="1">自动</el-radio-button>
+              <el-radio-button :label="0">手动</el-radio-button>
             </el-radio-group>
           </div>
         </li>
@@ -114,7 +112,7 @@
           <!-- 风扇调速 -->
           <span class="title">风扇转速</span>
           <div class="mySlider">
-            <el-slider v-model="fanNumber" :disabled='this.disabled' @change="changeFanNumber"></el-slider>
+            <el-slider v-model="fanNumber" :disabled='disabled' @change="changeFanNumber"></el-slider>
           </div>
           <span class="fanNumberClass">{{`${fanNumber}%`}}</span>
         </li>
@@ -141,7 +139,9 @@ import { setTime, setFan, autoFan, setLaser, setFlanSh, setOnOrOffTime, getLaser
 import EleTable from '@/components/EleTable/table'
 // 混入
 import tabelData from '@/mixins/tabelData'
-import eventBus from '@/utils/eventBus'
+// import eventBus from '@/utils/eventBus'
+import eventBus, { emitType } from '@/utils/eventBus'
+import wsModule, { sendType } from '@/config/ws_module'
 export default {
   name: 'LedControl',
   components: {
@@ -291,12 +291,12 @@ export default {
 
     // 弹框打开回调 获取状态
     open () {
-      eventBus.$emit('ws_connection', this.code, module.START)
-      eventBus.$on('updataledStatus', (data) => {
+      eventBus.$emit('ws_connection', { code: this.code, type: sendType.LEDMAIN }, wsModule.START)
+      eventBus.$on(emitType.ledMain, (data) => {
         this.mainControlStatus = data
         this.foramtBtn()
       })
-      eventBus.$on('WS_debugging', (data) => {
+      eventBus.$on(emitType.debug, (data) => {
         this.debugList.unshift(data)
       })
       this.getStatus()
@@ -304,25 +304,25 @@ export default {
 
     // 弹框关闭回调
     close () {
-      eventBus.$emit('ws_close', this.code, module.END)
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.LEDMAIN }, wsModule.END)
       this.debugType = 'primary'
       this.debugShow = false
       this.debugList = []
       this.debugTitle = '调试'
-      eventBus.$emit('ws_close', this.code, module.DEBUG)
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
     },
 
     // 调试 TODO
     debugging () {
-      this.debugShow = !this.debugShow
-      if (this.debugShow) {
+      this.debugShow = true
+      if (this.debugTitle === '调试') {
         this.debugType = 'danger'
         this.debugTitle = '暂停调试'
-        eventBus.$emit('ws_connection', this.code, module.DEBUG)
+        eventBus.$emit('ws_connection', { code: this.code, type: sendType.DEBUG }, wsModule.START)
       } else {
         this.debugType = 'primary'
         this.debugTitle = '调试'
-        eventBus.$emit('ws_close', this.code, module.DEBUG)
+        eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
       }
     },
 
@@ -350,10 +350,27 @@ export default {
       this.lampOff = this.mainControlStatus.offTime // 关灯时间
       this.brightness = this.mainControlStatus.brightness // 激光灯亮度
       this.fanVal = this.mainControlStatus.fanStatus // 风扇开关
+      if (this.fanVal === 0) {
+        this.radio = true
+        this.disabled = true
+      } else {
+        this.disabled = false
+        this.radio = false
+      }
       this.radio1 = this.mainControlStatus.fanAuto // 风扇模式
+      if (this.radio1 === 1) {
+        this.disabled = true
+      } else {
+        this.disabled = false
+      }
       this.fanNumber = this.mainControlStatus.fanSpeed // 风扇转速
       this.scintillaMode = this.mainControlStatus.flickerMode // 闪烁
       this.radioTwinkle = this.mainControlStatus.flicker // 闪烁控制
+      if (this.radioTwinkle === 1) {
+        this.disMode = false
+      } else {
+        this.disMode = true
+      }
       this.status = this.mainControlStatus.status // 状态
       if (this.mainControlStatus.status === 0) {
         this.isConnect = '设备在线'
@@ -362,18 +379,9 @@ export default {
       }
     },
 
-    // 开关灯设置
-    changeOn (data) {
-      this.onTime = data
-    },
-
-    changeOff (data) {
-      this.offTime = data
-    },
-
     // 时间设置
     async setTime () {
-      await setOnOrOffTime({ code: this.code, on: this.onTime, off: this.offTime })
+      await setOnOrOffTime({ code: this.code, on: this.lampOn, off: this.lampOff })
         .then((res) => {
           this.tip('时间设置成功', 'success')
         })
@@ -399,16 +407,14 @@ export default {
 
     // 控制风扇
     async changeFan (data) {
-      if (data) {
+      if (data === 1) {
         this.onOrOff = 1 // 打开
         this.radio = false
         this.disabled = false
-        this.fanVal = 1
       } else {
         this.onOrOff = 0
         this.radio = true
         this.disabled = true
-        this.fanVal = 0
       }
       await setFan({ code: this.code, onOrOff: this.onOrOff, speed: 0 })
         .then((res) => {
@@ -423,12 +429,12 @@ export default {
 
     // 风扇自动手动
     async changeAuto (data) {
-      if (data === '0') {
-        this.autoFly = 1
-        this.disabled = true
-      } else {
+      if (data === 0) {
         this.autoFly = 0
         this.disabled = false
+      } else {
+        this.autoFly = 1
+        this.disabled = true
       }
       // 自动
       await autoFan({ code: this.code, onOrOff: this.autoFly })
@@ -471,13 +477,14 @@ export default {
 
     // 设置激光灯闪烁或者常亮
     async changeLed (data) {
-      if (data === '1') {
-        this.disMode = true
-      } else {
+      if (data === 1) {
         this.disMode = false
+      } else {
+        this.disMode = true
       }
-      await setFlanSh({ code: this.code, onOrOff: 0, totalise: 1 })
+      await setFlanSh({ code: this.code, onOrOff: this.radioTwinkle, totalise: 1 })
         .then((res) => {
+          this.scintillaMode = 1
           this.tip('常亮设置成功', 'success')
         })
         .catch((err) => {

@@ -179,7 +179,8 @@
 <script>
 // API
 import { manualSwitch, setOnOrOffTime, setTime, setFlanSh, playMode, getMainStatus } from '@/api/voice/voiceInfo'
-import eventBus from '@/utils/eventBus'
+import wsModule, { sendType } from '@/config/ws_module'
+import eventBus, { emitType } from '@/utils/eventBus'
 export default {
   props: {
     code: {
@@ -443,13 +444,13 @@ export default {
 
     // 弹框打开回调
     openDialog () {
-      eventBus.$emit('ws_connection', this.code, module.START)
-      eventBus.$on('updatavoiceStatus', (data) => {
+      eventBus.$emit('ws_connection', { code: this.code, type: sendType.VOCIEMAIN }, wsModule.START)
+      eventBus.$on(emitType.voiceMain, (data) => {
         // console.log(data)
         this.masterStatus = data
         this.getMainStatusInit()
       })
-      eventBus.$on('WS_debugging', (data) => {
+      eventBus.$on(emitType.debug, (data) => {
         this.debugList.unshift(data)
       })
       this.$nextTick(() => {
@@ -460,26 +461,26 @@ export default {
 
     // 弹框关闭回调
     closeDialog () {
-      eventBus.$emit('ws_close', this.code, module.END)
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.VOCIEMAIN }, wsModule.END)
       this.custom = ''
       this.debugType = 'primary'
       this.debugList = []
       this.debugTitle = '调试'
       this.debugShow = false
-      eventBus.$emit('ws_close', this.code, module.DEBUG)
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
     },
 
     // 调试 TODO
     debugging () {
-      this.debugShow = !this.debugShow
-      if (this.debugShow) {
+      this.debugShow = true
+      if (this.debugTitle === '调试') {
         this.debugType = 'danger'
         this.debugTitle = '暂停调试'
-        eventBus.$emit('ws_connection', this.code, module.DEBUG)
+        eventBus.$emit('ws_connection', { code: this.code, type: sendType.DEBUG }, wsModule.START)
       } else {
         this.debugType = 'primary'
         this.debugTitle = '调试'
-        eventBus.$emit('ws_close', this.code, module.DEBUG)
+        eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
       }
     }
   }
