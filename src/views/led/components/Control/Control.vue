@@ -1,7 +1,7 @@
 <template>
   <div class="control">
     <el-dialog
-      title="激光灯控制"
+      :title="'激光灯控制' + '（' + code + '）'"
       :visible.sync="dialogVisible"
       :close-on-click-modal='false'
       @open='open'
