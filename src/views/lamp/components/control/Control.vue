@@ -255,6 +255,7 @@ export default {
       this.dataForm.wake = 0
       this.dataForm.voice = 0
       this.controlModel = 0
+      this.status = 1
     },
 
     // 更新状态前，进行数据转换
