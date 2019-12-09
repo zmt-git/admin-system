@@ -24,7 +24,7 @@
     <!-- 引导灯状态表格 开始 -->
     <el-table
       :data="tableData"
-      border ref="multipleTable" v-loading="loading" v-show="!loading" tooltip-effect="dark"
+      border ref="multipleTable" v-loading="loading" tooltip-effect="dark"
       size="small" v-cloak style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column
         fixed
@@ -224,9 +224,10 @@ export default {
     },
 
     // 初始化数据
-    getLampList (code) {
+    async getLampList (code) {
       this.tableData = []
-      getLeadStatus({ code: code, pageNumber: this.pageNumber, pageSize: this.pageSize })
+      this.loading = true
+      await getLeadStatus({ code: code, pageNumber: this.pageNumber, pageSize: this.pageSize })
         .then(res => {
           this.currentPage = res.result.current
           this.tableData = res.result.records
@@ -235,6 +236,7 @@ export default {
         .catch(err => {
           console.log(err)
         })
+      this.loading = false
     }
   }
 }

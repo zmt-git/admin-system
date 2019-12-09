@@ -62,7 +62,7 @@
 import { findVISStu } from '@/api/lamp/lampInfo'
 
 // 方法
-import { timestampToTime } from '@/utils/format'
+import { norepeat3 } from '@/utils/format'
 import { Message } from 'element-ui'
 
 // 引入echarts 引入全部echarts， 可按需引入TODO
@@ -106,9 +106,18 @@ export default {
           }
         },
         xAxis: {
-          type: 'category',
+          type: 'time',
           boundaryGap: false,
-          data: ['0', '4', '8', '12', '16', '20', '24']
+          data: []
+          // axisLabel: {
+          //   formatter: function (value, index) {
+          //     // 格式化成月/日，只在第一个刻度显示年份
+          //     var date = new Date(value)
+          //     var texts = [(date.getMonth() + 1), date.getDate()]
+          //     texts.unshift(date.getFullYear())
+          //     return texts.join('/')
+          //   }
+          // }
         },
         yAxis: {
           type: 'value'
@@ -210,7 +219,7 @@ export default {
 
     // 重置echarts配置
     resetEchartsOptions () {
-      this.option.xAxis.data = ['0', '4', '8', '12', '16', '20', '24']
+      this.option.xAxis.data = []
       this.option.series = []
     },
 
@@ -241,24 +250,25 @@ export default {
     getMasterVisibility (obj) {
       return findVISStu(obj)
         .then(res => {
+          let xAxisArr = []
           this.option.series = []
           if (res.result.length <= 0) return
           for (let i = 0; i < res.result.length; i++) {
-            // res.result[i].time = res.result[i].time.reverse()
-            if (res.result[i].vis.length <= 0 || res.result[i].time.length <= 0) {
+            if (res.result[i].vis.length <= 0 && res.result[i].time.length <= 0) {
               setTimeout(() => { this.tip(res.result[i].name + '数据为空', 'warning') }, 500)
             }
             if (res.result[i].time <= 0) continue
+            let arr = []
             for (let l = 0; l < res.result[i].time.length; l++) {
-              res.result[i].time[l] = timestampToTime(res.result[i].time[l])
+              arr.push([res.result[i].time[l], res.result[i].vis[l]])
             }
-            this.option.xAxis.data = res.result[i].time
+            xAxisArr.push(...res.result[i].time)
             let obj = {
               name: res.result[i].name,
               type: 'line',
               smooth: true,
               // itemStyle: {normal: {label: {show: true}}},
-              data: res.result[i].vis,
+              data: arr,
               markPoint: {
                 data: [
                   { type: 'max', name: '最大值' },
@@ -274,6 +284,8 @@ export default {
             this.option.legend.data.push(obj.name)
             this.option.series.push(obj)
           }
+          this.option.xAxis.data = norepeat3(xAxisArr)
+          console.log(this.option.xAxis.data)
           this.myChart.setOption(this.option)
         })
         .catch(err => {
