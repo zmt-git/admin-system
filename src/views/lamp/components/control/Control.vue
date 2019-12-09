@@ -3,7 +3,7 @@
 
     <!-- 主控设备控制 开始 -->
      <el-dialog
-        title="主控设备控制"
+        :title="'主控设备控制' + '(' + code + ')'"
         :visible.sync="dialogVisible"
         width="610px"
         custom-class="myDialogbtn"

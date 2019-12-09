@@ -2,12 +2,13 @@
   <!-- root element start -->
   <div>
     <el-dialog
-      title="能见度信息"
+      :title="'能见度信息' + '(' + code + ')'"
       :append-to-body='true'
       width="610px"
       :close-on-click-modal='false'
       :visible.sync="dialogVisible"
       @open="open"
+      @close="close"
     >
       <span>
         <!-- 能见度表格信息 开始 -->
@@ -33,6 +34,8 @@ import { findVIS } from '@/api/lamp/lampInfo'
 
 // 方法
 import { timestampToTime } from '@/utils/format'
+import wsModule, { sendType } from '@/config/ws_module'
+import eventBus, { emitType } from '@/utils/eventBus'
 export default {
   name: 'VisibilityEcharts',
   components: {
@@ -93,6 +96,7 @@ export default {
 
     // 弹出框打开 回调 获取数据
     open () {
+      // 获取数据
       findVIS({ code: this.code })
         .then(res => {
           this.list = res.result
@@ -102,6 +106,16 @@ export default {
           console.log(error)
           this.options.loading = false
         })
+      // 监听ws
+      eventBus.$emit('ws_connection', { code: this.code, type: sendType.VISIBILITYLAMPTABLE }, wsModule.START)
+      eventBus.$on(emitType.lampMain, (data) => {
+        this.list = data
+      })
+    },
+
+    // 弹出框关闭 回调
+    close () {
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.VISIBILITYLAMPTABLE }, wsModule.END)
     }
   }
 }

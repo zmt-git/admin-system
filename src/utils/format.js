@@ -127,3 +127,15 @@ export function timeTotimestamp (time, type) {
   let timestamp = new Date(time).getTime()
   return timestamp
 }
+
+export function norepeat3 (arr) {
+  var obj = {}
+  var newArr = []
+  for (var i = 0; i < arr.length; i++) {
+    if (obj[arr[i]] === undefined) {
+      newArr.push(arr[i])
+      obj[arr[i]] = 1
+    }
+  }
+  return newArr
+}
