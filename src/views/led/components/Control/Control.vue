@@ -118,7 +118,7 @@
         </li>
         <li style="width:100%;">
           <EleTable
-            :list='listState'
+            :list='list'
             :columns='columnsState'
             :options='optionsState'
           ></EleTable>
@@ -258,8 +258,9 @@ export default {
         2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
         3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
       },
+      // 获取数据函数 字段必须为initData
+      initDataFn: getLaserStatus,
       // 激光灯状态表格
-      listState: [], // 数据
       columnsState: [
         { prop: 'code', label: '灯组编号', align: 'center' },
         { prop: 'version', label: '版本号', align: 'center' },
@@ -291,6 +292,8 @@ export default {
 
     // 弹框打开回调 获取状态
     open () {
+      // 获取用户
+      this.getTabelData(this.initDataFn)
       eventBus.$emit('ws_connection', { code: this.code, type: sendType.LEDMAIN }, wsModule.START)
       eventBus.$on(emitType.ledMain, (data) => {
         this.mainControlStatus = data
