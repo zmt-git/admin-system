@@ -11,8 +11,7 @@
     <el-button type="success" icon="el-icon-plus" size="mini" v-hasBtn @click="showAddDialog">添加</el-button>
     <el-button type="warning" v-hasBtn size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
     <el-button type="danger" icon="el-icon-delete" v-hasBtn size="mini" @click="deleteIds(ledList)">批量删除</el-button>
-    <el-button type="info" icon="el-icon-finished" size="mini" isend @click="testIds(ledList)" v-hasBtn>{{testName}}</el-button>
-    <el-button type="info" icon="el-icon-film" size="mini" v-hasBtn>全部测试</el-button>
+    <el-button type="info" icon="el-icon-finished" size="mini" @click="testIds(ledList)" v-hasBtn>{{testName}}</el-button>
   </el-button-group>
   <!-- 添加按钮结束 -->
 
@@ -75,7 +74,7 @@ import { assignDevice } from '@/api/group/group'
 import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
 // 测试
-import { testStart } from './ledTest'
+import { testStart, stopTest } from './ledTest'
 export default {
   components: {
     EleTable,
@@ -262,7 +261,7 @@ export default {
         } else {
           this.testName = '开始测试'
           this.isend = false
-          console.log('暂停')
+          stopTest()
         }
       }
     },

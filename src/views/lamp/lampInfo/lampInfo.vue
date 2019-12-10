@@ -14,8 +14,7 @@
       <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog" v-hasBtn>添加</el-button>
       <el-button type="warning" size="mini" @click="showGrounpDialog" v-hasBtn><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
       <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(lampList)" v-hasBtn>批量删除</el-button>
-      <el-button type="info" icon="el-icon-delete" size="mini" v-hasBtn>批量测试</el-button>
-      <el-button type="info" icon="el-icon-delete" size="mini" v-hasBtn>全部测试</el-button>
+      <el-button type="info" icon="el-icon-finished" size="mini" v-hasBtn @click="tests">{{testTit}}</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->
@@ -96,6 +95,7 @@ import Group from '@/components/Group/Group'
 
 // 方法
 import { mapGetters } from 'vuex'
+import { startTest, stopTest } from './test'
 
 // API
 import { pageMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/lamp/lampInfo'
@@ -293,7 +293,10 @@ export default {
         name: 'name',
         disabled: false,
         showFooter: true
-      }
+      },
+
+      // 批量测试
+      testTit: '批量测试'
     }
   },
   methods: {
@@ -389,6 +392,25 @@ export default {
           this.tip('设备批量分组失败', 'error')
         })
       this.groupOptions.popoverVisible = false
+    },
+
+    // 批量测试
+    tests () {
+      if (this.lampList.length <= 0) {
+        this.tip('至少选择一组设备，进行批量测试', 'warning')
+        return
+      }
+      if (this.testTit === '批量测试') {
+        let arr = []
+        this.testTit = '停止测试'
+        this.lampList.forEach(item => {
+          arr.push(item.code)
+        })
+        startTest(arr)
+      } else {
+        this.testTit = '批量测试'
+        stopTest()
+      }
     }
   },
   watch: {
