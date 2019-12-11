@@ -41,7 +41,8 @@ export default {
         pageNum: this.currentPage,
         numPerPage: this.pageSize
       },
-      querySearch: {}
+      querySearch: {},
+      editVal: {}
     }
   },
   methods: {
@@ -248,6 +249,7 @@ export default {
      * @param {*} val表格选中数据
      */
     tabeledit (key, val) {
+      this.editVal = val
       this.isAdd = false
       this.Dialogoptions.dialogVisible = true
       this.$nextTick(async () => {

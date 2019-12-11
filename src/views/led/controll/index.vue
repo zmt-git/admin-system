@@ -88,14 +88,24 @@ export default {
   },
   mixins: [tabelData],
   data () {
+    let that = this
     let nameRule1 = async (rule, value, callback) => {
       let regExp = /^NX_LASER_[0-9]{4}/
       if (regExp.test(value) === false) {
         callback(new Error('编码示例：“NX_LASER_0001”'))
       } else {
-        let result = await this.isOnlyCode(value)
-        if (result) {
-          callback(new Error('编码重复'))
+        if (that.isAdd) {
+          let result = await this.isOnlyCode(value)
+          if (result) {
+            callback(new Error('编码重复'))
+          }
+        } else {
+          if (that.editVal.code !== value) {
+            let result = await this.isOnlyCode(value)
+            if (result) {
+              callback(new Error('编码重复'))
+            }
+          }
         }
       }
     }

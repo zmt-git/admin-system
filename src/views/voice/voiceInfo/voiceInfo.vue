@@ -103,14 +103,24 @@ export default {
     this.setSelectOptions(this.searchOptions.type, 'groupId', this.allGroups, 'queryname', 'options')
   },
   data () {
+    let that = this
     let nameRule1 = async (rule, value, callback) => {
       let regExp = /^NXDS_[A-Z]{2,8}_[0-9]{4}$/
       if (regExp.test(value) === false) {
         callback(new Error('编码示例：“NXDS_XA_0001”'))
       } else {
-        let result = await this.isOnlyCode(value)
-        if (result) {
-          callback(new Error('编码重复'))
+        if (that.isAdd) {
+          let result = await this.isOnlyCode(value)
+          if (result) {
+            callback(new Error('编码重复'))
+          }
+        } else {
+          if (that.editVal.code !== value) {
+            let result = await this.isOnlyCode(value)
+            if (result) {
+              callback(new Error('编码重复'))
+            }
+          }
         }
       }
     }
