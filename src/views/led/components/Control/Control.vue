@@ -44,7 +44,7 @@
           <!-- 亮度调节 -->
           <div class="half">
             <span class="title">亮度调节</span>
-            <el-select v-model="brightness" @change="changeBrigh" size="small" style="width:170px;" placeholder="请选择">
+            <el-select v-model="brightness" @change="changeBrigh" :disabled='disBrigh' size="small" style="width:170px;" placeholder="请选择">
               <el-option
                 v-for="item in brightVal"
                 :key="item.value"
@@ -174,6 +174,7 @@ export default {
       loading: false,
       disabled: false, // 控制调速是否可用
       disMode: false, // 控制闪烁按钮是否可用
+      disBrigh: false, // 控制亮度，当为闪烁时，亮度不可控
       radio: false, // 单选按钮
       fanNumber: null, // 风扇速率
       brightness: null, /// 激光灯亮度绑定值
@@ -369,10 +370,13 @@ export default {
       this.fanNumber = this.mainControlStatus.fanSpeed // 风扇转速
       this.scintillaMode = this.mainControlStatus.flickerMode // 闪烁
       this.radioTwinkle = this.mainControlStatus.flicker // 闪烁控制
+      console.log(this.radioTwinkle)
       if (this.radioTwinkle === 1) {
         this.disMode = false
+        this.disBrigh = true
       } else {
         this.disMode = true
+        this.disBrigh = false
       }
       this.status = this.mainControlStatus.status // 状态
       if (this.mainControlStatus.status === 0) {
@@ -482,8 +486,10 @@ export default {
     async changeLed (data) {
       if (data === 1) {
         this.disMode = false
+        this.disBrigh = true
       } else {
         this.disMode = true
+        this.disBrigh = false
       }
       await setFlanSh({ code: this.code, onOrOff: this.radioTwinkle, totalise: 1 })
         .then((res) => {
