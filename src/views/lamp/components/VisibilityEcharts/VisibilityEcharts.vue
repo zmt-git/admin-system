@@ -122,33 +122,33 @@ export default {
         yAxis: {
           type: 'value'
         },
-        visualMap: {
-          top: 80,
-          right: 0,
-          pieces: [{
-            gt: 0,
-            lte: 100,
-            color: '#f44219'
-          }, {
-            gt: 100,
-            lte: 200,
-            color: '#fd7801'
-          }, {
-            gt: 200,
-            lte: 500,
-            color: '#f4b419'
-          }, {
-            gt: 500,
-            lte: 1000,
-            color: '#fdee01'
-          }, {
-            gt: 1000,
-            color: '#54b731'
-          }],
-          outOfRange: {
-            color: '#54b731'
-          }
-        },
+        // visualMap: {
+        //   top: 80,
+        //   right: 0,
+        //   pieces: [{
+        //     gt: 0,
+        //     lte: 100,
+        //     color: '#f44219'
+        //   }, {
+        //     gt: 100,
+        //     lte: 200,
+        //     color: '#fd7801'
+        //   }, {
+        //     gt: 200,
+        //     lte: 500,
+        //     color: '#f4b419'
+        //   }, {
+        //     gt: 500,
+        //     lte: 1000,
+        //     color: '#fdee01'
+        //   }, {
+        //     gt: 1000,
+        //     color: '#54b731'
+        //   }],
+        //   outOfRange: {
+        //     color: '#54b731'
+        //   }
+        // },
         series: []
       },
 
