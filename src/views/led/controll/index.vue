@@ -233,6 +233,11 @@ export default {
         'note': null,
         'groupIds': null
       },
+      // formatTypes 表但提交数据转换
+      formatTypes: this.formatTypesFn,
+
+      // 转换参数 转换数据之前，须将此属性设置为true
+      isformat: true,
       code: '',
       ledList: [],
       // 设备分组选中array
@@ -346,6 +351,14 @@ export default {
           this.tip('设备批量分组失败', 'error')
         })
       this.groupOptions.popoverVisible = false
+    },
+    // 转化表单提交数据
+    formatTypesFn () {
+      let arr = this.dataForm.groupIds
+      arr = arr.join(',')
+      let obj = JSON.parse(JSON.stringify(this.dataForm))
+      obj.groupIds = arr
+      return obj
     }
   },
   watch: {
