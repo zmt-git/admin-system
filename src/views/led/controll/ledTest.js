@@ -32,14 +32,14 @@ let onTimeEnd = timestampToTime(timestamp - 2 * 60 * 60 * 1000, 'hh:mm') // 开�
 // 开灯时间
 function setOnTime (code) {
   setTimeout(async function () {
-     setOnOrOffTime({ on: onTime, off: offTime, code: code })
+    setOnOrOffTime({ on: onTime, off: offTime, code: code })
     intervalSetTime(code)
   }, 5000)
 }
 // 同步时间
 function intervalSetTime (code) {
   setTimeout(async function () {
-     setTime({ code: code }, 6000)
+    setTime({ code: code }, 6000)
   })
   intervalSetFanOn(code)
 }
