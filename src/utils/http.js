@@ -7,7 +7,10 @@ import { getToken } from '@/utils/auth'
 import Config from '@/config'
 const service = axios.create({
   baseURL: '/api/', // api 的 base_url
-  timeout: Config.timeout // 请求超时时间
+  timeout: Config.timeout, // 请求超时时间
+  validateStatus: function (status) {
+    return status === 200 // 默认的
+  }
 })
 
 // request拦截器

@@ -271,18 +271,16 @@ export default {
         2: { value: 0, title: '设备告警', iconClass: 'iconwarning', textClass: 'warning' },
         3: { value: 0, title: '设备升级', iconClass: 'iconinfo', textClass: 'info' }
       },
-      // 获取数据函数 字段必须为initData
-      initDataFn: getLaserStatus,
       // 激光灯状态表格
       columnsState: [
         { prop: 'code', label: '灯组编号', align: 'center' },
         { prop: 'version', label: '版本号', align: 'center' },
-        { prop: 'fanStatus', label: '风扇状态', align: 'center' },
-        { prop: 'fanAuto', label: '风扇自动调速状态', align: 'center' },
-        { prop: 'fanSpeed', label: '风扇转速', align: 'center' },
-        { prop: 'flicker', label: '闪烁开关', align: 'center' },
-        { prop: 'flickerMode', label: '闪烁方案', align: 'center' },
-        { prop: 'cpuTemperature', label: 'CPU温度', align: 'center' }
+        { prop: 'fanStatus', label: '风扇状态', align: 'center', formatter: this.ledformat },
+        { prop: 'fanAuto', label: '风扇自动调速状态', align: 'center', formatter: this.ledformat4 },
+        { prop: 'fanSpeed', label: '风扇转速', align: 'center', formatter: this.ledformat3 },
+        { prop: 'flicker', label: '闪烁开关', align: 'center', formatter: this.ledformat },
+        { prop: 'flickerMode', label: '闪烁方案', align: 'center', formatter: this.ledformat2 },
+        { prop: 'cpuTemperature', label: 'CPU温度', align: 'center', formatter: this.ledformat5 }
       ],
       optionsState: {
         stripe: false, // 是否为斑马纹 table
@@ -298,6 +296,29 @@ export default {
     }
   },
   methods: {
+    ledformat (row, colum) {
+      if (row[colum.prop] === 0) {
+        return '常亮'
+      } else {
+        return '闪烁'
+      }
+    },
+    ledformat2 (row, colum) {
+      return '闪烁方案' + row[colum.prop]
+    },
+    ledformat3 (row, colum) {
+      return row[colum.prop] * 10 + '%'
+    },
+    ledformat4 (row, colum) {
+      if (row[colum.prop] === 0) {
+        return '手动'
+      } else {
+        return '自动'
+      }
+    },
+    ledformat5 (row, colum) {
+      return row[colum.prop] + '℃'
+    },
     // 显示弹框
     show () {
       this.dialogVisible = true
@@ -348,6 +369,7 @@ export default {
       await getLaserStatus({ code: this.code })
         .then((res) => {
           this.mainControlStatus = res.result.mainControlStatus
+          this.list = res.result.laseLightStatus
           this.foramtBtn()
         })
         .catch((err) => {
@@ -358,10 +380,14 @@ export default {
           })
         })
       this.loading = false
+      this.tableLoading.forEach(item => {
+        this[item].loading = false
+      })
     },
 
     // 更新按钮
     foramtBtn () {
+      if (this.mainControlStatus) return
       this.lampOn = this.mainControlStatus.onTime // 开灯时间
       this.lampOff = this.mainControlStatus.offTime // 关灯时间
       this.brightness = this.mainControlStatus.brightness // 激光灯亮度
