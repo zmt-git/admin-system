@@ -43,7 +43,7 @@
             </div>
             <!-- 同步时间 结束 -->
              <!-- 调试按钮 开始 -->
-              <el-button :type="debugType" :disabled="allDisabked" class="debugging" style="margin-top:5px;" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
+              <el-button :type="debugType" :disabled="allDisabked" class="debugging" style="margin-top:15px;" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
           </li>
 

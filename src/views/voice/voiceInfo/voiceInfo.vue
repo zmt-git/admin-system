@@ -171,6 +171,7 @@ export default {
         type: [
           {
             type: 'input', // 搜索框类型
+            clearable: true,
             name: '搜索', // 搜索label
             queryname: 'code', // 搜索字段
             query: null, // v-model值
@@ -205,7 +206,7 @@ export default {
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象=
       formLists: [
         { model: 'code', label: '编码', placeholder: '请输入编码' },
-        { model: 'num', label: '数量', placeholder: '请输入数量' },
+        { model: 'num', label: '数量', placeholder: '请输入数量', type: 'number' },
         { model: 'latitude', label: '纬度', placeholder: '请输入纬度' },
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
         { model: 'model', label: '型号', placeholder: '请输入型号' },
@@ -226,6 +227,14 @@ export default {
           ],
           location: [
             { required: true, message: '请输入安装位置', trigger: 'blur' }
+          ],
+          longitude: [
+            // eslint-disable-next-line no-useless-escape
+            { pattern: /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/, message: '经度整数部分为0-180,小数部分为0到6位' }
+          ],
+          latitude: [
+            // eslint-disable-next-line no-useless-escape
+            { pattern: /^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/, message: '纬度整数部分为0-90,小数部分为0到6位' }
           ]
         },
         labelWidth: null

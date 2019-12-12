@@ -134,5 +134,6 @@ export default {
 }
 .searchBtn{
   margin-top: 3px;
+  height: 30px;
 }
 </style>

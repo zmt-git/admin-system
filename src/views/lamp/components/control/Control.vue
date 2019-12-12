@@ -63,7 +63,7 @@
             <!-- 夜间状态 结束 -->
 
             <!-- 调试按钮 开始 -->
-              <el-button :type="debugType" class="debugging" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
+              <el-button :type="debugType" class="debugging" :disabled="allDisabked" style="margin-top:15px" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
 
           </li>

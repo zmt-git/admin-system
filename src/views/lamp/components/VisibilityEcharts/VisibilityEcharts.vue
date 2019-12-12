@@ -346,7 +346,7 @@ export default {
   top: 14px;
   right: 42px;
   font-size: 12px;
-  color: #909399;
+  color: #ffdc40;
   cursor: pointer;
 }
 .box{

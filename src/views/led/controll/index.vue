@@ -157,6 +157,7 @@ export default {
             type: 'input',
             name: '搜索',
             queryname: 'code',
+            clearable: true,
             query: null,
             placeholder: '请输入编码',
             callback: this.change
@@ -187,7 +188,7 @@ export default {
       formLists: [
         { model: 'code', label: '灯组编码', placeholder: '请输入灯组编码', focus: this.setHeader },
         { model: 'location', label: '安装位置', placeholder: '请输入安装位置' },
-        { model: 'lampNum', label: '数量', placeholder: '请输入激光灯数量' },
+        { model: 'lampNum', label: '数量', placeholder: '请输入激光灯数量', type: 'number' },
         { model: 'model', label: '型号', placeholder: '请输入型号' },
         { model: 'longitude', label: '经度', placeholder: '请输入经度' },
         { model: 'latitude', label: '纬度', placeholder: '请输入纬度' },
@@ -206,7 +207,6 @@ export default {
           ],
           lampNum: [
             { required: true, message: '请输入数量', trigger: 'blur' }
-            // { type: 'number', message: '必须为数字值' }
           ],
           longitude: [
             // eslint-disable-next-line no-useless-escape

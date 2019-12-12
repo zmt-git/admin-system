@@ -66,3 +66,11 @@
 .el-menu-item.is-active{
   color: rgb(255, 220, 64)!important;
 }
+.el-dialog__headerbtn .el-dialog__close {
+  color: #ffdc40;
+  font-size: 19px;
+  line-height: 15px;
+}
+.el-dialog__headerbtn .el-dialog__close:hover {
+  color: red;
+}
