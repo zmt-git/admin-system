@@ -119,7 +119,7 @@ export default {
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)
       operates: {
         fixed: 'right',
-        width: '200px',
+        width: '90px',
         list: [
           { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, title: '删除' }, // 操作按钮 删除
           { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' } // 编辑按钮

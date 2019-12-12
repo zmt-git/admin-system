@@ -45,13 +45,9 @@
                     <i class="iconfont icon-yemian-copy-copy" aria-hidden="true"></i>首页
                   </el-dropdown-item>
                 </router-link>
-                <!-- <router-link to="/deviceLog/alarm">
-                  <el-dropdown-item divided>
-                    <el-badge :value="120" :max="99" class="item">
-                      <span style="display:block;"><i class="iconfont icon-xiaoxi-"></i>消息</span>
-                    </el-badge>
-                  </el-dropdown-item>
-                </router-link> -->
+                <el-dropdown-item>
+                  <span @click="edit"><i class="iconfont icon-icon-" aria-hidden="true"></i>编辑</span>
+                </el-dropdown-item>
                 <el-dropdown-item divided>
                   <span style="display:block;" @click="logout"><i class="iconfont icon-tuichu"></i>退出</span>
                 </el-dropdown-item>
@@ -127,13 +123,38 @@
       <div class="number" ref="number" @mousedown.self="getPosition" @mouseup="position">99+</div>
       <div class="message" v-show="messageShow" @click="alarmDialogVisible = true">告警信息</div>
     </div>
-    <audio ref="voice" muted autoplay >
+    <audio ref="voice" muted autoplay style="display:none">
       <source src="../assets/audio/8858.wav" type="audio/mpeg">
     </audio>
+    <el-dialog
+      title="修改用户密码"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal='false'
+      :append-to-body='true'
+      @close='userClose'
+      width="610px">
+      <el-form :model="userForm" ref="userForm" :rules="userRoles" size="small" :inline="true">
+        <el-form-item label="旧密码" prop='oldPassWord' label-width="80px">
+          <el-input v-model="userForm.oldPassWord" type="password" placeholder="请输入旧密码"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop='newPassWord' label-width="80px">
+          <el-input v-model="userForm.newPassWord" type="password" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+        <el-form-item label="重复密码" prop='repeatPassWord' label-width="80px">
+          <el-input v-model="userForm.repeatPassWord" type="password" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisible = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="confirmUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+// API
+import { updatePassWord } from '@/api/system/user'
 // 依赖
 import { Message } from 'element-ui'
 import { mapGetters } from 'vuex'
@@ -163,9 +184,43 @@ export default {
     svgIcon
   },
   data () {
+    let that = this
+    let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$/
+    let userPassword = async (rule, value, callback) => {
+      if (value !== that.userForm.newPassWord) {
+        callback(new Error('两次密码输入不一致'))
+      }
+    }
+    let oldPassword = async (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('旧密码不能未空'))
+      }
+    }
+    let newPassword = async (rule, value, callback) => {
+      if (!reg.test(value)) {
+        callback(new Error('密码包含字母数字特殊字符其中的任意两种，密码长度6-15位'))
+      }
+    }
     return {
+      userForm: {
+        oldPassWord: '',
+        repeatPassWord: '',
+        newPassWord: ''
+      },
+      dialogVisible: false,
       activeLink: null,
-      userRole: 'Topest',
+      userRoles: {
+        oldPassWord: [
+          { validator: oldPassword, trigger: 'blur' }
+        ],
+        newPassWord: [
+          { validator: newPassword, trigger: 'blur' }
+        ],
+        repeatPassWord: [
+          { validator: userPassword, trigger: 'blur' }
+
+        ]
+      },
       isCollapse: false,
       socket: null,
       ws_params: {
@@ -356,6 +411,35 @@ export default {
     // 设备类型转换
     formatType (type) {
       return this.deviceType[type]
+    },
+
+    // 编辑用户
+    edit () {
+      this.dialogVisible = true
+    },
+
+    // 关闭用户编辑弹框
+    userClose () {
+      this.$refs.userForm.resetFields()
+    },
+
+    // 确认修改密码
+    confirmUser () {
+      this.$refs.userForm.validate(async (valid) => {
+        if (valid) {
+          let obj = JSON.parse(JSON.stringify(this.userForm))
+          delete obj.repeatPassWord
+          await updatePassWord(obj)
+            .then(res => {
+              this.$message({ type: 'success', message: '密码修改成功' })
+            })
+            .catch(err => {
+              this.$message({ type: 'error', message: '密码修改失败' })
+              console.log(err)
+            })
+          this.dialogVisible = false
+        }
+      })
     }
   },
   created () {

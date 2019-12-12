@@ -89,3 +89,11 @@ export function getUserGroup (params) {
     params
   })
 }
+// POST /userRole/updatePassWord 修改密码
+export function updatePassWord (params) {
+  return http({
+    url: 'userRole/updatePassWord',
+    method: 'POST',
+    params
+  })
+}
