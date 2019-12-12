@@ -138,12 +138,12 @@ export default {
         { prop: 'latitude', label: '纬度' },
         { prop: 'createTime', label: '安装时间', formatter: this.timestampToTimes },
         { prop: 'note', label: '备注' },
-        { prop: 'id', label: '分组', render: true, method: this.viewGroups, showList: [], loading: true, empty: false }
+        { prop: 'id', label: '分组', width: '90px', render: true, method: this.viewGroups, showList: [], loading: true, empty: false }
       ],
       // 表格操作按钮
       operates: {
         fixed: 'right',
-        width: '200px',
+        width: '123px',
         list: [
           { show: true, type: 'danger', title: '删除', icon: 'el-icon-delete', method: this.tabelDelete, popover: true, visible: false },
           { show: true, type: 'info', title: '编辑', icon: 'el-icon-edit', method: this.tabeledit },
