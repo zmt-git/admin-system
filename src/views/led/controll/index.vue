@@ -205,8 +205,8 @@ export default {
             { validator: nameRule1, trigger: 'blur' }
           ],
           lampNum: [
-            { required: true, message: '请输入数量', trigger: 'blur' },
-            { type: 'number', message: '必须为数字值' }
+            { required: true, message: '请输入数量', trigger: 'blur' }
+            // { type: 'number', message: '必须为数字值' }
           ],
           longitude: [
             // eslint-disable-next-line no-useless-escape

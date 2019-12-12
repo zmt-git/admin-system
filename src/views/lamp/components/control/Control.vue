@@ -325,6 +325,7 @@ export default {
       eventBus.$on(emitType.lampMain, (data) => {
         this.masterInfo = data
         this.showFormat()
+        console.log(this.masterInfo)
       })
       eventBus.$on(emitType.debug, (data) => {
         this.debugList.unshift(data)
