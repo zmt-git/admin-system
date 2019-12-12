@@ -112,30 +112,34 @@ export default {
       if (this._searchCode && this._searchGroupId) {
         obj2 = {
           groupId: this.groupId,
-          pageNum: this.currentPage,
-          numPerPage: this.pageSize,
           sysCriteria: {
+            pageNum: this.currentPage,
+            numPerPage: this.pageSize,
             condition: this._searchSubmit
           }
         }
       } else if (this._searchCode) {
         obj2 = {
-          pageNum: this.currentPage,
-          numPerPage: this.pageSize,
           sysCriteria: {
+            pageNum: this.currentPage,
+            numPerPage: this.pageSize,
             condition: this._searchSubmit
           }
         }
       } else if (this._searchGroupId) {
         obj2 = {
           groupId: this._searchGroupId,
-          pageNum: this.currentPage,
-          numPerPage: this.pageSize
+          sysCriteria: {
+            pageNum: this.currentPage,
+            numPerPage: this.pageSize
+          }
         }
       } else {
         obj2 = {
-          pageNum: this.currentPage,
-          numPerPage: this.pageSize
+          sysCriteria: {
+            pageNum: this.currentPage,
+            numPerPage: this.pageSize
+          }
         }
       }
       return obj2

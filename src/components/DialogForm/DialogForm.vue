@@ -5,7 +5,7 @@
     <!-- 弹框 开始  -->
     <template>
       <el-dialog
-        :title="isAdd ? '添加' + options.title : '编辑' + options.title + '(' + dataForm.code + ')'"
+        :title="isAdd ? '添加' + options.title : '编辑' + options.title + '(' + meta + ')'"
         :width="options.width ? options.width : '590px'"
         min-width='590px;'
         :close-on-click-modal='false'
@@ -251,6 +251,10 @@ export default {
     isAdd: {
       type: Boolean,
       default: true
+    },
+    meta: {
+      type: String,
+      default: ''
     }
   },
   methods: {

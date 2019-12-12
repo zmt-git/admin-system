@@ -234,6 +234,7 @@ export default {
       this.form.code = this.code
       this.$nextTick(() => {
         this.myChart = echarts.init(document.getElementById('visibilityChart'))
+        this.myChart.clear()
         this.myChart.setOption(this.option)
       })
     },
@@ -285,7 +286,7 @@ export default {
             this.option.series.push(obj)
           }
           this.option.xAxis.data = norepeat3(xAxisArr)
-          console.log(this.option.xAxis.data)
+          // console.log(this.option.xAxis.data)
           this.myChart.setOption(this.option)
         })
         .catch(err => {
@@ -295,7 +296,7 @@ export default {
 
     // 提交表单
     toQuery () {
-      console.log(this.form)
+      // console.log(this.form)
       this.$refs.form.validate((valid) => {
         if (valid) {
           let obj = JSON.parse(JSON.stringify(this.form))
@@ -345,7 +346,7 @@ export default {
   top: 14px;
   right: 42px;
   font-size: 12px;
-  color: #909399;
+  color: #ffdc40;
   cursor: pointer;
 }
 .box{

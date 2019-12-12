@@ -41,6 +41,7 @@
       :dataForm='dataForm'
       :formAttr='formAttr'
       :isAdd='isAdd'
+      :meta='dataForm.name'
       @confirm='confirm'
       @change='changeDia'
       @blur='blur'
@@ -144,7 +145,7 @@ export default {
 
       // 弹出层配置文件
       Dialogoptions: {
-        title: '设备分组', // 弹框标题
+        title: `设备分组`, // 弹框标题
         width: '590px', // 弹框宽度
         dialogVisible: false, // 弹框默认显示，隐藏状态属性
         inline: false // 表单是否为内联

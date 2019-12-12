@@ -250,7 +250,7 @@ export default {
 
     // websocket接受消息
     onmessage (data) {
-      console.log(data)
+      // console.log(data)
       if (isJSON(data.data)) {
         let message = JSON.parse(data.data)
         if (message.module === 'alarm') {
@@ -262,7 +262,7 @@ export default {
           }
           this.alarm = message.data
         } else if (message.module === 'result') {
-          console.log('heart')
+          // console.log('heart')
         } else {
           eventBus.$emit(emitType[message.module], message.data)
         }
@@ -376,8 +376,8 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.ws_params))
       obj = JSON.stringify(obj)
       this.socket.websock.send(obj)
-      console.log('消息已发送 连接')
-      console.log(obj)
+      // console.log('消息已发送 连接')
+      // console.log(obj)
     })
     eventBus.$on('ws_close', (infoObj, type) => {
       this.ws_params.module = type
@@ -385,8 +385,8 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.ws_params))
       obj = JSON.stringify(obj)
       this.socket.websock.send(obj)
-      console.log('消息已发送 断开')
-      console.log(obj)
+      // console.log('消息已发送 断开')
+      // console.log(obj)
     })
     // 初始化报警状态
     if (getVoice() === 'true') {

@@ -24,6 +24,7 @@
               <span class="contolItem">手动开关</span><i class="iconfont controlIcon icon-zidong"></i>
               <el-switch
                 v-model="handOff"
+                :disabled="allDisabked"
                 active-text="开"
                 inactive-text="关"
                 active-value="1"
@@ -38,11 +39,11 @@
             <!-- 同步时间 开始 -->
             <div class="Licontrolitem">
               <span class="contolItem">同步时间</span><i class="iconfont controlIcon icon-tongbu"></i>
-              <el-button style="width: 80px;" plain type="primary" size="mini" @click="syncTime()">同步</el-button>
+              <el-button style="width: 80px;" plain type="primary" :disabled="allDisabked" size="mini" @click="syncTime()">同步</el-button>
             </div>
             <!-- 同步时间 结束 -->
              <!-- 调试按钮 开始 -->
-              <el-button :type="debugType" class="debugging" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
+              <el-button :type="debugType" :disabled="allDisabked" class="debugging" style="margin-top:15px;" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
           </li>
 
@@ -54,6 +55,7 @@
               style="width: 180px"
               v-model="onTime"
               class="date-box"
+              :disabled="allDisabked"
               format='HH:mm:ss'
               size="small"
               placeholder="请选择开机时间"
@@ -66,6 +68,7 @@
               <el-time-picker
                 style="width: 180px"
                 v-model="offTime"
+                :disabled="allDisabked"
                 format='HH:mm:ss'
                 size="small"
                 placeholder="请选择关机时间"
@@ -75,7 +78,7 @@
                 }">
               </el-time-picker>
             </div>
-            <el-button style="margin-top: 15px;" size="small" type="primary" @click="determine()" plain>确认选择</el-button>
+            <el-button style="margin-top: 15px;" :disabled="allDisabked" size="small" type="primary" @click="determine()" plain>确认选择</el-button>
           <!-- 定时开关机 结束 -->
           </li>
 
@@ -88,6 +91,7 @@
                 <span class="contolItem">播放次数</span><i class="iconfont controlIcon icon-bofangcishu"></i>
                 <el-select
                   style="width: 180px"
+                  :disabled="allDisabked"
                   size="small"
                   v-model="valueNmb"
                   placeholder="请选择播放次数">
@@ -106,6 +110,7 @@
                 <span class="contolItem">声音</span><i class="iconfont controlIcon icon-yuyin"></i>
                 <el-select
                   size="small"
+                  :disabled="allDisabked"
                   v-model="voice"
                   placeholder="请选择男/女声"
                   style="width: 180px"
@@ -129,6 +134,7 @@
                 <span class="contolItem">播放内容</span><i class="iconfont controlIcon icon-neirong"></i>
                 <el-select
                   size="small"
+                  :disabled="allDisabked"
                   style="width: 180px"
                   v-model="valueContent"
                   placeholder="请选择播放内容"
@@ -148,6 +154,7 @@
                 <span class="contolItem">音量</span><i class="iconfont controlIcon icon-shengyinyinliangxianxing"></i>
                 <el-select
                   size="small"
+                  :disabled="allDisabked"
                   style="width: 180px"
                   v-model="volume"
                   placeholder="请选择音量大小">
@@ -162,7 +169,7 @@
               <!-- 音量 开始 -->
 
             </li>
-            <el-button plain type="primary" class="confirmBtn" size="small" @click="playNmb()">确认设置</el-button>
+            <el-button plain type="primary" :disabled="allDisabked" class="confirmBtn" size="small" @click="playNmb()">确认设置</el-button>
           </div>
 
           <!-- 设置播放方案 结束 -->
@@ -186,6 +193,15 @@ export default {
     code: {
       type: String,
       default: () => {}
+    }
+  },
+  computed: {
+    allDisabked () {
+      if (this.status === 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   data () {
@@ -304,11 +320,6 @@ export default {
       this.valueContent = this.masterStatus.con // 内容
       this.valueNmb = this.masterStatus.num // 次数
       this.status = this.masterStatus.status // 状态
-      if (this.masterStatus.status === 0) {
-        this.isConnect = '设备在线'
-      } else {
-        this.isConnect = '设备离线'
-      }
     },
 
     // 设备开关

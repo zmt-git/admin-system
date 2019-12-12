@@ -26,7 +26,7 @@ export function saveOrUpdateRole (params) {
   })
 }
 
-// GET /userRole/isRole 查询角色是否存在
+// GET /userRole/isRole   查询角色是否存在
 export function isRole (params) {
   return http({
     url: 'userRole/isRole',
