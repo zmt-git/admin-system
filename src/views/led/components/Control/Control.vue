@@ -382,7 +382,6 @@ export default {
       this.fanNumber = this.mainControlStatus.fanSpeed // 风扇转速
       this.scintillaMode = this.mainControlStatus.flickerMode // 闪烁
       this.radioTwinkle = this.mainControlStatus.flicker // 闪烁控制
-      console.log(this.radioTwinkle)
       if (this.radioTwinkle === 1) {
         this.disMode = false
         this.disBrigh = true
