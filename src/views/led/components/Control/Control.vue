@@ -327,7 +327,7 @@ export default {
     // 弹框打开回调 获取状态
     open () {
       // 获取用户
-      this.getTabelData(this.initDataFn)
+      this.getTabelData(this.initDataFn, { code: this.code })
       eventBus.$emit('ws_connection', { code: this.code, type: sendType.LEDMAIN }, wsModule.START)
       eventBus.$on(emitType.ledMain, (data) => {
         this.mainControlStatus = data
@@ -368,6 +368,7 @@ export default {
       this.loading = true
       await getLaserStatus({ code: this.code })
         .then((res) => {
+          console.log(res)
           this.mainControlStatus = res.result.mainControlStatus
           this.list = res.result.laseLightStatus
           this.foramtBtn()
@@ -406,6 +407,9 @@ export default {
         this.disabled = false
       }
       this.fanNumber = this.mainControlStatus.fanSpeed // 风扇转速
+      if (this.mainControlStatus.fanSpeed === undefined) {
+        this.fanNumber = 0
+      }
       this.scintillaMode = this.mainControlStatus.flickerMode // 闪烁
       this.radioTwinkle = this.mainControlStatus.flicker // 闪烁控制
       if (this.radioTwinkle === 1) {
