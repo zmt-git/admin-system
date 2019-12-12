@@ -33,7 +33,7 @@
                 inactive-text="关闭"
                 active-value="1"
                 inactive-value="0"
-                :disabled="leddisabled"
+                :disabled="leddisabled || allDisabked"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
                 @change="updataMaster">
@@ -53,7 +53,7 @@
                 active-color="#13ce66"
                 inactive-color="#ff4949"
                 active-text="开启"
-                :disabled="leddisabled"
+                :disabled="leddisabled || allDisabked"
                 inactive-text="关闭"
                 active-value= '1'
                 inactive-value="0"
@@ -84,7 +84,7 @@
                 inactive-text="关闭"
                 active-value="1"
                 inactive-value="0"
-                :disabled="leddisabled"
+                :disabled="leddisabled || allDisabked"
                 @change="updataMaster">
               </el-switch>
             </div>
@@ -98,6 +98,7 @@
               <i class="iconfont icon icon-zidong"></i>
               <el-switch
                 v-model="controlModel"
+                :disabled="allDisabked"
                 class="controlInput"
                 active-text="自动"
                 inactive-text="手动"
@@ -128,7 +129,7 @@
                 :max="100"
                 :step="10"
                 :show-tooltip="false"
-                :disabled="leddisabled"
+                :disabled="leddisabled || allDisabked"
                 @change="updataMaster">
               </el-slider>
             </div>
@@ -155,7 +156,7 @@
                 :min='10'
                 :show-tooltip="false"
                 show-stops
-                :disabled="leddisabled"
+                :disabled="leddisabled || allDisabked"
                 @change="updataMaster">
               </el-slider>
             </div>
@@ -199,6 +200,13 @@ export default {
   computed: {
     leddisabled () {
       if (this.controlModel === '0') {
+        return true
+      } else {
+        return false
+      }
+    },
+    allDisabked () {
+      if (this.status === 1) {
         return true
       } else {
         return false
@@ -261,9 +269,9 @@ export default {
     // 更新状态前，进行数据转换
     updataFormat () {
       for (let key in this.dataForm) {
-        if (key === 'brightness') {
+        if (key === 'frequency') {
           this.submitForm[key] = this.dataForm[key] / 10
-        } else if (key === 'frequency') {
+        } else if (key === 'brightness') {
           this.submitForm[key] = brightnessF[this.dataForm[key] / 10]
         } else {
           this.submitForm[key] = this.dataForm[key]
@@ -282,11 +290,6 @@ export default {
       this.dataForm.voice = this.masterInfo.voice.toString()
       this.controlModel = this.masterInfo.controlMode.toString()
       this.status = this.masterInfo.status // 状态
-      if (this.masterInfo.status === 0) {
-        this.isConnect = '设备在线'
-      } else {
-        this.isConnect = '设备离线'
-      }
     },
 
     // 更新引导灯主控状态

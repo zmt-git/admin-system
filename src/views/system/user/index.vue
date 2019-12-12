@@ -43,6 +43,7 @@
       :dataForm='dataForm'
       :formAttr='formAttr'
       :isAdd='isAdd'
+      :meta='dataForm.username'
       @confirm='confirm'
       @change='changeDia'
       @blur='blur'
@@ -112,6 +113,22 @@ export default {
     this.getTabelData(this.initDataFn)
   },
   data () {
+    let that = this
+    let nameRule1 = async (rule, value, callback) => {
+      if (that.isAdd) {
+        let result = await this.isOnlyCode(value)
+        if (result) {
+          callback(new Error('用户名重复'))
+        }
+      } else {
+        if (that.editVal.username !== value) {
+          let result = await this.isOnlyCode(value)
+          if (result) {
+            callback(new Error('用户名重复'))
+          }
+        }
+      }
+    }
     return {
       // 获取表格数据函数 initDataFn
       initDataFn: pageUser,
@@ -174,7 +191,7 @@ export default {
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
         { model: 'name', label: '名称', placeholder: '请输入名称' },
-        { model: 'username', label: '用户名', placeholder: '请输入用户名', blur: this.isOnlyCode },
+        { model: 'username', label: '用户名', placeholder: '请输入用户名' },
         { model: 'password', label: '密码', placeholder: '请输入密码', type: 'password' },
         { model: 'synopsis', label: '备注', placeholder: '请输入备注' }
       ],
@@ -186,7 +203,8 @@ export default {
             { required: true, message: '请输入名称', trigger: 'blur' }
           ],
           username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' }
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { validator: nameRule1, trigger: 'blur' }
           ],
           password: [
             { required: true, message: '请输入登录密码', trigger: 'blur' }
@@ -244,8 +262,8 @@ export default {
     },
 
     // 判断登录账号是否唯一
-    isOnlyCode (key, val) {
-      isUser({ username: val[key] })
+    isOnlyCode (val) {
+      isUser({ username: val })
         .then(res => {
           if (res.result === true) {
             // 提示登录账户重复
@@ -253,10 +271,14 @@ export default {
               type: 'warning',
               message: '登录名重复'
             })
+            return true
+          } else {
+            return false
           }
         })
         .catch(error => {
           console.log(error)
+          return false
         })
     },
 

@@ -42,6 +42,7 @@
       :dataForm='dataForm'
       :formAttr='formAttr'
       :isAdd='isAdd'
+      :meta='dataForm.code'
       @confirm='confirm'
       @change='changeDia'
       @blur='blur'

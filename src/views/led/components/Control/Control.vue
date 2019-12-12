@@ -18,6 +18,7 @@
             <span class="title">开灯时间</span>
             <el-time-picker
               style="width:170px"
+              :disabled="allDisabked"
               size="small"
               format="HH:mm"
               value-format="HH:mm"
@@ -30,13 +31,14 @@
             <el-time-picker
               style="width:170px"
               size="small"
+              :disabled="allDisabked"
               format="HH:mm"
               value-format="HH:mm"
               v-model="lampOff"
               placeholder="关灯时间">
             </el-time-picker>
           </div>
-          <el-button type="primary" plain size="mini" style="width: 80px;height: 32px;" @click="setTime()">设置</el-button>
+          <el-button type="primary" plain size="mini" :disabled="allDisabked" style="width: 80px;height: 32px;" @click="setTime()">设置</el-button>
         </li>
         <!-- 开关灯时间 结束 -->
 
@@ -44,7 +46,7 @@
           <!-- 亮度调节 -->
           <div class="half">
             <span class="title">亮度调节</span>
-            <el-select v-model="brightness" @change="changeBrigh" size="small" style="width:170px;" placeholder="请选择">
+            <el-select v-model="brightness" @change="changeBrigh" :disabled="allDisabked" size="small" style="width:170px;" placeholder="请选择">
               <el-option
                 v-for="item in brightVal"
                 :key="item.value"
@@ -55,17 +57,17 @@
           </div>
           <div class="half">
             <span class="title">同步时间</span>
-            <el-button type="primary" plain size="mini" style="width: 110px;height: 32px;" @click="syncTime()">同步</el-button>
+            <el-button type="primary" plain size="mini" :disabled="allDisabked" style="width: 110px;height: 32px;" @click="syncTime()">同步</el-button>
           </div>
            <!-- 调试按钮 开始 -->
-              <el-button :type="debugType" class="debugging" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
+              <el-button :type="debugType" class="debugging" :disabled="allDisabked" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
         </li>
         <li class="lamp">
            <!-- 闪烁方式 -->
           <div class="half">
             <span class="title">闪烁方式</span>
-            <el-select v-model="scintillaMode" :disabled='disMode' @change="changeMode" size="small" style="width:170px;" placeholder="请选择">
+            <el-select v-model="scintillaMode" :disabled='disMode || allDisabked' @change="changeMode" size="small" style="width:170px;" placeholder="请选择">
               <el-option
                 v-for="item in optionMode"
                 :key="item.value"
@@ -76,7 +78,7 @@
           </div>
           <div class="half">
             <span class="title">闪烁控制</span>
-            <el-radio-group v-model="radioTwinkle" size="small" @change="changeLed(radioTwinkle)">
+            <el-radio-group v-model="radioTwinkle" size="small" :disabled="allDisabked" @change="changeLed(radioTwinkle)">
               <el-radio-button :label="0">常亮</el-radio-button>
               <el-radio-button :label="1">闪烁</el-radio-button>
             </el-radio-group>
@@ -94,6 +96,7 @@
               inactive-color="#ff4949"
               :active-value='1'
               :inactive-value='0'
+              :disabled="allDisabked"
               @change="changeFan(fanVal)"
               active-text="开"
               inactive-text="关">
@@ -102,7 +105,7 @@
           <!-- 风扇自动/手动 -->
           <div class="half">
             <span class="title">风扇模式</span>
-            <el-radio-group v-model="radio1" :disabled='radio' size="small" @change="changeAuto(radio1)">
+            <el-radio-group v-model="radio1" :disabled='radio || allDisabked' size="small" @change="changeAuto(radio1)">
               <el-radio-button :label="1">自动</el-radio-button>
               <el-radio-button :label="0">手动</el-radio-button>
             </el-radio-group>
@@ -112,7 +115,7 @@
           <!-- 风扇调速 -->
           <span class="title">风扇转速</span>
           <div class="mySlider">
-            <el-slider v-model="fanNumber" :disabled='disabled' @change="changeFanNumber"></el-slider>
+            <el-slider v-model="fanNumber" :disabled='disabled || allDisabked' @change="changeFanNumber"></el-slider>
           </div>
           <span class="fanNumberClass">{{`${fanNumber}%`}}</span>
         </li>
@@ -152,6 +155,15 @@ export default {
     code: {
       type: String,
       default: ''
+    }
+  },
+  computed: {
+    allDisabked () {
+      if (this.status === 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   data () {
@@ -375,11 +387,6 @@ export default {
         this.disMode = true
       }
       this.status = this.mainControlStatus.status // 状态
-      if (this.mainControlStatus.status === 0) {
-        this.isConnect = '设备在线'
-      } else {
-        this.isConnect = '设备离线'
-      }
     },
 
     // 时间设置

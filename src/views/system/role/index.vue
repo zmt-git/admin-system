@@ -42,6 +42,7 @@
       :dataForm='dataForm'
       :formAttr='formAttr'
       :isAdd='isAdd'
+      :meta='dataForm.enName'
       @confirm='confirm'
       @change='changeDia'
       @blur='blur'
@@ -104,11 +105,24 @@ export default {
     this.getTabelData(this.initDataFn)
   },
   data () {
-    let validatePass = (rule, value, callback) => {
+    let that = this
+    let validatePass = async (rule, value, callback) => {
       if (this.regEnglish.test(value)) {
         callback(new Error('角色名必须为英文字母'))
       } else {
-        callback()
+        if (that.isAdd) {
+          let result = await this.isOnlyCode(value)
+          if (result) {
+            callback(new Error('角色名重复'))
+          }
+        } else {
+          if (that.editVal.enName !== value) {
+            let result = await this.isOnlyCode(value)
+            if (result) {
+              callback(new Error('角色名重复'))
+            }
+          }
+        }
       }
     }
     return {
@@ -174,7 +188,7 @@ export default {
       // 弹出层表单配置文件 不建议表格与弹框使用一个对象
       formLists: [
         { model: 'name', label: '名称', placeholder: '请输入名称' },
-        { model: 'enName', label: '角色名', placeholder: '请输入角色名', blur: this.isOnlyCode },
+        { model: 'enName', label: '角色名', placeholder: '请输入角色名' },
         { model: 'description', label: '备注', placeholder: '请输入备注' }
       ],
 
@@ -244,8 +258,8 @@ export default {
     },
 
     // 判断角色是否唯一
-    isOnlyCode (key, val) {
-      isRole({ enName: val[key] })
+    isOnlyCode (val) {
+      isRole({ enName: val })
         .then(res => {
           if (res.result === true) {
             // 提示登录账户重复

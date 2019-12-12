@@ -37,6 +37,7 @@
     :dataForm='dataForm'
     :formAttr='formAttr'
     :isAdd='isAdd'
+    :meta='dataForm.code'
     @confirm='confirm'
     @change='changeDia'
     @blur='blur'
@@ -282,7 +283,9 @@ export default {
     },
     // 焦点事件
     setHeader () {
-      this.dataForm.code = 'NX_LASER_'
+      if (this.isAdd) {
+        this.dataForm.code = 'NX_LASER_'
+      }
     },
     // 时间转化
     timestampToTimes (val, key) {
