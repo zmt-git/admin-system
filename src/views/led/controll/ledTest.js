@@ -151,7 +151,7 @@ function intervalOffClosure (code) {
       console.log('闪烁控制:' + info)
       intervalOffIndex++
       intervalOff(code)
-    }, timeout)
+    }, 36000)
   }
   intervalOff(code)
 }
@@ -176,7 +176,7 @@ function intervalClosure (code) {
       console.log('屏闪方案:闪烁方案' + info)
       intervalIndex++
       interval(code)
-    }, timeout)
+    }, 36000)
   }
   interval(code)
 }
@@ -200,7 +200,7 @@ function interval2Closure (code) {
       console.log('激光亮度:' + info)
       intervalIndex2++
       interval2(code)
-    }, timeout)
+    }, 36000)
   }
   interval2(code)
 }
