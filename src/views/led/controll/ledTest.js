@@ -4,7 +4,7 @@ import { timestampToTime } from '@/utils/format'
 import { setTime, setFan, autoFan, setLaser, setFlanSh, setOnOrOffTime } from '@/api/led/controller'
 let stop = false
 let info = ''
-let timeout = 2000
+let timeout = 1000 * 60 * 1
 export function testStart (codes) {
   stop = false
   for (let i = 0; i < codes.length; i++) {
@@ -151,7 +151,7 @@ function intervalOffClosure (code) {
       console.log('闪烁控制:' + info)
       intervalOffIndex++
       intervalOff(code)
-    }, 36000)
+    }, timeout)
   }
   intervalOff(code)
 }
@@ -176,7 +176,7 @@ function intervalClosure (code) {
       console.log('屏闪方案:闪烁方案' + info)
       intervalIndex++
       interval(code)
-    }, 36000)
+    }, timeout)
   }
   interval(code)
 }
@@ -200,7 +200,7 @@ function interval2Closure (code) {
       console.log('激光亮度:' + info)
       intervalIndex2++
       interval2(code)
-    }, 36000)
+    }, timeout)
   }
   interval2(code)
 }

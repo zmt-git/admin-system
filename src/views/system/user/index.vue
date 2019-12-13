@@ -96,7 +96,7 @@ import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
 
 // API
-import { pageUser, saveOrUpdateUser, deleteUserById, isUser, assignRoles, getUserGroup, getUserRole, assignGroup } from '@/api/system/user'
+import { pageUser, saveOrUpdateUser, deleteUserById, isUser, assignRoles, getUserGroup, getUserRole, assignGroup, resetPassWord } from '@/api/system/user'
 
 export default {
   components: {
@@ -150,17 +150,17 @@ export default {
         { prop: 'creatTime', label: '创建时间', formatter: this.timestampToTimes },
         { prop: 'updateUserId', label: '更新人', formatter: this.formatUpdataUsers },
         { prop: 'updateTime', label: '更新时间', formatter: this.timestampToTimes },
-        { prop: 'synopsis', label: '备注' },
-        { prop: 'id', label: '重置密码', render: true, method: this.resetPassword, nopopover: true, title: '重置密码', width: '85px' }
+        { prop: 'synopsis', label: '备注' }
       ],
 
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)
       operates: {
         fixed: 'right',
-        width: '90px',
+        width: '123px',
         list: [
           { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, title: '删除' }, // 操作按钮 删除
-          { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' } // 编辑按钮
+          { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' }, // 编辑按钮
+          { show: true, type: 'warning', iconfont: 'icon-zhongzhimima', method: this.resetPasswords, title: '重置密码' } // 编辑按钮
         ]
       },
 
@@ -402,8 +402,34 @@ export default {
     },
 
     // 重置密码
-    resetPassword () {
-      console.log('重置密码')
+    resetPasswords (key, val) {
+      this.$confirm('此操作将重置该用户密码, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          resetPassWord({ userId: val.id })
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: '重置密码成功'
+              })
+            })
+            .catch(err => {
+              console.log(err)
+              this.$message({
+                type: 'error',
+                message: '重置密码失败'
+              })
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取密码重置'
+          })
+        })
     }
   }
 }

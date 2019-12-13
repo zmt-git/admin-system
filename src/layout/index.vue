@@ -138,10 +138,13 @@
           <el-input v-model="userForm.oldPassWord" type="password" placeholder="请输入旧密码"></el-input>
         </el-form-item>
         <el-form-item label="新密码" prop='newPassWord' label-width="80px">
-          <el-input v-model="userForm.newPassWord" type="password" placeholder="请输入新密码"></el-input>
+          <el-input v-model="userForm.newPassWord" type="password" placeholder="请输入新密码" @input="checkStrength"></el-input>
         </el-form-item>
         <el-form-item label="重复密码" prop='repeatPassWord' label-width="80px">
           <el-input v-model="userForm.repeatPassWord" type="password" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+        <el-form-item label="密码强度" prop='repeatPassWord' label-width="80px">
+          <el-progress :percentage="percentage" :format="format" :color="customColorMethod" style="width: 200px;margin-top: 7px;"></el-progress>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -185,7 +188,8 @@ export default {
   },
   data () {
     let that = this
-    let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$/
+    // let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$/
+    let reg = /^[0-9a-zA-Z~!@#$%^&*()_+.?|,]{6,15}$/
     let userPassword = async (rule, value, callback) => {
       if (value !== that.userForm.newPassWord) {
         callback(new Error('两次密码输入不一致'))
@@ -198,10 +202,11 @@ export default {
     }
     let newPassword = async (rule, value, callback) => {
       if (!reg.test(value)) {
-        callback(new Error('密码包含字母数字特殊字符其中的任意两种，密码长度6-15位'))
+        callback(new Error('密码包含字母数字或者特殊字符其中的任意一种，密码长度6-15位'))
       }
     }
     return {
+      percentage: 0,
       userForm: {
         oldPassWord: '',
         repeatPassWord: '',
@@ -260,7 +265,10 @@ export default {
         1: { value: 1, 'info': '已维护', className: 'normal' }
       },
       width: '220px',
-      platformname: true
+      platformname: true,
+      regStrong: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,15}$/,
+      regMedium: /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,15}$/,
+      regweak: /^[0-9a-zA-Z~!@#$%^&*]{6,15}$/
     }
   },
   methods: {
@@ -440,6 +448,41 @@ export default {
           this.dialogVisible = false
         }
       })
+    },
+
+    // 检测密码强度
+    checkStrength () {
+      if (this.regStrong.test(this.userForm.newPassWord)) {
+        this.percentage = 100
+      } else if (this.regMedium.test(this.userForm.newPassWord)) {
+        this.percentage = (100 / 3 * 2)
+      } else if (this.regweak.test(this.userForm.newPassWord)) {
+        this.percentage = (100 / 3)
+      } else {
+        this.percentage = 0
+      }
+    },
+
+    // 密码强度显示颜色
+    customColorMethod () {
+      if (this.percentage <= (100 / 3)) {
+        return '#f56c6c'
+      } else if (this.percentage <= (100 / 3 * 2)) {
+        return '#e6a23c'
+      } else {
+        return '#67c23a'
+      }
+    },
+    format () {
+      if (this.percentage === 0) {
+        return ''
+      } else if (this.percentage <= (100 / 3)) {
+        return '弱'
+      } else if (this.percentage <= (100 / 3 * 2)) {
+        return '中'
+      } else {
+        return '高'
+      }
     }
   },
   created () {
@@ -486,7 +529,7 @@ export default {
   },
   mounted () {
     // 建立websocket
-    this.socket = new WebSocketWrapper({ onmessage: this.onmessage })
+    this.socket = new WebSocketWrapper({ onmessage: this.onmessage, proxy: 'ws://39.100.241.240:5661' })
   },
   destroyed () {
     // 销毁监听

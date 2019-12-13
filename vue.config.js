@@ -46,7 +46,7 @@ module.exports = {
         }
       },
       '/socket': {
-        target: 'ws://192.168.2.172:5659', // 后端目标接口地址
+        target: 'ws://39.100.241.240:5659', // 后端目标接口地址
         changeOrigin: true, // 是否允许跨域
         pathRewrite: {
           '^/socket': '' // 重写,

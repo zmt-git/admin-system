@@ -5,7 +5,7 @@
 </template>
 
 <style lang="scss">
-@import url('//at.alicdn.com/t/font_1517923_7agmj0lua9d.css');
+@import url('//at.alicdn.com/t/font_1517923_kdjr4b97gy.css');
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
