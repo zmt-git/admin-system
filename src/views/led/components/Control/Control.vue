@@ -329,9 +329,16 @@ export default {
       // 获取用户
       // this.getTabelData(this.initDataFn, { code: this.code })
       eventBus.$emit('ws_connection', { code: this.code, type: sendType.LEDMAIN }, wsModule.START)
+      eventBus.$emit('ws_connection', { code: this.code, type: sendType.LEDLIGHT }, wsModule.START)
       eventBus.$on(emitType.ledMain, (data) => {
         this.mainControlStatus = data
         this.foramtBtn()
+      })
+      eventBus.$on(emitType.lampLight, (data) => {
+        let index = this.list.findIndex(item => {
+          item.id = data.id
+        })
+        this.list.splice(index, 1, data)
       })
       eventBus.$on(emitType.debug, (data) => {
         this.debugList.unshift(data)
@@ -342,6 +349,7 @@ export default {
     // 弹框关闭回调
     close () {
       eventBus.$emit('ws_close', { code: this.code, type: sendType.LEDMAIN }, wsModule.END)
+      eventBus.$emit('ws_close', { code: this.code, type: sendType.LEDLIGHT }, wsModule.END)
       this.debugType = 'primary'
       this.debugShow = false
       this.debugList = []
@@ -368,7 +376,6 @@ export default {
       this.loading = true
       await getLaserStatus({ code: this.code })
         .then((res) => {
-          console.log(res)
           this.mainControlStatus = res.result.mainControlStatus
           this.list = res.result.laseLightStatus
           this.foramtBtn()
@@ -388,7 +395,7 @@ export default {
 
     // 更新按钮
     foramtBtn () {
-      if (this.mainControlStatus) return
+      if (!this.mainControlStatus) return
       this.lampOn = this.mainControlStatus.onTime // 开灯时间
       this.lampOff = this.mainControlStatus.offTime // 关灯时间
       this.brightness = this.mainControlStatus.brightness // 激光灯亮度
