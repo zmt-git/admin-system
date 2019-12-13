@@ -327,7 +327,7 @@ export default {
     // 弹框打开回调 获取状态
     open () {
       // 获取用户
-      this.getTabelData(this.initDataFn, { code: this.code })
+      // this.getTabelData(this.initDataFn, { code: this.code })
       eventBus.$emit('ws_connection', { code: this.code, type: sendType.LEDMAIN }, wsModule.START)
       eventBus.$on(emitType.ledMain, (data) => {
         this.mainControlStatus = data

@@ -74,3 +74,20 @@
 .el-dialog__headerbtn .el-dialog__close:hover {
   color: red;
 }
+.el-progress-bar {
+  padding-right: 25px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+  margin-right: -55px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.el-progress__text {
+  font-size: 14px;
+  color: #606266;
+  vertical-align: middle;
+  margin-left: 10px;
+  float: right;
+  line-height: 1.5;
+}
