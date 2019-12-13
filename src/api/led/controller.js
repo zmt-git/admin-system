@@ -88,3 +88,11 @@ export function setOnOrOffTime (params) {
     params
   })
 }
+// GET /laser/sendMsg  发送任意指令
+export function sendMsg (params) {
+  return http({
+    url: 'laser/sendMsg',
+    method: 'GET',
+    params
+  })
+}

@@ -14,6 +14,7 @@ export default class WebSocketWrapper {
     this.closed = true
     this.timeoutObj = null
     this.lockReconnect = true
+    this.reconnect = 0
     this.timeOut = null
     this.websock = null
     this.sid_ = this._options.sid ? this._options.sid_ : null
@@ -82,11 +83,18 @@ export default class WebSocketWrapper {
     console.log('websocket重连中...')
     let that = this
     if (that.lockReconnect) {
+      this.reconnectNum = 0
       return
     }
     if (that.Authentication()) {
       return
     }
+    if (this.reconnectNum >= 10) {
+      this.lockReconnect = true
+      MessageBox({ type: 'warning', message: '推送消息连接重连失败,请联系管理员' })
+      return
+    }
+    this.reconnect++
     that.lockReconnect = true
     // 没连接上会一直重连，设置延迟避免请求过多
     that.timeOut && clearTimeout(that.timeOut)

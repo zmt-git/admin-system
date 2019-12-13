@@ -12,6 +12,7 @@
     <el-button type="warning" v-hasBtn size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
     <el-button type="danger" icon="el-icon-delete" v-hasBtn size="mini" @click="deleteIds(ledList)">批量删除</el-button>
     <el-button type="info" icon="el-icon-finished" size="mini" @click="testIds(ledList)" v-hasBtn>{{testName}}</el-button>
+    <el-button type="primary" icon="el-icon-setting" size="mini" v-hasBtn @click="Arbitrary">任意指令</el-button>
   </el-button-group>
   <!-- 添加按钮结束 -->
 
@@ -55,6 +56,9 @@
     @confirmCheck='confirmCheck'
   ></Group>
   <!-- 分配分组 结束 -->
+  <!-- 任意指令 开始-->
+  <ArbitraryDialog :code='code' @confirm='Arbitraryconfirm' ref="Arbitrary"></ArbitraryDialog>
+  <!-- 任意指令 结束 -->
 </div>
 </template>
 
@@ -67,8 +71,9 @@ import Search from '@/components/Search/search'
 import DialogForm from '@/components/DialogForm/DialogForm'
 import Control from '../components/Control/Control'
 import Group from '@/components/Group/Group'
+import ArbitraryDialog from '@/components/ArbitraryDialog/ArbitraryDialog'
 // API
-import { getMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/led/controller'
+import { getMainControl, saveOrUpdate, deleteByIds, isCode, sendMsg } from '@/api/led/controller'
 import { getDeviceGroup } from '@/api/system/system'
 import { assignDevice } from '@/api/group/group'
 // 方法
@@ -82,7 +87,8 @@ export default {
     Search,
     DialogForm,
     Control,
-    Group
+    Group,
+    ArbitraryDialog
   },
   computed: {
     ...mapGetters(['allGroups'])
@@ -362,6 +368,29 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.dataForm))
       obj.groupIds = arr
       return obj
+    },
+    // 任意指令显示
+    Arbitrary (key, val) {
+      if (this.ledList.length === 1) {
+        this.code = this.ledList[0].code
+        this.$refs.Arbitrary.show()
+      } else {
+        if (this.ledList.length === 0) {
+          this.tip('请选中主控设备进行测试', 'info')
+        } else {
+          this.tip('任意指令只能对一个主控设备进行测试', 'info')
+        }
+      }
+    },
+    Arbitraryconfirm (dataForm) {
+      sendMsg(dataForm)
+        .then(res => {
+          this.tip('指令发送成功', 'success')
+        })
+        .catch(err => {
+          console.log(err)
+          this.tip('指令发送失败', 'error')
+        })
     }
   },
   watch: {

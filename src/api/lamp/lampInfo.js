@@ -86,3 +86,12 @@ export function findVISStu (params) {
     params
   })
 }
+
+// GET /lead/sendMsg  发送任意指令
+export function sendMsg (params) {
+  return http({
+    url: 'lead/sendMsg',
+    method: 'GET',
+    params
+  })
+}

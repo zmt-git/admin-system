@@ -83,7 +83,6 @@ export default {
      * @param {*} [obj=this.defaultParams]提交字段，默认值为defaultParams
      */
     async getTabelData (fn, obj = this.defaultParams) {
-      console.log(obj)
       await fn(obj)
         .then(res => {
           this.upDatepagination(res.result)
