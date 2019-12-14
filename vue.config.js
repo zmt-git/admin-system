@@ -39,6 +39,7 @@ module.exports = {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       '/api': {
+        // target: 'http://39.100.241.240:9527/',
         target: 'http://39.100.241.240:9527/',
         changeOrigin: true,
         pathRewrite: {
@@ -46,7 +47,8 @@ module.exports = {
         }
       },
       '/socket': {
-        target: 'ws://39.100.241.240:5659', // 后端目标接口地址
+        // target: 'ws://39.100.241.240:5659', // 后端目标接口地址
+        target: 'ws://39.100.241.240:5661', // 后端目标接口地
         changeOrigin: true, // 是否允许跨域
         pathRewrite: {
           '^/socket': '' // 重写,
