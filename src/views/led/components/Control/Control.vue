@@ -395,7 +395,6 @@ export default {
 
     // 更新按钮
     foramtBtn () {
-      if (!this.mainControlStatus) return
       this.lampOn = this.mainControlStatus.onTime // 开灯时间
       this.lampOff = this.mainControlStatus.offTime // 关灯时间
       this.brightness = this.mainControlStatus.brightness // 激光灯亮度

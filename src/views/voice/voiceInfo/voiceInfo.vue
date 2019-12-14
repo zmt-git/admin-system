@@ -15,6 +15,7 @@
       <el-button type="warning" v-hasBtn size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>批量分组分配</el-button>
       <el-button type="danger" v-hasBtn icon="el-icon-delete" size="mini" @click="deleteIds(groupList)">批量删除</el-button>
       <el-button type="info" icon="el-icon-finished" size="mini" v-hasBtn @click="tests">{{testTit}}</el-button>
+      <el-button type="primary" icon="el-icon-setting" size="mini" v-hasBtn @click="Arbitrary">任意指令</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->
@@ -61,6 +62,9 @@
       @confirmCheck='confirmCheck'
     ></Group>
     <!-- 分配分组 结束 -->
+    <!-- 任意指令 开始-->
+    <ArbitraryDialog :code='code' @confirm='Arbitraryconfirm' ref="Arbitrary"></ArbitraryDialog>
+    <!-- 任意指令 结束 -->
   </div>
 <!-- root element -->
 </template>
@@ -74,6 +78,7 @@ import Search from '@/components/Search/search'
 import DialogForm from '@/components/DialogForm/DialogForm'
 import Control from '../components/Control/Control'
 import Group from '@/components/Group/Group'
+import ArbitraryDialog from '@/components/ArbitraryDialog/ArbitraryDialog'
 
 // 方法
 import { timestampToTime } from '@/utils/format'
@@ -81,7 +86,7 @@ import { mapGetters } from 'vuex'
 import { startTest, stopTest } from './test'
 
 // API
-import { pageMainControl, saveOrUpdate, deleteByIds, isCode } from '@/api/voice/voiceInfo'
+import { pageMainControl, saveOrUpdate, deleteByIds, isCode, sendMsg } from '@/api/voice/voiceInfo'
 import { getDeviceGroup } from '@/api/system/system'
 import { assignDevice } from '@/api/group/group'
 
@@ -91,7 +96,8 @@ export default {
     Search,
     DialogForm,
     Control,
-    Group
+    Group,
+    ArbitraryDialog
   },
   mixins: [tabelData],
   computed: {
@@ -418,6 +424,29 @@ export default {
         this.testTit = '批量测试'
         stopTest()
       }
+    },
+    // 任意指令显示
+    Arbitrary (key, val) {
+      if (this.groupList.length === 1) {
+        this.code = this.groupList[0].code
+        this.$refs.Arbitrary.show()
+      } else {
+        if (this.groupList.length === 0) {
+          this.tip('请选中主控设备进行测试', 'info')
+        } else {
+          this.tip('任意指令只能对一个主控设备进行测试', 'info')
+        }
+      }
+    },
+    Arbitraryconfirm (dataForm) {
+      sendMsg(dataForm)
+        .then(res => {
+          this.tip('指令发送成功', 'success')
+        })
+        .catch(err => {
+          console.log(err)
+          this.tip('指令发送失败', 'error')
+        })
     }
   },
   watch: {
