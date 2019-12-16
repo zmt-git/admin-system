@@ -278,6 +278,8 @@ export default {
         { prop: 'fanStatus', label: '风扇状态', align: 'center', formatter: this.ledformat },
         { prop: 'fanAuto', label: '风扇自动调速状态', align: 'center', formatter: this.ledformat4 },
         { prop: 'fanSpeed', label: '风扇转速', align: 'center', formatter: this.ledformat3 },
+        { prop: 'brightness', label: '激光灯开关状态', align: 'center', formatter: this.ledformat6 },
+        { prop: 'brightness', label: '激光亮度', align: 'center', formatter: this.ledformat7 },
         { prop: 'flicker', label: '闪烁开关', align: 'center', formatter: this.ledformat },
         { prop: 'flickerMode', label: '闪烁方案', align: 'center', formatter: this.ledformat2 },
         { prop: 'cpuTemperature', label: 'CPU温度', align: 'center', formatter: this.ledformat5 }
@@ -318,6 +320,18 @@ export default {
     },
     ledformat5 (row, colum) {
       return row[colum.prop] + '℃'
+    },
+    // 激光灯开关状态
+    ledformat6 (row, colum) {
+      if (row[colum.prop] === 0) {
+        return '关闭'
+      } else {
+        return '打开'
+      }
+    },
+    // 激光灯亮度
+    ledformat7 (row, colum) {
+      return row[colum.prop] + '%'
     },
     // 显示弹框
     show () {

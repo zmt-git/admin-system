@@ -6,7 +6,7 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 import Config from '@/config'
 const service = axios.create({
-  baseURL: '/api/', // api 的 base_url
+  baseURL: 'http://39.100.241.240:9527', // api 的 base_url
   timeout: Config.timeout, // 请求超时时间
   validateStatus: function (status) {
     return status === 200 // 默认的

@@ -60,7 +60,8 @@ export const fixedRouter = [
   }
 ]
 const router = new Router({
-  mode: 'history',
+  // mode: 'history',
+  mode: 'hash',
   scrollBehavior: () => ({ y: 0 }),
   routes: fixedRouter
 })

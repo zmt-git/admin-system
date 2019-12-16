@@ -258,8 +258,7 @@ export default {
             { validator: nameRule1, trigger: 'blur' }
           ],
           lampNum: [
-            { required: true, message: '请输入引导灯数量', trigger: 'blur' },
-            { type: 'number', message: '引导灯数量必须为整数数字', trigger: 'blur' }
+            { required: true, message: '请输入引导灯数量', trigger: 'blur' }
           ],
           location: [
             { required: true, message: '请输入位置', trigger: 'blur' }

@@ -24,6 +24,15 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
+  pwa: {
+    iconPaths: {
+      favicon32: 'favicon.ico',
+      favicon16: 'favicon.ico',
+      appleTouchIcon: 'favicon.ico',
+      maskIcon: 'favicon.ico',
+      msTileImage: 'favicon.ico'
+    }
+  },
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
@@ -40,7 +49,8 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       '/api': {
         // target: 'http://39.100.241.240:9527/',
-        target: 'http://39.100.241.240:9527/',
+        // target: 'http://39.100.241.240:9527/',
+        target: 'http://192.168.2.172',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
@@ -48,7 +58,8 @@ module.exports = {
       },
       '/socket': {
         // target: 'ws://39.100.241.240:5659', // 后端目标接口地址
-        target: 'ws://39.100.241.240:5661', // 后端目标接口地
+        // target: 'ws://39.100.241.240:5661', // 后端目标接口地
+        target: 'ws://192.168.2.172:5661',
         changeOrigin: true, // 是否允许跨域
         pathRewrite: {
           '^/socket': '' // 重写,
