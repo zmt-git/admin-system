@@ -1,6 +1,6 @@
 <template>
   <div class="textAlginLeft">
-    xxx
+    主页面
   </div>
 </template>
 <script>

@@ -45,21 +45,31 @@ module.exports = {
       errors: true
     },
     proxy: {
-      // change xxx-api/login => mock/login
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
       '/api': {
-        // target: 'http://39.100.241.240:9527/',
-        // target: 'http://39.100.241.240:9527/',
-        target: 'http://192.168.2.172',
+        // target: 'http://10.108.13.24:8085', // 徐州
+        // target: 'http://39.100.241.240:9527', // 测试服务器
+        target: 'http://192.168.2.172', // 刘轩
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         }
       },
+      // change xxx-api/login => mock/login
+      // detail: https://cli.vuejs.org/config/#devserver-proxy
+      // '/api': {
+      //   // target: 'http://39.100.241.240:9527/',
+      //   // target: 'http://39.100.241.240:9527/',
+      //   target: 'http://192.168.2.172',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/api': ''
+      //   }
+      // },
       '/socket': {
         // target: 'ws://39.100.241.240:5659', // 后端目标接口地址
         // target: 'ws://39.100.241.240:5661', // 后端目标接口地
-        target: 'ws://192.168.2.172:5661',
+        target: 'ws://192.168.2.172:5661', // 刘轩
+        // target: 'ws://http://39.100.241.240:5661',
         changeOrigin: true, // 是否允许跨域
         pathRewrite: {
           '^/socket': '' // 重写,

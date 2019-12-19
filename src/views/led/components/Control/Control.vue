@@ -379,6 +379,7 @@ export default {
         this.debugTitle = '暂停调试'
         eventBus.$emit('ws_connection', { code: this.code, type: sendType.DEBUG }, wsModule.START)
       } else {
+        this.debugShow = false
         this.debugType = 'primary'
         this.debugTitle = '调试'
         eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
