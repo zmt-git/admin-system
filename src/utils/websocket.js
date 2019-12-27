@@ -124,7 +124,11 @@ export default class WebSocketWrapper {
         'data': null// 携带数据
       }
       obj = JSON.stringify(obj)
-      that.websock.send(obj)
+      try {
+        that.websock.send(obj)
+      } catch (err) {
+        console.log(err)
+      }
       that.websocketHeartbeat(e)
     }, that.timeout)
   }
@@ -142,21 +146,6 @@ export default class WebSocketWrapper {
         this.lockReconnect = false
         return true
       })
-      .catch(() => {
-        MessageBox.confirm('导致告警功能，设备实时状态无法更新， 是否继续', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-          .then(() => {
-            return false
-          })
-          .catch(() => {
-            store.dispatch('Logout')
-            router.push('/login')
-            this.lockReconnect = false
-            return true
-          })
-      })
+      .catch(() => {})
   }
 }

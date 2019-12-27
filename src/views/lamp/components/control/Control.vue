@@ -344,6 +344,7 @@ export default {
       this.debugTitle = '调试'
       eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
       eventBus.$emit('ws_close', { code: this.code, type: sendType.LAMPMAIN }, wsModule.END)
+      eventBus.$off(emitType.debug)
     },
 
     async getMainStatu () {

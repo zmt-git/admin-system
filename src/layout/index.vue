@@ -511,7 +511,12 @@ export default {
       this.ws_params.data = infoObj
       let obj = JSON.parse(JSON.stringify(this.ws_params))
       obj = JSON.stringify(obj)
-      this.socket.websock.send(obj)
+      try {
+        this.socket.websock.send(obj)
+      } catch (err) {
+        console.log(err)
+        this.$message({ type: 'warning', message: '消息推送已断开' })
+      }
       // console.log('消息已发送 断开')
       // console.log(obj)
     })

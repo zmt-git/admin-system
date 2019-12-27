@@ -2,8 +2,8 @@
   <el-dialog
   :title="'设备任意指令' + '(' + code + ')'"
   :visible.sync="dialogVisible"
-  @close='close'
-  width="610">
+  @open='open'
+  width="610px">
   <div style="padding-top: 15px;padding-right: 10px;">
   <el-form :model="dataForm" size="mini" ref="dataForm" label-width="100px" :rules="rules" class="demo-dynamic">
     <el-form-item
@@ -53,7 +53,7 @@ export default {
         }
       })
     },
-    close () {
+    open () {
       this.$refs.dataForm.resetFields()
     }
   }

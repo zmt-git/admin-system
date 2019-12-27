@@ -36,7 +36,7 @@
               format="HH:mm"
               value-format="HH:mm"
               v-model="lampOff"
-              placeholder="开灯时间">
+              placeholder="关灯时间">
               </el-time-picker>
           </div>
           <!-- <div class="half">
@@ -206,7 +206,6 @@ export default {
       scintillaMode: null, // 闪烁方式绑定值
       ledNum: null, // 激光灯亮度值
       twinkleNum: null, // 闪烁方式1-10
-      userName: [],
       dialogVisible: false, // 激光灯控制弹出框
       // innerVisible: false, // 内层弹出框
       brightVal: [
@@ -311,6 +310,30 @@ export default {
     }
   },
   methods: {
+    reset () {
+      this.status = 1
+      this.mainControlStatus = {} // 存储当前状态
+      this.lampOn = null
+      this.lampOff = null
+      this.onTime = null // 开灯时间
+      this.offTime = null // 关灯时间
+      this.fanVal = 0 // 风扇开关
+      this.onOrOff = '' // 风扇开关状态
+      this.speed = '' // 风扇转速
+      this.radio1 = null // 风扇调速
+      this.radioTwinkle = null // 闪烁常亮
+      this.autoFly = '' // 风扇自动/手动
+      this.loading = false
+      this.disabled = false // 控制调速是否可用
+      this.disMode = false // 控制闪烁按钮是否可用
+      this.disBrigh = false // 控制亮度，当为闪烁时，亮度不可控
+      this.radio = false // 单选按钮
+      this.fanNumber = 0 // 风扇速率
+      this.brightness = null /// 激光灯亮度绑定值
+      this.scintillaMode = null // 闪烁方式绑定值
+      this.ledNum = null // 激光灯亮度值
+      this.twinkleNum = null // 闪烁方式1-10
+    },
     ledformat (row, colum) {
       if (row[colum.prop] === 0) {
         return '常亮'
@@ -375,6 +398,7 @@ export default {
 
     // 弹框关闭回调
     close () {
+      this.reset()
       eventBus.$emit('ws_close', { code: this.code, type: sendType.LEDMAIN }, wsModule.END)
       eventBus.$emit('ws_close', { code: this.code, type: sendType.LEDLIGHT }, wsModule.END)
       this.debugType = 'primary'
@@ -382,6 +406,7 @@ export default {
       this.debugList = []
       this.debugTitle = '调试'
       eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
+      eventBus.$off(emitType.debug)
     },
 
     // 调试 TODO
@@ -425,7 +450,6 @@ export default {
     foramtBtn () {
       this.lampOn = this.mainControlStatus.onTime // 开灯时间
       this.lampOff = this.mainControlStatus.offTime // 关灯时间
-      console.log(this.mainControlStatus)
       this.brightness = this.mainControlStatus.brightness // 激光灯亮度
       this.fanVal = this.mainControlStatus.fanStatus // 风扇开关
       if (this.fanVal === 0) {

@@ -277,7 +277,6 @@ export default {
           value: 10,
           label: '10次'
         }],
-      debugMsg: null,
       valueNmb: '', // 播放次数
       valueContent: '', // 播放内容
       optionsContent: [
@@ -309,6 +308,17 @@ export default {
     }
   },
   methods: {
+    reset () {
+      this.status = 1
+      this.valueNmb = '' // 播放次数
+      this.valueContent = '' // 播放内容
+      this.voice = '' // 声音
+      this.handOff = null // 手动开关
+      this.playModel = '' // 播放模式
+      this.offTime = '' // 关机时间
+      this.onTime = '' // 开机时间
+      this.volume = '' // 音量
+    },
     // 转换按钮状态
     getMainStatusInit () {
       this.handOff = this.masterStatus.workStatus + '' // 设备开关(转为字符串)
@@ -472,6 +482,7 @@ export default {
 
     // 弹框关闭回调
     closeDialog () {
+      this.reset()
       eventBus.$emit('ws_close', { code: this.code, type: sendType.VOCIEMAIN }, wsModule.END)
       this.custom = ''
       this.debugType = 'primary'
@@ -479,6 +490,7 @@ export default {
       this.debugTitle = '调试'
       this.debugShow = false
       eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
+      eventBus.$off(emitType.debug)
     },
 
     // 调试 TODO
