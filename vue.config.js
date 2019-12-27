@@ -47,8 +47,8 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://10.108.13.24:8085', // 徐州
-        // target: 'http://39.100.241.240:9527', // 测试服务器
-        target: 'http://192.168.2.172', // 刘轩
+        target: 'http://39.100.241.240:9527', // 测试服务器
+        // target: 'http://192.168.2.172', // 刘轩
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
@@ -67,9 +67,8 @@ module.exports = {
       // },
       '/socket': {
         // target: 'ws://39.100.241.240:5659', // 后端目标接口地址
-        // target: 'ws://39.100.241.240:5661', // 后端目标接口地
-        target: 'ws://192.168.2.172:5661', // 刘轩
-        // target: 'ws://http://39.100.241.240:5661',
+        target: 'ws://39.100.241.240:5661', // 后端目标接口地
+        // target: 'ws://192.168.2.172:5661', // 刘轩
         changeOrigin: true, // 是否允许跨域
         pathRewrite: {
           '^/socket': '' // 重写,

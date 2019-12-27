@@ -10,6 +10,7 @@
       <div class="statusBox">
         <i class="iconfont icon-zhuangtai1 iconStyle" :class='deviceType[status].iconClass'></i>
         <span class="fontStyle" :class='deviceType[status].textClass'>{{deviceType[status].title}}</span>
+        <i class="el-icon-money zuida"></i>
       </div>
       <ul class="lampBox">
         <!-- 开关灯时间 开始 -->
@@ -30,6 +31,18 @@
             <span class="title">关灯时间</span>
             <el-time-picker
               style="width:170px"
+              :disabled="allDisabked"
+              size="small"
+              format="HH:mm"
+              value-format="HH:mm"
+              v-model="lampOff"
+              placeholder="开灯时间">
+              </el-time-picker>
+          </div>
+          <!-- <div class="half">
+            <span class="title">关灯时间</span>
+            <el-time-picker
+              style="width:170px"
               size="small"
               :disabled="allDisabked"
               format="HH:mm"
@@ -37,7 +50,7 @@
               v-model="lampOff"
               placeholder="关灯时间">
             </el-time-picker>
-          </div>
+          </div> -->
           <el-button type="primary" plain size="mini" :disabled="allDisabked" style="width: 80px;height: 32px;" @click="setTime()">设置</el-button>
         </li>
         <!-- 开关灯时间 结束 -->
@@ -412,6 +425,7 @@ export default {
     foramtBtn () {
       this.lampOn = this.mainControlStatus.onTime // 开灯时间
       this.lampOff = this.mainControlStatus.offTime // 关灯时间
+      console.log(this.mainControlStatus)
       this.brightness = this.mainControlStatus.brightness // 激光灯亮度
       this.fanVal = this.mainControlStatus.fanStatus // 风扇开关
       if (this.fanVal === 0) {
@@ -661,5 +675,13 @@ export default {
 }
 .fanNumberClass{
   margin-left: 5px;
+}
+.zuida {
+  cursor: pointer;
+  margin-left: 10px;
+  color: yellow;
+}
+.zuida:hover {
+  color: yellowgreen;
 }
 </style>

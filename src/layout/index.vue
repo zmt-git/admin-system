@@ -528,8 +528,8 @@ export default {
     }
   },
   mounted () {
-    // 建立websocket
-    this.socket = new WebSocketWrapper({ onmessage: this.onmessage, proxy: 'ws://192.168.2.172:5661' })
+    // 建立websocket 39.100.241.240
+    this.socket = new WebSocketWrapper({ onmessage: this.onmessage, proxy: 'ws://39.100.241.240:5661' })
   },
   destroyed () {
     // 销毁监听
