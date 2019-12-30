@@ -28,6 +28,9 @@
   max-height: 500px;
   overflow: auto;
 }
+.el-dialog.is-fullscreen .el-dialog__body{
+  max-height: none;
+}
 .alarm .el-dialog__footer {
   padding: 10px 20px 10px;
   text-align: right;

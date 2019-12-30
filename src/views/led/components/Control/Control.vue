@@ -4,13 +4,15 @@
       :title="'激光灯控制' + '（' + code + '）'"
       :visible.sync="dialogVisible"
       :close-on-click-modal='false'
+      :fullscreen='fullscreen'
+      ref="control"
       @open='open'
       @close='close'
       width="610px">
+      <i class="zuida iconfont" :class="fullscreenIcon" :title="fullscreenTit" @click="tofullscreen"></i>
       <div class="statusBox">
         <i class="iconfont icon-zhuangtai1 iconStyle" :class='deviceType[status].iconClass'></i>
         <span class="fontStyle" :class='deviceType[status].textClass'>{{deviceType[status].title}}</span>
-        <i class="el-icon-money zuida"></i>
       </div>
       <ul class="lampBox">
         <!-- 开关灯时间 开始 -->
@@ -39,18 +41,6 @@
               placeholder="关灯时间">
               </el-time-picker>
           </div>
-          <!-- <div class="half">
-            <span class="title">关灯时间</span>
-            <el-time-picker
-              style="width:170px"
-              size="small"
-              :disabled="allDisabked"
-              format="HH:mm"
-              value-format="HH:mm"
-              v-model="lampOff"
-              placeholder="关灯时间">
-            </el-time-picker>
-          </div> -->
           <el-button type="primary" plain size="mini" :disabled="allDisabked" style="width: 80px;height: 32px;" @click="setTime()">设置</el-button>
         </li>
         <!-- 开关灯时间 结束 -->
@@ -73,7 +63,7 @@
             <el-button type="primary" plain size="mini" :disabled="allDisabked" style="width: 110px;height: 32px;" @click="syncTime()">同步</el-button>
           </div>
            <!-- 调试按钮 开始 -->
-              <el-button :type="debugType" class="debugging" :disabled="allDisabked" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
+              <el-button :type="debugType" class="debugging" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
         </li>
         <li class="lamp">
@@ -181,6 +171,9 @@ export default {
   },
   data () {
     return {
+      fullscreen: false,
+      fullscreenIcon: 'icon-zuidahua',
+      fullscreenTit: '最大化',
       debugType: 'primary',
       debugTitle: '调试',
       debugShow: false,
@@ -617,6 +610,23 @@ export default {
         type: type,
         message: message
       })
+    },
+    // 全屏
+    tofullscreen () {
+      this.fullscreen = !this.fullscreen
+      if (this.fullscreen === true) {
+        this.fullscreenIcon = 'icon-huanyuan'
+        this.fullscreenTit = '向下还原'
+        this.$refs.control.style.cssText = `
+          max-height: null
+        `
+      } else {
+        this.fullscreenIcon = 'icon-zuidahua'
+        this.fullscreenTit = '最大化'
+        this.$refs.control.style.cssText = `
+          max-height: 500px
+        `
+      }
     }
   }
 }
@@ -699,13 +709,5 @@ export default {
 }
 .fanNumberClass{
   margin-left: 5px;
-}
-.zuida {
-  cursor: pointer;
-  margin-left: 10px;
-  color: yellow;
-}
-.zuida:hover {
-  color: yellowgreen;
 }
 </style>

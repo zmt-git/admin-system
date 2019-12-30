@@ -3,16 +3,18 @@
 
     <!-- 主控设备控制 开始 -->
      <el-dialog
-        :title="'主控设备控制' + '(' + code + ')'"
-        :visible.sync="dialogVisible"
-        width="610px"
-        custom-class="myDialogbtn"
-        :modal="true"
-        :close-on-click-modal='false'
-        :modal-append-to-body="true"
-        @open="openDialog"
-        @close="closeDialog">
+      :title="'主控设备控制' + '(' + code + ')'"
+      :visible.sync="dialogVisible"
+      width="610px"
+      custom-class="myDialogbtn"
+      :fullscreen='fullscreen'
+      :modal="true"
+      :close-on-click-modal='false'
+      :modal-append-to-body="true"
+      @open="openDialog"
+      @close="closeDialog">
         <!-- 控制表单 开始 -->
+      <i class="zuida iconfont" :class="fullscreenIcon" :title="fullscreenTit" @click="tofullscreen"></i>
       <div class="statusBox">
         <i class="iconfont icon-zhuangtai1 iconStyle" :class='deviceType[status].iconClass'></i>
         <span class="fontStyle" :class='deviceType[status].textClass'>{{deviceType[status].title}}</span>
@@ -63,7 +65,7 @@
             <!-- 夜间状态 结束 -->
 
             <!-- 调试按钮 开始 -->
-              <el-button :type="debugType" class="debugging" :disabled="allDisabked" style="margin-top:15px" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
+              <el-button :type="debugType" class="debugging" style="margin-top:15px" v-hasBtn plain size="small" @click="debugging">{{debugTitle}}</el-button>
             <!-- 调试按钮 开始 -->
 
           </li>
@@ -215,6 +217,9 @@ export default {
   },
   data () {
     return {
+      fullscreen: false,
+      fullscreenIcon: 'icon-zuidahua',
+      fullscreenTit: '最大化',
       loading: false,
       debugList: [],
       debugType: 'primary',
@@ -381,6 +386,24 @@ export default {
         this.debugType = 'primary'
         this.debugTitle = '调试'
         eventBus.$emit('ws_close', { code: this.code, type: sendType.DEBUG }, wsModule.END)
+      }
+    },
+
+    // 全屏
+    tofullscreen () {
+      this.fullscreen = !this.fullscreen
+      if (this.fullscreen === true) {
+        this.fullscreenIcon = 'icon-huanyuan'
+        this.fullscreenTit = '向下还原'
+        this.$refs.control.style.cssText = `
+          max-height: null
+        `
+      } else {
+        this.fullscreenIcon = 'icon-zuidahua'
+        this.fullscreenTit = '最大化'
+        this.$refs.control.style.cssText = `
+          max-height: 500px
+        `
       }
     }
   }

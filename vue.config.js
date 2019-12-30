@@ -13,7 +13,7 @@ const name = 'vue Element Admin' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 // eslint-disable-next-line no-unused-vars
-const port = process.env.port || process.env.npm_config_port || 3000 // dev port
+const port = 80 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -40,6 +40,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     open: true,
+    port: port,
     overlay: {
       warnings: false,
       errors: true
