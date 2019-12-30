@@ -617,15 +617,9 @@ export default {
       if (this.fullscreen === true) {
         this.fullscreenIcon = 'icon-huanyuan'
         this.fullscreenTit = '向下还原'
-        this.$refs.control.style.cssText = `
-          max-height: null
-        `
       } else {
         this.fullscreenIcon = 'icon-zuidahua'
         this.fullscreenTit = '最大化'
-        this.$refs.control.style.cssText = `
-          max-height: 500px
-        `
       }
     }
   }

@@ -49,6 +49,11 @@
   line-height: 24px;
   font-size: 16px;
   color:rgb(255, 220, 64);
+  width: calc(100% - 140px);
+  white-space: nowrap;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .el-date-editor .el-range-separator{
   padding: 0;
@@ -93,4 +98,16 @@
   margin-left: 10px;
   float: right;
   line-height: 1.5;
+}
+.visibilityChart .el-form-item--mini .el-form-item__label {
+  line-height: 36px;
+}
+.is-fullscreen .el-dialog__body{
+  padding: 10px 10px;
+  color: #606266;
+  font-size: 14px;
+  word-break: break-all;
+  overflow: auto;
+  height: calc(100% - 50px);
+  max-height: calc(100% - 44px);
 }

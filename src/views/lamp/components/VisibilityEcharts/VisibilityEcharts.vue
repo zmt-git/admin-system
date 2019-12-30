@@ -13,7 +13,7 @@
       :visible.sync="dialogVisibleEcharts"
      >
       <div class="box">
-        <i class="iconfont icon-quanping fullscreen" title="全屏" @click="tofullscreen"></i>
+        <i class="zuida iconfont" :class="fullscreenIcon" :title="fullscreenTit" @click="tofullscreen"></i>
         <el-form ref="form" size="mini" :rules="rules" :model="form" :inline='true' >
           <el-form-item label='类型' prop="type">
            <el-select v-model="form.type" placeholder="请选择类型" @change="changeType" class='select-select'>
@@ -79,6 +79,8 @@ export default {
   data () {
     let that = this
     return {
+      fullscreenIcon: 'icon-zuidahua',
+      fullscreenTit: '最大化',
       // 弹框 显示隐藏
       dialogVisibleEcharts: false,
 
@@ -312,6 +314,13 @@ export default {
       this.fullscreen = !this.fullscreen
       this.$nextTick(() => {
         this.myChart.resize()
+        if (this.fullscreen === true) {
+          this.fullscreenIcon = 'icon-huanyuan'
+          this.fullscreenTit = '向下还原'
+        } else {
+          this.fullscreenIcon = 'icon-zuidahua'
+          this.fullscreenTit = '最大化'
+        }
       })
     },
 
@@ -352,19 +361,5 @@ export default {
 .box{
   width: 100%;
   height: 100%;
-}
-</style>
-<style>
-.visibilityChart .el-form-item--mini .el-form-item__label {
-  line-height: 36px;
-}
-.is-fullscreen .el-dialog__body{
-  padding: 10px 10px;
-  color: #606266;
-  font-size: 14px;
-  word-break: break-all;
-  overflow: auto;
-  height: calc(100% - 44px);
-  max-height: calc(100% - 44px);
 }
 </style>
