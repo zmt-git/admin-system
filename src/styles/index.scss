@@ -90,8 +90,9 @@ html {
 }
 .debugBox{
   background: #000000!important;
-  height: 150px!important;
+  height: 150px;
   color: #fff;
+  width: 100%;
   font-size: 12px;
   padding: 0 10px;
   overflow: auto!important;

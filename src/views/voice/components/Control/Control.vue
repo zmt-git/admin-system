@@ -175,10 +175,10 @@
           </div>
 
           <!-- 设置播放方案 结束 -->
-          <li v-show='debugShow' class="controlitem debugBox">
-            <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
-          </li>
         </ul>
+        <li v-show='debugShow' class="debugBox">
+          <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
+        </li>
         <div class="mask" v-show="loading">
           <i style="font-size: 30px;color: #fff;" class="el-icon-loading"></i>
         </div>
@@ -653,5 +653,10 @@ export default {
   right: 5px;
   top: 15px;
   line-height: 72px;
+}
+</style>
+<style>
+.is-fullscreen .el-dialog__body .debugBox{
+  height: calc(100% - 240px);
 }
 </style>

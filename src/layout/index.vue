@@ -46,7 +46,7 @@
                   </el-dropdown-item>
                 </router-link>
                 <el-dropdown-item>
-                  <span @click="edit"><i class="iconfont icon-icon-" aria-hidden="true"></i>编辑</span>
+                  <span @click="edit"><i class="iconfont icon-icon-" aria-hidden="true"></i>用户</span>
                 </el-dropdown-item>
                 <el-dropdown-item divided>
                   <span style="display:block;" @click="logout"><i class="iconfont icon-tuichu"></i>退出</span>
@@ -126,38 +126,11 @@
     <audio ref="voice" muted autoplay style="display:none">
       <source src="../assets/audio/8858.wav" type="audio/mpeg">
     </audio>
-    <el-dialog
-      title="修改用户密码"
-      :visible.sync="dialogVisible"
-      :close-on-click-modal='false'
-      :append-to-body='true'
-      @close='userClose'
-      width="610px">
-      <el-form :model="userForm" ref="userForm" :rules="userRoles" size="small" :inline="true">
-        <el-form-item label="旧密码" prop='oldPassWord' label-width="80px">
-          <el-input v-model="userForm.oldPassWord" type="password" placeholder="请输入旧密码"></el-input>
-        </el-form-item>
-        <el-form-item label="新密码" prop='newPassWord' label-width="80px">
-          <el-input v-model="userForm.newPassWord" type="password" placeholder="请输入新密码" @input="checkStrength"></el-input>
-        </el-form-item>
-        <el-form-item label="重复密码" prop='repeatPassWord' label-width="80px">
-          <el-input v-model="userForm.repeatPassWord" type="password" placeholder="请输入新密码"></el-input>
-        </el-form-item>
-        <el-form-item label="密码强度" prop='repeatPassWord' label-width="80px">
-          <el-progress :percentage="percentage" :format="format" :color="customColorMethod" style="width: 200px;margin-top: 7px;"></el-progress>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="confirmUser">确 定</el-button>
-      </span>
-    </el-dialog>
+    <owner ref="owner"></owner>
   </div>
 </template>
 
 <script>
-// API
-import { updatePassWord } from '@/api/system/user'
 // 依赖
 import { Message } from 'element-ui'
 import { mapGetters } from 'vuex'
@@ -172,6 +145,7 @@ import sideMenus from './SideMenus'
 import Hamburger from '@/components/Hamburger'
 import Breadcrumb from '@/components/Breadcrumb'
 import svgIcon from '@/components/SvgIcon/index'
+import owner from './owner'
 
 export default {
   computed: {
@@ -184,48 +158,13 @@ export default {
     sideMenus,
     Breadcrumb,
     Hamburger,
-    svgIcon
+    svgIcon,
+    owner
   },
   data () {
-    let that = this
-    // let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$/
-    let reg = /^[0-9a-zA-Z~!@#$%^&*()_+.?|,]{6,15}$/
-    let userPassword = async (rule, value, callback) => {
-      if (value !== that.userForm.newPassWord) {
-        callback(new Error('两次密码输入不一致'))
-      }
-    }
-    let oldPassword = async (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('旧密码不能未空'))
-      }
-    }
-    let newPassword = async (rule, value, callback) => {
-      if (!reg.test(value)) {
-        callback(new Error('密码包含字母数字或者特殊字符其中的任意一种，密码长度6-15位'))
-      }
-    }
     return {
-      percentage: 0,
-      userForm: {
-        oldPassWord: '',
-        repeatPassWord: '',
-        newPassWord: ''
-      },
-      dialogVisible: false,
+      platformname: true,
       activeLink: null,
-      userRoles: {
-        oldPassWord: [
-          { validator: oldPassword, trigger: 'blur' }
-        ],
-        newPassWord: [
-          { validator: newPassword, trigger: 'blur' }
-        ],
-        repeatPassWord: [
-          { validator: userPassword, trigger: 'blur' }
-
-        ]
-      },
       isCollapse: false,
       socket: null,
       ws_params: {
@@ -264,11 +203,7 @@ export default {
         0: { value: 0, 'info': '未维护', className: 'offline' },
         1: { value: 1, 'info': '已维护', className: 'normal' }
       },
-      width: '220px',
-      platformname: true,
-      regStrong: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,15}$/,
-      regMedium: /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,15}$/,
-      regweak: /^[0-9a-zA-Z~!@#$%^&*]{6,15}$/
+      width: '220px'
     }
   },
   methods: {
@@ -423,66 +358,12 @@ export default {
 
     // 编辑用户
     edit () {
-      this.dialogVisible = true
+      this.$refs.owner.show()
     },
 
     // 关闭用户编辑弹框
     userClose () {
       this.$refs.userForm.resetFields()
-    },
-
-    // 确认修改密码
-    confirmUser () {
-      this.$refs.userForm.validate(async (valid) => {
-        if (valid) {
-          let obj = JSON.parse(JSON.stringify(this.userForm))
-          delete obj.repeatPassWord
-          await updatePassWord(obj)
-            .then(res => {
-              this.$message({ type: 'success', message: '密码修改成功' })
-            })
-            .catch(err => {
-              this.$message({ type: 'error', message: '密码修改失败' })
-              console.log(err)
-            })
-          this.dialogVisible = false
-        }
-      })
-    },
-
-    // 检测密码强度
-    checkStrength () {
-      if (this.regStrong.test(this.userForm.newPassWord)) {
-        this.percentage = 100
-      } else if (this.regMedium.test(this.userForm.newPassWord)) {
-        this.percentage = (100 / 3 * 2)
-      } else if (this.regweak.test(this.userForm.newPassWord)) {
-        this.percentage = (100 / 3)
-      } else {
-        this.percentage = 0
-      }
-    },
-
-    // 密码强度显示颜色
-    customColorMethod () {
-      if (this.percentage <= (100 / 3)) {
-        return '#f56c6c'
-      } else if (this.percentage <= (100 / 3 * 2)) {
-        return '#e6a23c'
-      } else {
-        return '#67c23a'
-      }
-    },
-    format () {
-      if (this.percentage === 0) {
-        return ''
-      } else if (this.percentage <= (100 / 3)) {
-        return '弱'
-      } else if (this.percentage <= (100 / 3 * 2)) {
-        return '中'
-      } else {
-        return '高'
-      }
     }
   },
   created () {

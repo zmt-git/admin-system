@@ -129,10 +129,10 @@
             :options='optionsState'
           ></EleTable>
         </li>
-        <li v-show='debugShow' class="controlitem debugBox">
-          <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
-        </li>
       </ul>
+      <li v-show='debugShow' class="debugBox">
+        <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
+      </li>
       <div class="mask" v-show="loading">
         <i style="font-size: 30px;color: #fff;" class="el-icon-loading"></i>
       </div>
@@ -703,5 +703,10 @@ export default {
 }
 .fanNumberClass{
   margin-left: 5px;
+}
+</style>
+<style>
+.is-fullscreen .el-dialog__body .debugBox{
+  height: calc(100% - 618px);
 }
 </style>

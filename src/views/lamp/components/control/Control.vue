@@ -168,10 +168,12 @@
             <!-- 频率 结束 -->
 
           </li>
-          <li v-show='debugShow' class="controlitem debugBox">
+        </ul>
+        <!-- debug -->
+          <li v-show='debugShow' class="debugBox">
             <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
           </li>
-        </ul>
+        <!-- debug -->
         <!-- 控制表单 结束 -->
         <div class="mask" v-show="loading">
           <i style="font-size: 30px;color: #fff;" class="el-icon-loading"></i>
@@ -470,5 +472,10 @@ export default {
 }
 .controlInput{
   margin-bottom: 4px;
+}
+</style>
+<style>
+.is-fullscreen .el-dialog__body .debugBox{
+  height: calc(100% - 240px);
 }
 </style>
