@@ -4,6 +4,7 @@
     <el-dialog
       :title="'能见度信息' + '(' + code + ')'"
       :append-to-body='true'
+      :fullscreen='fullscreen'
       width="610px"
       :close-on-click-modal='false'
       :visible.sync="dialogVisible"
@@ -11,6 +12,8 @@
       @close="close"
     >
       <span>
+        <i class="zuida iconfont" :class="fullscreenIcon" :title="fullscreenTit" @click="tofullscreen"></i>
+
         <!-- 能见度表格信息 开始 -->
         <EleTable
           :list='list'
@@ -49,6 +52,10 @@ export default {
   },
   data () {
     return {
+      // 全屏属性
+      fullscreen: false,
+      fullscreenIcon: 'icon-zuidahua',
+      fullscreenTit: '最大化',
       // 弹出框 显示隐藏
       dialogVisible: false,
 
@@ -116,6 +123,23 @@ export default {
     // 弹出框关闭 回调
     close () {
       eventBus.$emit('ws_close', { code: this.code, type: sendType.VISIBILITYLAMPTABLE }, wsModule.END)
+      this.fullscreen = false
+      this.fullscreenIcon = 'icon-zuidahua'
+      this.fullscreenTit = '最大化'
+    },
+
+    // 全屏
+    tofullscreen () {
+      this.fullscreen = !this.fullscreen
+      this.$nextTick(() => {
+        if (this.fullscreen === true) {
+          this.fullscreenIcon = 'icon-huanyuan'
+          this.fullscreenTit = '向下还原'
+        } else {
+          this.fullscreenIcon = 'icon-zuidahua'
+          this.fullscreenTit = '最大化'
+        }
+      })
     }
   }
 }

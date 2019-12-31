@@ -326,6 +326,9 @@ export default {
       this.scintillaMode = null // 闪烁方式绑定值
       this.ledNum = null // 激光灯亮度值
       this.twinkleNum = null // 闪烁方式1-10
+      this.fullscreen = false
+      this.fullscreenIcon = 'icon-zuidahua'
+      this.fullscreenTit = '最大化'
     },
     ledformat (row, colum) {
       if (row[colum.prop] === 0) {

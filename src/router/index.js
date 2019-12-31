@@ -42,7 +42,7 @@ export const fixedRouter = [
         component: () => import(/* webpackChunkName: "group-foo" */ '@/views/index'),
         hidden: true,
         meta: {
-          title: '首页',
+          title: '统计数据',
           icon: '&#xe608;'
         }
       }

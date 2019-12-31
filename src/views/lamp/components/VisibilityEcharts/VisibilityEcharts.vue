@@ -33,10 +33,11 @@
               :format='format'
               :picker-options="pickerOptions"
               :type="inputType"
+              @change="changeStartTime"
               placeholder="选择时间">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label='结束时间' prop="end">
+          <el-form-item label='结束时间' prop="end" ref="end">
             <el-date-picker
               class='time-select'
               value-format='yyyy-MM-dd HH:mm'
@@ -111,46 +112,10 @@ export default {
           type: 'time',
           boundaryGap: false,
           data: []
-          // axisLabel: {
-          //   formatter: function (value, index) {
-          //     // 格式化成月/日，只在第一个刻度显示年份
-          //     var date = new Date(value)
-          //     var texts = [(date.getMonth() + 1), date.getDate()]
-          //     texts.unshift(date.getFullYear())
-          //     return texts.join('/')
-          //   }
-          // }
         },
         yAxis: {
           type: 'value'
         },
-        // visualMap: {
-        //   top: 80,
-        //   right: 0,
-        //   pieces: [{
-        //     gt: 0,
-        //     lte: 100,
-        //     color: '#f44219'
-        //   }, {
-        //     gt: 100,
-        //     lte: 200,
-        //     color: '#fd7801'
-        //   }, {
-        //     gt: 200,
-        //     lte: 500,
-        //     color: '#f4b419'
-        //   }, {
-        //     gt: 500,
-        //     lte: 1000,
-        //     color: '#fdee01'
-        //   }, {
-        //     gt: 1000,
-        //     color: '#54b731'
-        //   }],
-        //   outOfRange: {
-        //     color: '#54b731'
-        //   }
-        // },
         series: []
       },
 
@@ -228,15 +193,27 @@ export default {
     // 弹框关闭前回调函数
     close () {
       this.resetEchartsOptions()
+      this.fullscreen = false
+      this.fullscreenIcon = 'icon-zuidahua'
+      this.fullscreenTit = '最大化'
     },
 
     // 弹框打开回调函数
     async open () {
       // this.getMasterVisibility()
       this.form.code = this.code
-      this.$nextTick(() => {
+      this.$nextTick(async () => {
         this.myChart = echarts.init(document.getElementById('visibilityChart'))
+        this.myChart.resize()
         this.myChart.clear()
+        let obj = {}
+        obj.code = this.code
+        obj.type = '"%Y-%m-%d %H"'
+        obj.start = new Date().getTime() - 30 * 3600 * 24 * 1000
+        obj.end = new Date().getTime()
+        this.form.start = new Date(new Date().getTime() - 30 * 3600 * 24 * 1000)
+        this.form.end = new Date()
+        await this.getMasterVisibility(obj)
         this.myChart.setOption(this.option)
       })
     },
@@ -329,6 +306,11 @@ export default {
       let index = this.selectOptions.findIndex(item => { return item.type === this.form.type })
       this.inputType = this.selectOptions[index].value
       this.format = this.selectOptions[index].format
+    },
+
+    // 开始时间改变，清空结束时间
+    changeStartTime () {
+      this.$refs.end.resetField()
     }
   }
 }

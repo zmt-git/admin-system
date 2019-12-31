@@ -8,39 +8,40 @@
       custom-class="demo-drawer"
       ref="drawer"
       @open='open'
+      @close='close'
       >
       <div class="demo-drawer__content">
         <p class="tit">用户信息</p>
         <ul class="user">
           <li>
-            <span class="name">名称</span>
+            <span class="name">名称:</span>
             <span class="info"></span>
           </li>
           <li>
-            <span class="name">账号</span>
+            <span class="name">账号:</span>
             <span class="info"></span>
           </li>
           <li>
-            <span class="name">备注</span>
+            <span class="name">备注:</span>
             <span class="info"></span>
           </li>
           <li>
-            <span class="name">角色</span>
+            <span class="name">角色:</span>
             <span class="info"></span>
           </li>
         </ul>
         <p class="tit">修改密码</p>
-        <el-form :model="userForm" ref="userForm" :rules="userRoles" size="small" :inline="true">
-          <el-form-item label="旧密码" prop='oldPassWord' label-width="80px">
+        <el-form :model="userForm" ref="userForm" :rules="userRoles" size="small" :inline="true" class="userForm">
+          <el-form-item label="旧密码" prop='oldPassWord' label-width="70px">
             <el-input v-model="userForm.oldPassWord" type="password" placeholder="请输入旧密码"></el-input>
           </el-form-item>
-          <el-form-item label="新密码" prop='newPassWord' label-width="80px">
+          <el-form-item label="新密码" prop='newPassWord' label-width="70px">
             <el-input v-model="userForm.newPassWord" type="password" placeholder="请输入新密码" @input="checkStrength"></el-input>
           </el-form-item>
-          <el-form-item label="重复密码" prop='repeatPassWord' label-width="80px">
+          <el-form-item label="重复密码" prop='repeatPassWord' label-width="70px">
             <el-input v-model="userForm.repeatPassWord" type="password" placeholder="请输入新密码"></el-input>
           </el-form-item>
-          <el-form-item label="密码强度" prop='repeatPassWord' label-width="80px">
+          <el-form-item label="密码强度" prop='repeatPassWord' label-width="70px">
             <el-progress :percentage="percentage" :format="format" :color="customColorMethod" style="width: 200px;margin-top: 7px;"></el-progress>
           </el-form-item>
         </el-form>
@@ -59,7 +60,6 @@ export default {
   name: 'resource',
   data () {
     let that = this
-    // let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$/
     let reg = /^[0-9a-zA-Z~!@#$%^&*()_+.?|,]{6,15}$/
     let userPassword = async (rule, value, callback) => {
       if (value !== that.userForm.newPassWord) {
@@ -68,7 +68,7 @@ export default {
     }
     let oldPassword = async (rule, value, callback) => {
       if (!value) {
-        callback(new Error('旧密码不能未空'))
+        callback(new Error('旧密码不能为空'))
       }
     }
     let newPassword = async (rule, value, callback) => {
@@ -108,6 +108,11 @@ export default {
     // 抽屉打开时回调函数
     open () {
 
+    },
+
+    // 抽屉关闭时回调函数
+    close () {
+      this.$refs.userForm.resetFields()
     },
 
     // 显示抽屉方法
@@ -177,6 +182,7 @@ export default {
 <style lang="scss" scoped>
 .user{
   margin: 0 0 10px 0;
+  border-bottom: 1px solid #ccc;
   & li{
     height: 30px;
     line-height: 30px;
@@ -185,9 +191,14 @@ export default {
     font-size: 14px;
   }
 }
+.name{
+  display: inline-block;
+  margin-right: 10px;
+}
 .tit{
   font-weight: 600;
   color:dodgerblue;
+  font-size: 15px;
 }
 </style>
 <style>
@@ -199,5 +210,12 @@ export default {
   padding: 10px;
   border-bottom: 1px solid #72767b;
   font-weight: 600;
+}
+.demo-drawer .demo-drawer__footer{
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+.userForm .el-form-item--small.el-form-item {
+  margin-bottom: 28px;
 }
 </style>

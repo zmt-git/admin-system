@@ -271,6 +271,9 @@ export default {
       this.dataForm.voice = 0
       this.controlModel = 0
       this.status = 1
+      this.fullscreen = false
+      this.fullscreenIcon = 'icon-zuidahua'
+      this.fullscreenTit = '最大化'
     },
 
     // 更新状态前，进行数据转换

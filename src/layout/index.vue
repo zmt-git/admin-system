@@ -45,12 +45,16 @@
                     <i class="iconfont icon-yemian-copy-copy" aria-hidden="true"></i>首页
                   </el-dropdown-item>
                 </router-link>
-                <el-dropdown-item>
-                  <span @click="edit"><i class="iconfont icon-icon-" aria-hidden="true"></i>用户</span>
-                </el-dropdown-item>
-                <el-dropdown-item divided>
-                  <span style="display:block;" @click="logout"><i class="iconfont icon-tuichu"></i>退出</span>
-                </el-dropdown-item>
+                <div @click="edit">
+                  <el-dropdown-item>
+                    <span><i class="iconfont icon-icon-" aria-hidden="true"></i>用户</span>
+                  </el-dropdown-item>
+                </div>
+                <div @click="logout">
+                  <el-dropdown-item divided>
+                    <span  style="display:block;"><i class="iconfont icon-tuichu"></i>退出</span>
+                  </el-dropdown-item>
+                </div>
               </el-dropdown-menu>
             </el-dropdown>
           </div>

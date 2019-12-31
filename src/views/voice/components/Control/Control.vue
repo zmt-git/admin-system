@@ -323,6 +323,9 @@ export default {
       this.offTime = '' // 关机时间
       this.onTime = '' // 开机时间
       this.volume = '' // 音量
+      this.fullscreen = false
+      this.fullscreenIcon = 'icon-zuidahua'
+      this.fullscreenTit = '最大化'
     },
     // 转换按钮状态
     getMainStatusInit () {
