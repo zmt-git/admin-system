@@ -51,7 +51,8 @@ service.interceptors.response.use(
       }
     }
     // 代码未修改
-    if (code === 404) {
+    if (code === 203) {
+    } else if (code === 404) {
       router.push({ path: '/404' })
     } else if (code === 407) {
       router.push({ path: '/401' })

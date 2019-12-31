@@ -6,7 +6,7 @@
       :title="'主控设备控制' + '(' + code + ')'"
       :visible.sync="dialogVisible"
       width="610px"
-      custom-class="myDialogbtn"
+      custom-class="myDialogbtn lampControl"
       :fullscreen='fullscreen'
       :modal="true"
       :close-on-click-modal='false'
@@ -478,7 +478,7 @@ export default {
 }
 </style>
 <style>
-.is-fullscreen .el-dialog__body .debugBox{
+.lampControl.is-fullscreen .el-dialog__body .debugBox{
   height: calc(100% - 240px);
 }
 </style>

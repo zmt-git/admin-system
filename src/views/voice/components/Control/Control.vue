@@ -4,7 +4,7 @@
       :title="'主控设备控制' + '（' + code + '）'"
       :close-on-click-modal='false'
       width="610px"
-      custom-class="myDialogbtn"
+      custom-class="voiceControl"
       :visible.sync="dialogVisible"
       :fullscreen='fullscreen'
       :modal="true"
@@ -659,7 +659,7 @@ export default {
 }
 </style>
 <style>
-.is-fullscreen .el-dialog__body .debugBox{
+.voiceControl.is-fullscreen .el-dialog__body .debugBox{
   height: calc(100% - 240px);
 }
 </style>

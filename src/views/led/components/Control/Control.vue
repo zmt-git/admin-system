@@ -4,6 +4,7 @@
       :title="'激光灯控制' + '（' + code + '）'"
       :visible.sync="dialogVisible"
       :close-on-click-modal='false'
+      custom-class="ledControl"
       :fullscreen='fullscreen'
       ref="control"
       @open='open'
@@ -709,7 +710,7 @@ export default {
 }
 </style>
 <style>
-.is-fullscreen .el-dialog__body .debugBox{
+.ledControl.is-fullscreen .el-dialog__body .debugBox{
   height: calc(100% - 618px);
 }
 </style>

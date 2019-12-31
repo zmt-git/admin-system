@@ -1,5 +1,5 @@
 <template>
-  <div class="textAlginLeft">
+  <div class="textAlginLeft" style="height:calc(100% - 5px)">
     <div class="password" v-if="passShow">
       <el-form class="pass" ref="password" size="mini" :model="form" :rules="rules" :inline="true">
         <el-form-item label="请输入密令" prop="password">
@@ -10,7 +10,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-button-group>
+    <el-button-group v-if="!passShow">
       <el-button type="primary" icon="el-icon-plus" v-hasBtn size="mini" @click="showAddDialog()">添加模块</el-button>
       <el-button type="success" icon="el-icon-plus" v-hasBtn size="mini" @click="showAddMenu()">添加功能菜单</el-button>
       <el-button type="warning" icon="el-icon-plus" v-hasBtn size="mini" @click="doAddBtns()">添加按钮</el-button>

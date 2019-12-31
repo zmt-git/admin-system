@@ -11,10 +11,10 @@
 
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
-      <el-button type="primary" icon="el-icon-set-up" size="mini" @click="showRoleDialog">分配角色</el-button>
-      <el-button type="warning" size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>设备组分配</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(userList)">批量删除</el-button>
+      <el-button type="success" v-hasBtn icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
+      <el-button type="primary" v-hasBtn icon="el-icon-set-up" size="mini" @click="showRoleDialog">分配角色</el-button>
+      <el-button type="warning" v-hasBtn size="mini" @click="showGrounpDialog"><i class="iconfont icon-shebeifenzuxiangqing iconBtn"></i>设备组分配</el-button>
+      <el-button type="danger" v-hasBtn icon="el-icon-delete" size="mini" @click="deleteIds(userList)">批量删除</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->

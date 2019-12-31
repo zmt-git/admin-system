@@ -107,3 +107,10 @@ export function resetPassWord (params) {
     params
   })
 }
+// GET /userRole/getUserToken 获取用户信息
+export function getUserToken () {
+  return http({
+    url: 'userRole/getUserToken',
+    method: 'GET'
+  })
+}

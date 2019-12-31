@@ -214,6 +214,9 @@ export default {
           lampNum: [
             { required: true, message: '请输入数量', trigger: 'blur' }
           ],
+          groupIds: [
+            { required: true, message: '请选择分组', trigger: 'change' }
+          ],
           longitude: [
             // eslint-disable-next-line no-useless-escape
             { pattern: /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/, message: '经度整数部分为0-180,小数部分为0到6位' }

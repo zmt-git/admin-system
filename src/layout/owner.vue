@@ -15,19 +15,31 @@
         <ul class="user">
           <li>
             <span class="name">名称:</span>
-            <span class="info"></span>
+            <span class="info">{{userInfo.name}}</span>
           </li>
           <li>
             <span class="name">账号:</span>
-            <span class="info"></span>
+            <span class="info">{{userInfo.username}}</span>
           </li>
           <li>
             <span class="name">备注:</span>
-            <span class="info"></span>
+            <span class="info">{{userInfo.synopsis}}</span>
           </li>
           <li>
-            <span class="name">角色:</span>
-            <span class="info"></span>
+            <span class="name">创建者:</span>
+            <span class="info">{{formatUser(userInfo.creatUserId)}}</span>
+          </li>
+          <li>
+            <span class="name">创建时间:</span>
+            <span class="info">{{formatTime(userInfo.creatTime)}}</span>
+          </li>
+          <li>
+            <span class="name">更新者:</span>
+            <span class="info">{{formatUser(userInfo.updateUserId)}}</span>
+          </li>
+          <li>
+            <span class="name">更新时间:</span>
+            <span class="info">{{formatTime(userInfo.updateTime)}}</span>
           </li>
         </ul>
         <p class="tit">修改密码</p>
@@ -55,9 +67,15 @@
 </template>
 <script>
 // API
-import { updatePassWord } from '@/api/system/user'
+import { updatePassWord, getUserToken } from '@/api/system/user'
+// 方法
+import { timestampToTime } from '@/utils/format'
+import { mapGetters } from 'vuex'
 export default {
   name: 'resource',
+  computed: {
+    ...mapGetters(['allUsers'])
+  },
   data () {
     let that = this
     let reg = /^[0-9a-zA-Z~!@#$%^&*()_+.?|,]{6,15}$/
@@ -77,6 +95,15 @@ export default {
       }
     }
     return {
+      userInfo: {
+        name: null,
+        username: null,
+        synopsis: null,
+        creatTime: null,
+        creatUserId: null,
+        updateTime: null,
+        updateUserId: null
+      },
       dialog: false,
       loading: false,
       userForm: {
@@ -107,9 +134,29 @@ export default {
   methods: {
     // 抽屉打开时回调函数
     open () {
-
+      getUserToken()
+        .then(res => {
+          this.userInfo = res.result
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
 
+    // 转化时间函数
+    formatTime (time) {
+      return timestampToTime(time)
+    },
+    formatUser (id) {
+      let index = this.allUsers.findIndex(item => {
+        return item.id === id
+      })
+      if (index >= 0) {
+        return this.allUsers[index].name
+      } else {
+        return ''
+      }
+    },
     // 抽屉关闭时回调函数
     close () {
       this.$refs.userForm.resetFields()
@@ -194,6 +241,9 @@ export default {
 .name{
   display: inline-block;
   margin-right: 10px;
+}
+.info{
+  color: #f1200a;
 }
 .tit{
   font-weight: 600;

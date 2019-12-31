@@ -11,9 +11,9 @@
 
     <!-- 操作数据按钮 开始 -->
     <el-button-group>
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
-      <el-button type="warning" size="mini" @click="showResourceDialog"><i class="iconfont iconBtn icon-icon-35"></i>资源授权</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteIds(rolesList)">批量删除</el-button>
+      <el-button type="success" v-hasBtn icon="el-icon-plus" size="mini" @click="showAddDialog">添加</el-button>
+      <el-button type="warning" v-hasBtn size="mini" @click="showResourceDialog"><i class="iconfont iconBtn icon-icon-35"></i>资源授权</el-button>
+      <el-button type="danger" v-hasBtn icon="el-icon-delete" size="mini" @click="deleteIds(rolesList)">批量删除</el-button>
     </el-button-group>
 
     <!-- 操作数据按钮 结束 -->
