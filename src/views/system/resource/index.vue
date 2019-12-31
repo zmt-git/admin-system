@@ -1,5 +1,15 @@
 <template>
   <div class="textAlginLeft">
+    <div class="password" v-if="passShow">
+      <el-form class="pass" ref="password" size="mini" :model="form" :rules="rules" :inline="true">
+        <el-form-item label="请输入密令" prop="password">
+          <el-input type="password" v-model="form.password" @keyup.enter.native="checkPassword"></el-input>
+        </el-form-item>
+        <el-form-item >
+          <el-button type="danger" size="mini" @click="checkPassword">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <el-button-group>
       <el-button type="primary" icon="el-icon-plus" v-hasBtn size="mini" @click="showAddDialog()">添加模块</el-button>
       <el-button type="success" icon="el-icon-plus" v-hasBtn size="mini" @click="showAddMenu()">添加功能菜单</el-button>
@@ -26,6 +36,14 @@ export default {
   name: 'areaZtree',
   data () {
     return {
+      passShow: true,
+      password: '159753',
+      rules: {
+        password: [{ required: true, trigger: 'blur', message: '请输入密令' }]
+      },
+      form: {
+        password: ''
+      },
       setting: {
         edit: {
           enable: true,
@@ -60,7 +78,7 @@ export default {
     }
   },
   created () {
-
+    this.passShow = true
   },
   mounted () {
     this.init(0)
@@ -218,6 +236,17 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    checkPassword () {
+      this.$refs.password.validate(vali => {
+        if (vali) {
+          if (this.form.password === this.password) {
+            this.passShow = false
+          } else {
+            this.passShow = true
+          }
+        }
+      })
     }
 
   }
@@ -228,5 +257,24 @@ export default {
     height:calc(100vh - 150px);
     overflow-y: scroll;
     background-color: #fff;
+  }
+  .password{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: 1000;
+  }
+  .pass{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 350px;
+    height: 50px;
   }
 </style>

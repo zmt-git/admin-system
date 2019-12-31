@@ -47,7 +47,7 @@
                 </router-link>
                 <div @click="edit">
                   <el-dropdown-item>
-                    <span><i class="iconfont icon-icon-" aria-hidden="true"></i>用户</span>
+                    <span><i class="iconfont icon-admin" aria-hidden="true"></i>用户</span>
                   </el-dropdown-item>
                 </div>
                 <div @click="logout">
@@ -155,7 +155,7 @@ export default {
   computed: {
     ...mapGetters(['sidebar', 'routers', 'token']),
     userIcon () {
-      return 'icon-chaojiguanliyuan1'
+      return 'icon-chaojiguanliyuan'
     }
   },
   components: {
