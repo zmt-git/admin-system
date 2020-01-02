@@ -170,9 +170,9 @@
           </li>
         </ul>
         <!-- debug -->
-          <li v-show='debugShow' class="debugBox">
+          <div v-show='debugShow' class="debugBox">
             <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
-          </li>
+          </div>
         <!-- debug -->
         <!-- 控制表单 结束 -->
         <div class="mask" v-show="loading">
@@ -382,7 +382,7 @@ export default {
 
     // 调试 TODO
     debugging () {
-      this.debugShow = true
+      this.debugShow = !this.debugShow
       if (this.debugTitle === '调试') {
         this.debugType = 'danger'
         this.debugTitle = '暂停调试'

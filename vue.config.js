@@ -32,8 +32,8 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://10.108.13.24:8085', // 徐州
-        target: 'http://39.100.241.240:9527', // 测试服务器
-        // target: 'http://192.168.2.172', // 刘轩
+        // target: 'http://39.100.241.240:9527', // 测试服务器
+        target: 'http://192.168.2.172', // 刘轩
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

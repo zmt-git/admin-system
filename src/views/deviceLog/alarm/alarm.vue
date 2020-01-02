@@ -48,7 +48,7 @@ import { timestampToTime } from '@/utils/format'
 import { mapGetters } from 'vuex'
 
 // API
-import { pageMainControl, saveOrUpdate, deleteByIds } from '@/api/voice/voiceInfo'
+import { pageAlarm, saveOrUpdate, deleteByIds } from '@/api/deviceLog/alarm'
 
 export default {
   components: {
@@ -68,7 +68,7 @@ export default {
   data () {
     return {
       // 获取表格数据函数 initDataFn
-      initDataFn: pageMainControl,
+      initDataFn: pageAlarm,
 
       // 编辑用户
       editDataFn: saveOrUpdate,
@@ -81,13 +81,17 @@ export default {
 
       // 表格数据展示数据key
       columns: [
-        { prop: 'code', label: '设备编码', width: '130px' },
-        { prop: 'deviceType', label: '设备类型', width: '130px', formatter: this.formatterType },
-        { prop: 'alarmTime', label: '报警时间', formatter: this.timestampToTimes, width: '140px' },
-        { prop: 'resion', label: '报警原因' },
-        { prop: 'deviceStatus', label: '主控状态', render: true, nopopover: true, title: '告警', type: 'danger', width: '70px', typeLists: { 0: { value: 0, title: '正常', type: 'success' }, 1: { value: 1, title: '离线', type: 'danger' }, 2: { value: 2, title: '告警', type: 'warning' }, 3: { value: 3, title: '升级', type: 'info' } } },
-        { prop: 'maintain', label: '维护状态', render: true, nopopover: true, width: '80px', typeLists: { 0: { value: 0, title: '未维护', type: 'danger' }, 1: { value: 1, title: '已维护', type: 'success' } }, method: this.maintain },
-        { prop: 'read', label: '消息状态', render: true, nopopover: true, width: '70px', typeLists: { 0: { value: 0, title: '未读', type: 'danger' }, 1: { value: 1, title: '已读', type: 'success' } }, method: this.readMessage }
+        { prop: 'deviceCode', label: '设备编码', width: '130px' },
+        { prop: 'grade', label: '报警级别', render: true, nopopover: true, width: '70px', typeLists: { 0: { value: 0, title: '一般', type: 'warning' }, 1: { value: 1, title: '紧急', type: 'danger' } } },
+        { prop: 'type', label: '设备类型', width: '70px', formatter: this.formatterType },
+        { prop: 'createTime', label: '报警时间', formatter: this.timestampToTimes, width: '140px' },
+        // { prop: 'deviceStatus', label: '主控状态', render: true, nopopover: true, title: '告警', type: 'danger', width: '70px', typeLists: { 0: { value: 0, title: '正常', type: 'success' }, 1: { value: 1, title: '离线', type: 'danger' }, 2: { value: 2, title: '告警', type: 'warning' }, 3: { value: 3, title: '升级', type: 'info' } } },
+        { prop: 'maintenanceStatus', label: '维护状态', render: true, nopopover: true, width: '100px', typeLists: { 0: { value: 0, title: '未维护', type: 'danger' }, 1: { value: 1, title: '问题已解决', type: 'success' }, 2: { value: 2, title: '问题未解决', type: 'warning' } } },
+        { prop: 'maintenanceUserId', label: '维护人', width: '100px', formatter: this.formatUser },
+        { prop: 'maintenanceTime', label: '维护时间', width: '140px', formatter: this.timestampToTimes },
+        { prop: 'readStatus', label: '消息状态', render: true, nopopover: true, width: '70px', typeLists: { 1: { value: 1, title: '未读', type: 'danger' }, 0: { value: 0, title: '已读', type: 'success' } } },
+        { prop: 'readUserId', label: '读取用户', width: '100px', formatter: this.formatUser },
+        { prop: 'message', label: '报警信息' }
       ],
 
       // 表格操作按钮 (混入数据包含该数据 ，添加其他配置重新覆盖即可)
@@ -95,9 +99,8 @@ export default {
         fixed: 'right',
         width: '130px',
         list: [
-          // { show: true, type: 'danger', icon: 'el-icon-delete', method: this.tabelDelete, title: '删除' } // 操作按钮 删除
-          // { show: true, type: 'info', icon: 'el-icon-edit', method: this.tabeledit, title: '编辑' }, // 编辑按钮
-          // { show: true, type: 'success', iconfont: 'icon-techreport-', method: this.maintain, title: '维护' } // 编辑按钮
+          { show: true, type: 'success', iconfont: 'icon-duquxiaoxi', method: this.readMessage, title: '已读' }, // 编辑按钮
+          { show: true, type: 'info', iconfont: 'icon-techreport-', method: this.maintain, title: '维护' } // 编辑按钮
         ]
       },
 
@@ -137,7 +140,7 @@ export default {
         voice: '红外对射'
       },
       obj: [
-        { code: 'xxxxxxxxx', deviceType: 'led', resion: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', deviceStatus: 0, maintain: 1, read: 1 }
+        { deviceCode: 'xxxxxxxxx', type: 'led', message: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', readUserId: 0, readStatus: 1, maintenanceTime: 1, maintenanceUserId: 1, maintenanceStatus: 1, createTime: 1, grade: 1 }
       ]
     }
   },
@@ -192,6 +195,10 @@ export default {
 
     formatterType (val, key) {
       return this.deviceType[val[key.prop]]
+    },
+
+    formatUser (val, key) {
+      return '测试'
     }
   }
 }

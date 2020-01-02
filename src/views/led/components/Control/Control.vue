@@ -131,9 +131,9 @@
           ></EleTable>
         </li>
       </ul>
-      <li v-show='debugShow' class="debugBox">
+      <div v-show='debugShow' class="debugBox">
         <p :key="index" v-for="(item, index) in debugList">{{item}}</p>
-      </li>
+      </div>
       <div class="mask" v-show="loading">
         <i style="font-size: 30px;color: #fff;" class="el-icon-loading"></i>
       </div>
@@ -408,7 +408,7 @@ export default {
 
     // 调试 TODO
     debugging () {
-      this.debugShow = true
+      this.debugShow = !this.debugShow
       if (this.debugTitle === '调试') {
         this.debugType = 'danger'
         this.debugTitle = '暂停调试'

@@ -83,15 +83,16 @@ export default class WebSocketWrapper {
     console.log('websocket重连中...')
     let that = this
     if (that.lockReconnect) {
-      this.reconnectNum = 0
+      this.reconnect = 0
       return
     }
     if (that.Authentication()) {
       return
     }
-    if (this.reconnectNum >= 10) {
+    if (this.reconnect >= 10) {
       this.lockReconnect = true
-      MessageBox({ type: 'warning', message: '推送消息连接重连失败,请联系管理员' })
+      this.reconnect = 0
+      MessageBox({ type: 'warning', message: '推送消息重连失败，导致部分功能不可用，请及时联系管理员' })
       return
     }
     this.reconnect++
